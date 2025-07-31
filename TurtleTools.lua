@@ -47,15 +47,15 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         if not coords1.x then
             coords1 = noGPS("xz")
         end
-        print("[50]first coords: ", coords1.x, coords1.z) _ = io.read()
+        print("[50]first coords: ", coords1.x, coords1.z)
 
         if turtle.detect() then
-            print("[53]block detected in front of turtle") _ = io.read()
+            print("[53]block detected in front of turtle")
             turtle.dig()
             turtle.suck()
         end
         if turtle.forward() then
-            print("[58]moving forward...") _ = io.read()
+            print("[58]moving forward...")
         else
             error("GetHeading() terminated: not enough fuel")
         end
@@ -68,7 +68,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         print("[68]second coords: ", coords2.x, coords2.z) _ = io.read()
 
         if turtle.back() then
-            print("[71]moving back...") _ = io.read()
+            print("[71]moving back...")
         else
             error("GetHeading() terminated: not enough fuel")
         end
@@ -106,68 +106,44 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 end
 
 local function inspectAll()
-    print("[109]entered new inspectAll() routine") _ = io.read()
+    print("[109]entered new inspectAll() routine")
     local block, blockdata = turtle.inspectUp()
     if block then
-        print("[112]block detected above") _ = io.read()
+        print("[112]block detected above")
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
-            print("[114]block is an ore") _ = io.read()
+            print("[114]block is an ore")
             MineChunk("up")
             turtle.down()
-            print("[117]ended MineChunk() routine, moving back down") _ = io.read()
+            print("[117]ended MineChunk() routine, moving back down")
         end
-        --for tag, _ in pairs(blockdata.tags) do
-        --   if string.find(tag, "forge:ores") then
-        --        print("[115]block is an ore") _ = io.read()
-        --        MineChunk("up")
-        --        print("[117]ended MineChunk() routine, moving back down") _ = io.read()
-        --        turtle.down()
-        --    end
-        --end
     end
     local block, blockdata = turtle.inspectDown()
     if block then
-        print("[130]block detected below") _ = io.read()
+        print("[122]block detected below")
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
-            print("[132]block is an ore") _ = io.read()
+            print("[124]block is an ore")
             MineChunk("down")
             turtle.up()
-            print("[135]ended MineChunk() routine, moving back up") _ = io.read()
+            print("[127]ended MineChunk() routine, moving back up")
         end
-        --for tag, _ in pairs(blockdata.tags) do
-        --    if string.find(tag,"forge:ores") then
-        --        print("[127]block is an ore") _ = io.read()
-        --        MineChunk("down")
-        --        print("[129]ended MineChunk() routine, moving back up") _ = io.read()
-        --        turtle.up()
-        --    end
-        --end
     end
     for turn = 1,4 do
         local block, blockdata = turtle.inspect()
         if block then
-            print("[149]block detected forward") _ = io.read()
+            print("[133]block detected forward")
             if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
-                print("[151]block is an ore") _ = io.read()
+                print("[135]block is an ore")
                 MineChunk()
                 turtle.back()
-                print("[154]ended MineChunk() routine, moving back") _ = io.read()
+                print("[138]ended MineChunk() routine, moving back")
             end
-            --for tag, _ in pairs(blockdata.tags) do
-            --    if string.find(tag, "forge:ores") then
-            --        print("[140]block is an ore") _ = io.read()
-            --        MineChunk()
-            --       print("[142]ended MineChunk() routine, moving back") _ = io.read()
-            --        turtle.back()
-            --    end
-            --end
         end
         turtle.turnRight()
         GetHeading("right")
         turn = turn + 1
-        print("[168]turning right. heading is now = ", Heading) _ = io.read()
+        print("[144]turning right. heading is now = ", Heading)
     end
-    print("[170]completed a turn. Ending inspectAll()") _ = io.read()
+    print("[146]completed a turn. Ending inspectAll()")
 end
 
 function MineChunk(target) --internal use with Mine(), detects and mines ore blocks while keeping track of steps
@@ -175,29 +151,29 @@ function MineChunk(target) --internal use with Mine(), detects and mines ore blo
         turtle.digUp()
         turtle.suckUp()
         turtle.up()
-        print("[178]mining and moving up") _ = io.read()
+        print("[154]mining and moving up")
         inspectAll()
     elseif target == "down" then
         turtle.digDown()
         turtle.suckDown()
         turtle.down()
-        print("[184]mining and moving down") _ = io.read()
+        print("[160]mining and moving down")
         inspectAll()
     else
         turtle.dig()
         turtle.suck()
         turtle.forward()
-        print("[190]mining and moving forward") _ = io.read()
+        print("[166]mining and moving forward")
         inspectAll()
     end
 end
 
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
-    print("[197]beginning sequence to mine ", blocks, " blocks") _ = io.read()
+    print("[173]beginning sequence to mine ", blocks, " blocks")
 
     GetHeading()
-    print("[200]heading acquired: ", Heading) _ = io.read()
+    print("[176]heading acquired: ", Heading)
 
     local move = 0
     while move < blocks do
@@ -211,12 +187,12 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
         end
         turtle.forward()
         move = move + 1
-        print("[214]initial inspectAll() terminated. Moving forward")
+        print("[190]initial inspectAll() terminated. Moving forward")
     end
 end
 
 function GoThere(x, y, z) -- main function for navigation. Specify heading if known.
-    print("Starting sequence to move to coords:", x, y, z)
+    print("[195]Starting sequence to move to coords:", x, y, z)
 
     local bot = {}
     bot.x, bot.y, bot.z = gps.locate()
@@ -224,22 +200,22 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
         bot = noGPS("xyz")
     end
 
-    print("turtle location acquired: ", bot.x, bot.y, bot.z)
+    print("[203]turtle location acquired: ", bot.x, bot.y, bot.z)
 
     local rel = {
         x = (x - bot.x),
         y = (y - bot.y),
         z = (z - bot.z)
     }
-    print("computed movement necessary:")
+    print("[210]computed movement necessary:")
     print("x= ", rel.x)
     print("y= ", rel.y)
     print("z= ", rel.z)
 
     if not Heading then
-        print("heading unknown. searching heading...")
+        print("[216]heading unknown. searching heading...")
         GetHeading()
-        print("heading acquired: ", Heading)
+        print("[218]heading acquired: ", Heading)
     end
 
     local xblocks = math.abs(rel.x)
@@ -249,26 +225,26 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
             turtle.turnRight()
             turtle.turnRight()
 
-            print("mining ", blocks, "blocks in the -x direction")
+            print("[228]mining ", blocks, "blocks in the -x direction")
             Mine(xblocks)
 
         elseif Heading == "-x" then
 
-            print("mining ", xblocks, "blocks in the -x direction")
+            print("[233]mining ", xblocks, "blocks in the -x direction")
             Mine(xblocks)
 
         elseif Heading == "z" then
 
             turtle.turnRight()
 
-            print("mining ", xblocks, "blocks in the -x direction")
+            print("[240]mining ", xblocks, "blocks in the -x direction")
             Mine(xblocks)
 
         elseif Heading == "-z" then
 
             turtle.turnLeft()
 
-            print("mining ", xblocks, "blocks in the -x direction")
+            print("[247]mining ", xblocks, "blocks in the -x direction")
             Mine(xblocks)
         end
 
@@ -277,7 +253,7 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     elseif rel.x > 0 then
         if Heading == "x" then
 
-            print("mining ", xblocks, "blocks in the x direction")
+            print("[256]mining ", xblocks, "blocks in the x direction")
             Mine(xblocks)
 
         elseif Heading == "-x" then
@@ -285,21 +261,21 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
             turtle.turnRight()
             turtle.turnRight()
 
-            print("mining ", xblocks, "blocks in the x direction")
+            print("[264]mining ", xblocks, "blocks in the x direction")
             Mine(xblocks)
 
         elseif Heading == "z" then
 
             turtle.turnLeft()
 
-            print("mining ", xblocks, "blocks in the x direction")
+            print("[271]mining ", xblocks, "blocks in the x direction")
             Mine(xblocks)
 
         elseif Heading == "-z" then
 
             turtle.turnRight()
 
-            print("mining ", xblocks, "blocks in the x direction")
+            print("[278]mining ", xblocks, "blocks in the x direction")
             Mine(xblocks)
         end
 
@@ -313,26 +289,26 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
             turtle.turnRight()
             turtle.turnRight()
 
-            print("mining ", zblocks, "blocks in the -z direction")
+            print("[292]mining ", zblocks, "blocks in the -z direction")
             Mine(zblocks)
 
         elseif Heading == "-z" then
 
-            print("mining ", zblocks, "blocks in the -z direction")
+            print("[297]mining ", zblocks, "blocks in the -z direction")
             Mine(zblocks)
 
         elseif Heading == "x" then
 
             turtle.turnLeft()
 
-            print("mining ", zblocks, "blocks in the -z direction")
+            print("[304]mining ", zblocks, "blocks in the -z direction")
             Mine(zblocks)
 
         elseif Heading == "-x" then
 
             turtle.turnRight()
 
-            print("mining ", zblocks, "blocks in the -z direction")
+            print("[311]mining ", zblocks, "blocks in the -z direction")
             Mine(zblocks)
 
         end
@@ -342,7 +318,7 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     elseif rel.z > 0 then
         if Heading == "z" then
 
-            print("mining ", zblocks, "blocks in the z direction")
+            print("[321]mining ", zblocks, "blocks in the z direction")
             Mine(zblocks)
 
         elseif Heading == "-z" then
@@ -350,21 +326,21 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
             turtle.turnRight()
             turtle.turnRight()
 
-            print("mining ", zblocks, "blocks in the z direction")
+            print("[329]mining ", zblocks, "blocks in the z direction")
             Mine(zblocks)
 
         elseif Heading == "x" then
 
             turtle.turnRight()
 
-            print("mining ", zblocks, "blocks in the z direction")
+            print("[336]mining ", zblocks, "blocks in the z direction")
             Mine(zblocks)
 
         elseif Heading == "-x" then
 
             turtle.turnLeft()
 
-            print("mining ", zblocks, "blocks in the z direction")
+            print("[343]mining ", zblocks, "blocks in the z direction")
             Mine(zblocks)
         end
 
@@ -376,7 +352,7 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     if rel.y < 0 then
         local move = 0
 
-        print("mining ", yblocks, "blocks in the -y direction")
+        print("[355]mining ", yblocks, "blocks in the -y direction")
 
         while move < yblocks do
             while turtle.detectDown() do
@@ -389,7 +365,7 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     elseif rel.y > 0 then
         local move = 0
 
-        print("mining ", yblocks, "blocks in the y direction")
+        print("[368]mining ", yblocks, "blocks in the y direction")
 
         while move < yblocks do
             while turtle.detectUp() do
@@ -403,4 +379,4 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
 end
 
 Mine(10, true)
-print("Mining completed:)")
+print("[382]Mining completed:)")
