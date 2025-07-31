@@ -1,6 +1,15 @@
-local function tableContains(t, element) -- MiscUtil function that returns true if element is in table
+local function tableContainsValue(t, element) -- MiscUtil function that returns true if element is in table values
     for _, value in pairs(t) do
         if value == element then
+            return true
+        end
+    end
+    return false
+end
+
+local function tableContainsKey(t, element) -- MiscUtil function that returns true if element is in table keys
+    for key, _ in pairs(t) do
+        if key == element then
             return true
         end
     end
@@ -14,4 +23,8 @@ local function getKeyForValue(t, value)
   return nil
 end
 
-return {tableContains = tableContains, getKeyForValue = getKeyForValue}
+return {
+  tableContainsValue = tableContainsValue,
+  tableContainsKey = tableContainsKey,
+  getKeyForValue = getKeyForValue
+}

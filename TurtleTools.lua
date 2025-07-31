@@ -110,48 +110,66 @@ local function inspectAll()
     local block, blockdata = turtle.inspectUp()
     if block then
         print("[112]block detected above") _ = io.read()
-        for tag, _ in pairs(blockdata.tags) do
-            if string.find(tag, "forge:ores") then
-                print("[115]block is an ore") _ = io.read()
-                MineChunk("up")
-                print("[117]ended MineChunk() routine, moving back down") _ = io.read()
-                turtle.down()
-            end
+        if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
+            print("[115]block is an ore") _ = io.read()
+            MineChunk("up")
+            print("[117]ended MineChunk() routine, moving back down") _ = io.read()
+            turtle.down()
         end
+        --for tag, _ in pairs(blockdata.tags) do
+        --   if string.find(tag, "forge:ores") then
+        --        print("[115]block is an ore") _ = io.read()
+        --        MineChunk("up")
+        --        print("[117]ended MineChunk() routine, moving back down") _ = io.read()
+        --        turtle.down()
+        --    end
+        --end
     end
     local block, blockdata = turtle.inspectDown()
     if block then
-        print("[124]block detected below") _ = io.read()
-        for tag, _ in pairs(blockdata.tags) do
-            if string.find(tag,"forge:ores") then
-                print("[127]block is an ore") _ = io.read()
-                MineChunk("down")
-                print("[129]ended MineChunk() routine, moving back up") _ = io.read()
-                turtle.up()
-            end
+        print("[130]block detected below") _ = io.read()
+        if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
+            print("[132]block is an ore") _ = io.read()
+            MineChunk("down")
+            print("[134]ended MineChunk() routine, moving back up") _ = io.read()
+            turtle.up()
         end
+        --for tag, _ in pairs(blockdata.tags) do
+        --    if string.find(tag,"forge:ores") then
+        --        print("[127]block is an ore") _ = io.read()
+        --        MineChunk("down")
+        --        print("[129]ended MineChunk() routine, moving back up") _ = io.read()
+        --        turtle.up()
+        --    end
+        --end
     end
     for turn = 1,3 do
         local block, blockdata = turtle.inspect()
         if block then
-            print("[137]block detected forward") _ = io.read()
-            for tag, _ in pairs(blockdata.tags) do
-                if string.find(tag, "forge:ores") then
-                    print("[140]block is an ore") _ = io.read()
-                    MineChunk()
-                    print("[142]ended MineChunk() routine, moving back") _ = io.read()
-                    turtle.back()
-                end
+            print("[149]block detected forward") _ = io.read()
+            if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
+                print("[132]block is an ore") _ = io.read()
+                MineChunk()
+                print("[134]ended MineChunk() routine, moving back") _ = io.read()
+                turtle.back()
             end
+            --for tag, _ in pairs(blockdata.tags) do
+            --    if string.find(tag, "forge:ores") then
+            --        print("[140]block is an ore") _ = io.read()
+            --        MineChunk()
+            --       print("[142]ended MineChunk() routine, moving back") _ = io.read()
+            --        turtle.back()
+            --    end
+            --end
         end
         turtle.turnRight()
         GetHeading("right")
         turn = turn + 1
-        print("[150]turning right. heading is now = ", Heading) _ = io.read()
+        print("[164]turning right. heading is now = ", Heading) _ = io.read()
     end
     turtle.turnRight()
     GetHeading("right")
-    print("[154]completed a turn. heading is now = ", Heading) _ = io.read()
+    print("[168]completed a turn. heading is now = ", Heading) _ = io.read()
 end
 
 function MineChunk(target) --internal use with Mine(), detects and mines ore blocks while keeping track of steps
@@ -159,7 +177,7 @@ function MineChunk(target) --internal use with Mine(), detects and mines ore blo
         turtle.digUp()
         turtle.suckUp()
         turtle.up()
-        print("[162]mining and moving up") _ = io.read()
+        print("[176]mining and moving up") _ = io.read()
         inspectAll()
         --print("[164]inspectAll() ended. moving back down")
         --turtle.down()
@@ -167,7 +185,7 @@ function MineChunk(target) --internal use with Mine(), detects and mines ore blo
         turtle.digDown()
         turtle.suckDown()
         turtle.down()
-        print("[170]mining and moving down") _ = io.read()
+        print("[184]mining and moving down") _ = io.read()
         inspectAll()
         --print("[172]inspectAll() ended. moving back up")
         --turtle.up()
@@ -175,7 +193,7 @@ function MineChunk(target) --internal use with Mine(), detects and mines ore blo
         turtle.dig()
         turtle.suck()
         turtle.forward()
-        print("[178]mining and moving forward") _ = io.read()
+        print("[192]mining and moving forward") _ = io.read()
         inspectAll()
         --print("[180]inspectAll() ended. moving back")
         --turtle.back()
@@ -184,13 +202,15 @@ end
 
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
-    print("[187]beginning sequence to mine ", blocks, " blocks") _ = io.read()
+    print("[201]beginning sequence to mine ", blocks, " blocks") _ = io.read()
+
+    GetHeading()
+    print("[204]heading acquired: ", Heading) _ = io.read()
+
     local move = 0
     while move < blocks do
 
         if strip then
-            GetHeading()
-            print("[193]heading acquired: ", Heading) _ = io.read()
             inspectAll()
         end
         while turtle.detect() do
@@ -199,7 +219,7 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
         end
         turtle.forward()
         move = move + 1
-        print("inspectAll() terminated. Moving forward")
+        print("[218]inspectAll() terminated. Moving forward")
     end
 end
 
