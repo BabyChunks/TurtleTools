@@ -372,5 +372,4 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     end
 end
 
-print(luaTools.t, luaTools.test())
---Mine(10, true)
+Mine(10, true)
