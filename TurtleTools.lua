@@ -86,7 +86,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         elseif coords2.z - coords1.z < 0 then
             Heading = "-z"
         end
-        print("Heading = ", Heading, "/n turn = ", turn)
+        print("Heading = ", Heading, "\n turn = ", turn)
     end
     if turn then
         local compass = {
@@ -96,7 +96,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         [3] = "-z"
     }
         if turn == "right" then
-            i = luaTools.GetKeyForValue(compass, Heading) + 1
+            -- i = luaTools.GetKeyForValue(compass, Heading) + 1
 
         elseif turn == "left" then
             i = luaTools.GetKeyForValue(compass, Heading) - 1
