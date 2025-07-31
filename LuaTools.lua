@@ -1,4 +1,4 @@
-function TableContains(t, element) -- MiscUtil function that returns true if element is in table
+local function tableContains(t, element) -- MiscUtil function that returns true if element is in table
     for _, value in pairs(t) do
         if value == element then
             return true
@@ -7,7 +7,7 @@ function TableContains(t, element) -- MiscUtil function that returns true if ele
     return false
 end
 
-function GetKeyForValue(t, value)
+local function getKeyForValue(t, value)
   for k, v in pairs(t) do
     if v == value then return k end
   end
