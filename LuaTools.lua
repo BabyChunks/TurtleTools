@@ -1,3 +1,8 @@
+local t = "Testing this value"
+
+local function test()
+  return "Testing this function"
+end
 local function tableContains(t, element) -- MiscUtil function that returns true if element is in table
     for _, value in pairs(t) do
         if value == element then

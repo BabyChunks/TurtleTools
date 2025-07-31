@@ -1,20 +1,4 @@
---local luaTools = require("LuaTools")
-
-local function tableContains(t, element) -- MiscUtil function that returns true if element is in table
-    for _, value in pairs(t) do
-        if value == element then
-            return true
-        end
-    end
-    return false
-end
-
-local function getKeyForValue(t, value)
-  for k, v in pairs(t) do
-    if v == value then return k end
-  end
-  return nil
-end
+local luaTools = require("LuaTools")
 
 local function noGPS(dim)
     if dim == "xyz" then
@@ -57,7 +41,6 @@ end
 Heading = nil
 
 function GetHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
-    turn = turn or nil
     if not Heading then
         local coords1 = {}
         coords1.x, _, coords1.z = gps.locate()
@@ -112,10 +95,10 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         [3] = "-z"
     }
         if turn == "right" then
-            i = getKeyForValue(compass, Heading) + 1
+            i = luaTools.getKeyForValue(compass, Heading) + 1
 
         elseif turn == "left" then
-            i = getKeyForValue(compass, Heading) - 1
+            i = luaTools.getKeyForValue(compass, Heading) - 1
         end
         if i == 4 then i = 0 end
 
@@ -161,8 +144,6 @@ local function inspectAll()
 end
 
 function MineChunk(target) --internal use with Mine(), detects and mines ore blocks while keeping track of steps
-target = target or nil
-
     if target == "up" then
         turtle.digUp()
         turtle.suckUp()
@@ -187,6 +168,8 @@ end
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
 
+    print(luaTools.t, luaTools.test())
+
     local move = 0
     while move < blocks do
 
@@ -194,11 +177,6 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
             GetHeading()
 
             inspectAll()
-
-            while Heading ~= tunnelHeading do
-                turtle.turnRight()
-                GetHeading("right")
-            end
         end
         while turtle.detect() do
             turtle.dig()
