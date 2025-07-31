@@ -168,8 +168,6 @@ end
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
 
-    print(luaTools.t, luaTools.test())
-
     local move = 0
     while move < blocks do
 
@@ -374,4 +372,5 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     end
 end
 
-Mine(10, true)
+print(luaTools.t, luaTools.test())
+--Mine(10, true)

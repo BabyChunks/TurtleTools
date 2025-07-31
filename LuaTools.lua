@@ -18,3 +18,5 @@ local function getKeyForValue(t, value)
   end
   return nil
 end
+
+return {t = t, test = test, tableContains = tableContains, getKeyForValue = getKeyForValue}
