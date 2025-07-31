@@ -47,15 +47,15 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         if not coords1.x then
             coords1 = noGPS("xz")
         end
-        print("first coords: ", coords1.x, coords1.z)
+        print("[50]first coords: ", coords1.x, coords1.z)
 
         if turtle.detect() then
-            print("block detected in front of turtle")
+            print("[53]block detected in front of turtle")
             turtle.dig()
             turtle.suck()
         end
         if turtle.forward() then
-            print("moving forward...")
+            print("[58]moving forward...")
         else
             error("GetHeading() terminated: not enough fuel")
         end
@@ -65,10 +65,10 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         if not coords2.x then
             coords2 = noGPS("xz")
         end
-        print("second coords: ", coords2.x, coords2.z)
+        print("[68]second coords: ", coords2.x, coords2.z)
 
         if turtle.back() then
-            print("moving back...")
+            print("[71]moving back...")
         else
             error("GetHeading() terminated: not enough fuel")
         end
@@ -85,7 +85,6 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         elseif coords2.z - coords1.z < 0 then
             Heading = "-z"
         end
-        print("Heading = ", Heading, "\n turn = ", turn)
     end
     if turn then
         local compass = {
@@ -107,20 +106,27 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 end
 
 local function inspectAll()
+    print("[109]entered new inspectAll() routine")
     local block, blockdata = turtle.inspectUp()
     if block then
+        print("[112]block detected above")
         for tag, _ in pairs(blockdata.tags) do
             if string.find(tag, "forge:ores") then
+                print("[115]block is an ore")
                 MineChunk("up")
+                print("[117]ended MineChunk() routine, moving back down")
                 turtle.down()
             end
         end
     end
     local block, blockdata = turtle.inspectDown()
     if block then
+        print("[124]block detected below")
         for tag, _ in pairs(blockdata.tags) do
             if string.find(tag,"forge:ores") then
+                print("[127]block is an ore")
                 MineChunk("down")
+                print("[129]ended MineChunk() routine, moving back up")
                 turtle.up()
             end
         end
@@ -128,9 +134,12 @@ local function inspectAll()
     for turn = 1,3 do
         local block, blockdata = turtle.inspect()
         if block then
+            print("[137]block detected forward")
             for tag, _ in pairs(blockdata.tags) do
                 if string.find(tag, "forge:ores") then
+                    print("[140]block is an ore")
                     MineChunk()
+                    print("[142]ended MineChunk() routine, moving back")
                     turtle.back()
                 end
             end
@@ -138,9 +147,11 @@ local function inspectAll()
         turtle.turnRight()
         GetHeading("right")
         turn = turn + 1
+        print("[150]turning right. heading is now = ", Heading)
     end
     turtle.turnRight()
     GetHeading("right")
+    print("[154]completed a turn. heading is now = ", Heading)
 end
 
 function MineChunk(target) --internal use with Mine(), detects and mines ore blocks while keeping track of steps
@@ -148,32 +159,38 @@ function MineChunk(target) --internal use with Mine(), detects and mines ore blo
         turtle.digUp()
         turtle.suckUp()
         turtle.up()
+        print("[162]mining and moving up")
         inspectAll()
-        turtle.down()
+        --print("[164]inspectAll() ended. moving back down")
+        --turtle.down()
     elseif target == "down" then
         turtle.digDown()
         turtle.suckDown()
         turtle.down()
+        print("[170]mining and moving down")
         inspectAll()
-        turtle.up()
+        --print("[172]inspectAll() ended. moving back up")
+        --turtle.up()
     else
         turtle.dig()
         turtle.suck()
         turtle.forward()
+        print("[178]mining and moving forward")
         inspectAll()
-        turtle.back()
+        --print("[180]inspectAll() ended. moving back")
+        --turtle.back()
     end
 end
 
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
-
+    print("[187]beginning sequence to mine ", blocks, " blocks")
     local move = 0
     while move < blocks do
 
         if strip then
             GetHeading()
-
+            print("[193]heading acquired: ", Heading)
             inspectAll()
         end
         while turtle.detect() do
@@ -182,6 +199,7 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
         end
         turtle.forward()
         move = move + 1
+        print("inspectAll() terminated. Moving forward")
     end
 end
 
