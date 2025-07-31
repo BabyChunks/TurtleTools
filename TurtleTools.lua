@@ -86,6 +86,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         elseif coords2.z - coords1.z < 0 then
             Heading = "-z"
         end
+        print("Heading = ", Heading)
     end
     if turn then
         local compass = {
