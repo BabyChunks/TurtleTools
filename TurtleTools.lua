@@ -191,8 +191,9 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
     end
 end
 
-function GoThere(x, y, z) -- main function for navigation. Specify heading if known.
+function GoThere(x, y, z, strip) -- main function for navigation. Specify heading if known.
     print("[195]Starting sequence to move to coords:", x, y, z)
+    strip = strip or false
 
     local bot = {}
     bot.x, bot.y, bot.z = gps.locate()
@@ -225,62 +226,36 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
             turtle.turnRight()
             turtle.turnRight()
 
-            print("[228]mining ", blocks, "blocks in the -x direction")
-            Mine(xblocks)
-
-        elseif Heading == "-x" then
-
-            print("[233]mining ", xblocks, "blocks in the -x direction")
-            Mine(xblocks)
-
         elseif Heading == "z" then
-
             turtle.turnRight()
 
-            print("[240]mining ", xblocks, "blocks in the -x direction")
-            Mine(xblocks)
-
         elseif Heading == "-z" then
-
             turtle.turnLeft()
 
-            print("[247]mining ", xblocks, "blocks in the -x direction")
-            Mine(xblocks)
         end
 
         Heading = "-x"
 
     elseif rel.x > 0 then
-        if Heading == "x" then
-
-            print("[256]mining ", xblocks, "blocks in the x direction")
-            Mine(xblocks)
-
-        elseif Heading == "-x" then
+        if Heading == "-x" then
 
             turtle.turnRight()
             turtle.turnRight()
-
-            print("[264]mining ", xblocks, "blocks in the x direction")
-            Mine(xblocks)
 
         elseif Heading == "z" then
 
             turtle.turnLeft()
 
-            print("[271]mining ", xblocks, "blocks in the x direction")
-            Mine(xblocks)
-
         elseif Heading == "-z" then
 
             turtle.turnRight()
-
-            print("[278]mining ", xblocks, "blocks in the x direction")
-            Mine(xblocks)
         end
 
         Heading = "x"
     end
+
+    print("[256]mining ", xblocks, "blocks in the ", Heading, " direction")
+    Mine(xblocks, strip)
 
     local zblocks = math.abs(rel.z)
 
@@ -289,27 +264,13 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
             turtle.turnRight()
             turtle.turnRight()
 
-            print("[292]mining ", zblocks, "blocks in the -z direction")
-            Mine(zblocks)
-
-        elseif Heading == "-z" then
-
-            print("[297]mining ", zblocks, "blocks in the -z direction")
-            Mine(zblocks)
-
         elseif Heading == "x" then
 
             turtle.turnLeft()
 
-            print("[304]mining ", zblocks, "blocks in the -z direction")
-            Mine(zblocks)
-
         elseif Heading == "-x" then
 
             turtle.turnRight()
-
-            print("[311]mining ", zblocks, "blocks in the -z direction")
-            Mine(zblocks)
 
         end
 
@@ -318,35 +279,26 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
     elseif rel.z > 0 then
         if Heading == "z" then
 
-            print("[321]mining ", zblocks, "blocks in the z direction")
-            Mine(zblocks)
-
         elseif Heading == "-z" then
 
             turtle.turnRight()
             turtle.turnRight()
 
-            print("[329]mining ", zblocks, "blocks in the z direction")
-            Mine(zblocks)
-
         elseif Heading == "x" then
 
             turtle.turnRight()
 
-            print("[336]mining ", zblocks, "blocks in the z direction")
-            Mine(zblocks)
-
         elseif Heading == "-x" then
 
             turtle.turnLeft()
-
-            print("[343]mining ", zblocks, "blocks in the z direction")
-            Mine(zblocks)
         end
 
         Heading = "z"
     end
 
+    print("[299]mining ", zblocks, "blocks in the ", Heading, " direction")
+    Mine(zblocks, strip)
+    
     local yblocks = math.abs(rel.y)
 
     if rel.y < 0 then
@@ -377,6 +329,3 @@ function GoThere(x, y, z) -- main function for navigation. Specify heading if kn
         end
     end
 end
-
-Mine(10, true)
-print("[382]Mining completed:)")
