@@ -35,7 +35,7 @@ local function argparse(str, keys)
   end
 
   if #parsed == 0 then
-    return nil
+    error("Unrecognized input")
   elseif keys then
     if #parsed ~= #keys then
       error("Incorrect number of arguments")

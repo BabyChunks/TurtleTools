@@ -19,9 +19,7 @@ local function noGPS(dim)
             os.reboot()
         end
 
-        coords = argparse(ans, Keys)
-
-        incomplete = false
+        coords = luaTools.argparse(ans, Keys)
 
         for _, coord in pairs(coords) do
             if type(coord) ~= "number" then
@@ -29,9 +27,8 @@ local function noGPS(dim)
                 incomplete = true
             end
         end
-
-        return coords
     end
+    return coords
 end
 
 Heading = nil
@@ -43,15 +40,15 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         if not coords1.x then
             coords1 = noGPS("xz")
         end
-        print("[50]first coords: ", coords1.x, coords1.z)
+        print("[44]first coords: ", coords1.x, coords1.z)
 
         if turtle.detect() then
-            print("[53]block detected in front of turtle")
+            print("[47]block detected in front of turtle")
             turtle.dig()
             turtle.suck()
         end
         if turtle.forward() then
-            print("[58]moving forward...")
+            print("[52]moving forward...")
         else
             error("GetHeading() terminated: not enough fuel")
         end
@@ -61,10 +58,10 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         if not coords2.x then
             coords2 = noGPS("xz")
         end
-        print("[68]second coords: ", coords2.x, coords2.z) _ = io.read()
+        print("[62]second coords: ", coords2.x, coords2.z) _ = io.read()
 
         if turtle.back() then
-            print("[71]moving back...")
+            print("[65]moving back...")
         else
             error("GetHeading() terminated: not enough fuel")
         end
@@ -102,44 +99,44 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 end
 
 local function inspectAll()
-    print("[109]entered new inspectAll() routine")
+    print("[103]entered new inspectAll() routine")
     local block, blockdata = turtle.inspectUp()
     if block then
-        print("[112]block detected above")
+        print("[106]block detected above")
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
-            print("[114]block is an ore")
+            print("[108]block is an ore")
             MineChunk("up")
             turtle.down()
-            print("[117]ended MineChunk() routine, moving back down")
+            print("[111]ended MineChunk() routine, moving back down")
         end
     end
     local block, blockdata = turtle.inspectDown()
     if block then
-        print("[122]block detected below")
+        print("[116]block detected below")
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
-            print("[124]block is an ore")
+            print("[118]block is an ore")
             MineChunk("down")
             turtle.up()
-            print("[127]ended MineChunk() routine, moving back up")
+            print("[121]ended MineChunk() routine, moving back up")
         end
     end
     for turn = 1,4 do
         local block, blockdata = turtle.inspect()
         if block then
-            print("[133]block detected forward")
+            print("[127]block detected forward")
             if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
-                print("[135]block is an ore")
+                print("[129]block is an ore")
                 MineChunk()
                 turtle.back()
-                print("[138]ended MineChunk() routine, moving back")
+                print("[132]ended MineChunk() routine, moving back")
             end
         end
         turtle.turnRight()
         GetHeading("right")
         turn = turn + 1
-        print("[144]turning right. heading is now = ", Heading)
+        print("[138]turning right. heading is now = ", Heading)
     end
-    print("[146]completed a turn. Ending inspectAll()")
+    print("[140]completed a turn. Ending inspectAll()")
 end
 
 function MineChunk(target) --internal use with Mine(), detects and mines ore blocks while keeping track of steps
@@ -147,29 +144,29 @@ function MineChunk(target) --internal use with Mine(), detects and mines ore blo
         turtle.digUp()
         turtle.suckUp()
         turtle.up()
-        print("[154]mining and moving up")
+        print("[148]mining and moving up")
         inspectAll()
     elseif target == "down" then
         turtle.digDown()
         turtle.suckDown()
         turtle.down()
-        print("[160]mining and moving down")
+        print("[154]mining and moving down")
         inspectAll()
     else
         turtle.dig()
         turtle.suck()
         turtle.forward()
-        print("[166]mining and moving forward")
+        print("[160]mining and moving forward")
         inspectAll()
     end
 end
 
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
-    print("[173]beginning sequence to mine ", blocks, " blocks")
+    print("[167]beginning sequence to mine ", blocks, " blocks")
 
     GetHeading()
-    print("[176]heading acquired: ", Heading)
+    print("[170]heading acquired: ", Heading)
 
     local move = 0
     while move < blocks do
@@ -183,12 +180,12 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
         end
         turtle.forward()
         move = move + 1
-        print("[190]initial inspectAll() terminated. Moving forward")
+        print("[184]initial inspectAll() terminated. Moving forward")
     end
 end
 
 function GoThere(x, y, z, strip) -- main function for navigation. Specify heading if known.
-    print("[195]Starting sequence to move to coords:", x, y, z)
+    print("[189]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
 
     local bot = {}
@@ -197,22 +194,22 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
         bot = noGPS("xyz")
     end
 
-    print("[203]turtle location acquired: ", bot.x, bot.y, bot.z)
+    print("[198]turtle location acquired: ", bot.x, bot.y, bot.z)
 
     local rel = {
         x = (x - bot.x),
         y = (y - bot.y),
         z = (z - bot.z)
     }
-    print("[210]computed movement necessary:")
+    print("[205]computed movement necessary:")
     print("x= ", rel.x)
     print("y= ", rel.y)
     print("z= ", rel.z)
 
     if not Heading then
-        print("[216]heading unknown. searching heading...")
+        print("[211]heading unknown. searching heading...")
         GetHeading()
-        print("[218]heading acquired: ", Heading)
+        print("[213]heading acquired: ", Heading)
     end
 
     local xblocks = math.abs(rel.x)
@@ -250,7 +247,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
         Heading = "x"
     end
 
-    print("[256]mining ", xblocks, "blocks in the ", Heading, " direction")
+    print("[251]mining ", xblocks, "blocks in the ", Heading, " direction")
     Mine(xblocks, strip)
 
     local zblocks = math.abs(rel.z)
@@ -292,15 +289,15 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
         Heading = "z"
     end
 
-    print("[299]mining ", zblocks, "blocks in the ", Heading, " direction")
+    print("[293]mining ", zblocks, "blocks in the ", Heading, " direction")
     Mine(zblocks, strip)
-    
+
     local yblocks = math.abs(rel.y)
 
     if rel.y < 0 then
         local move = 0
 
-        print("[355]mining ", yblocks, "blocks in the -y direction")
+        print("[301]mining ", yblocks, "blocks in the -y direction")
 
         while move < yblocks do
             while turtle.detectDown() do
@@ -313,7 +310,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
     elseif rel.y > 0 then
         local move = 0
 
-        print("[368]mining ", yblocks, "blocks in the y direction")
+        print("[314]mining ", yblocks, "blocks in the y direction")
 
         while move < yblocks do
             while turtle.detectUp() do
@@ -340,24 +337,18 @@ local function startup()
             end
             incomplete = false
         else
-            Args = {}
-            Keys = {"x", "y", "z"}
+            Home = luaTools.argparse(ans, {"x", "y", "z"})
 
-            for arg in string.gmatch(ans, "-?%d+") do
-                table.insert(Args, tonumber(arg))
-            end
-            if #Args == 0 then
-                io.write("Input must be numbers\n")
-            elseif #Args ~= #Keys then
-                io.write("Incorrect number of arguments\n")
-            else
-                incomplete = false
-                for i, key in pairs(Keys) do
-                    Home[key] = Args[i]
+            incomplete = false
+            for _, coord in pairs(coords) do
+                if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
                 end
             end
         end
     end
+    
     io.write("Home base registered. please select a command")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
