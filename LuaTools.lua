@@ -24,23 +24,23 @@ local function getKeyForValue(t, value)
 end
 
 local function argparse(str, keys)
-  Args = {}
+  local parsed = {}
+  local args = {}
 
-  for arg in string.gmatch(ans, "-?%w+") do
-    table.insert(Args, arg)
+  for arg in string.gmatch(str, "-?%w+") do
+    table.insert(parsed, arg)
   end
 
-  if #Args == 0 then
+  if #parsed == 0 then
     return nil
-  elseif #Args ~= #Keys then
+  elseif #parsed ~= #keys then
     error("Incorrect number of arguments")
-  else
-    incomplete = false
-
-    for i, key in pairs(keys) do
-      Home[key] = Args[i]
-    end
   end
+
+  for i, key in pairs(keys) do
+    args[key] = parsed[i]
+  end
+  return args
 end
 
 return {
