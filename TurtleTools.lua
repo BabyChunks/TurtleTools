@@ -331,17 +331,18 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
 end
 
 local function startup()
-    local home = {}
+    Home = {}
 
     io.write("Startup sequence for mining turtle. Use current location as home base? (y/[provide xyz coordinates])\n")
     local incomplete = true
     while incomplete do
         local ans = io.read()
         if ans == "y" or ans == "Y" then
-            home.x, home.y, home.z = gps.locate()
-            if not home.x then
-                home = noGPS("xyz")
+            Home.x, Home.y, Home.z = gps.locate()
+            if not Home.x then
+                Home = noGPS("xyz")
             end
+            incomplete = false
         else
             Args = {}
             Keys = {"x", "y", "z"}
@@ -356,13 +357,30 @@ local function startup()
             else
                 incomplete = false
                 for i, key in pairs(Keys) do
-                    home[key] = Args[i]
+                    Home[key] = Args[i]
                 end
             end
         end
     end
-    io.write("home base registered. please select a command")
-    local options = {"Mine", "Move", "Check Fuel"}
+    io.write("Home base registered. please select a command")
+    local options = {"mine", "move", "check fuel"}
+    textutils.tabulate(options)
+    io.write("\n")
+
+    local ans = textutils.complete(io.read(), options)
+
+    if ans == "mine" then
+        local quarry = {}
+
+        io.write("first coordinates: ")
+
+    elseif ans == "move" then
+
+    elseif ans == "check fuel" then
+
+    else
+
+    end
 
 end
 
