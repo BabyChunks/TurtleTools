@@ -28,19 +28,27 @@ local function argparse(str, keys)
   local args = {}
 
   for arg in string.gmatch(str, "-?%w+") do
+    if tonumber(arg) then
+      arg = tonumber(arg)
+    end
     table.insert(parsed, arg)
   end
 
   if #parsed == 0 then
     return nil
-  elseif #parsed ~= #keys then
-    error("Incorrect number of arguments")
+  elseif keys then
+    if #parsed ~= #keys then
+      error("Incorrect number of arguments")
+    end
+
+    for i, key in pairs(keys) do
+    args[key] = parsed[i]
+    end
+
+    return args
   end
 
-  for i, key in pairs(keys) do
-    args[key] = parsed[i]
-  end
-  return args
+  return parsed
 end
 
 return {

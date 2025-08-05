@@ -19,23 +19,19 @@ local function noGPS(dim)
             os.reboot()
         end
 
-        Args = {}
+        coords = argparse(ans, Keys)
 
-        for arg in string.gmatch(ans, "-?%d+") do
-            table.insert(Args, tonumber(arg))
+        incomplete = false
+
+        for _, coord in pairs(coords) do
+            if type(coord) ~= "number" then
+                io.write("Input must be numbers\n")
+                incomplete = true
+            end
         end
-        if #Args == 0 then
-            io.write("Input must be numbers\n")
-        elseif #Args ~= #Keys then
-            io.write("Incorrect number of arguments\n")
-        else
-            incomplete = false
-        end
+
+        return coords
     end
-    for i, key in pairs(Keys) do
-        coords[key] = Args[i]
-    end
-    return coords
 end
 
 Heading = nil
