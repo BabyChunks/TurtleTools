@@ -2,45 +2,6 @@ local luaTools = require("LuaTools")
 
 Heading = nil
 
-Patterns = {
-            [1] = {
-                {coords2.x, coords1.y, coords1.z + zsign * (6 * cycle + 3)},
-                {coords1.x, coords1.y, coords1.z + zsign * (6 * cycle + 6)}
-            },
-            [2] = {
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (4 * cycle + 2)},
-                {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
-            },
-            [3] = {
-                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
-                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
-                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
-                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
-            },
-            [4] = {
-                {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (7 * cycle + 2)},
-                {coords2.x, coords1.y , coords1.z + zsign * (7 * cycle + 3)},
-                {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle + 4)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (7 * cycle + 5)},
-                {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
-            },
-            [5] = {
-                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
-                {coords1.x, coords1.y + ysign * 4, coords1.z + zsign * (5 * cycle + 2)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
-                {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (5 * cycle + 4)},
-                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 4, coords1.z + zsign * (10 * cycle + 2)},
-                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
-                {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (10 * cycle + 4)},
-                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
-            }
-    }
-
 local function noGPS(dim)
     if dim == "xyz" then
         Format = "x, y, z"
@@ -71,8 +32,6 @@ local function noGPS(dim)
     end
     return coords
 end
-
-
 
 function GetHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
     if not Heading then
@@ -436,6 +395,45 @@ local function startup()
             y = coords2.y - coords1.y + 1,
             z = coords2.z - coords1.z + 1
         }
+
+        Patterns = {
+            [1] = {
+                {coords2.x, coords1.y, coords1.z + zsign * (6 * cycle + 3)},
+                {coords1.x, coords1.y, coords1.z + zsign * (6 * cycle + 6)}
+            },
+            [2] = {
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (4 * cycle + 2)},
+                {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
+            },
+            [3] = {
+                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
+                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
+                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
+                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
+                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
+            },
+            [4] = {
+                {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
+                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (7 * cycle + 2)},
+                {coords2.x, coords1.y , coords1.z + zsign * (7 * cycle + 3)},
+                {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle + 4)},
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (7 * cycle + 5)},
+                {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
+            },
+            [5] = {
+                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
+                {coords1.x, coords1.y + ysign * 4, coords1.z + zsign * (5 * cycle + 2)},
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
+                {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (5 * cycle + 4)},
+                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
+                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
+                {coords2.x, coords1.y + ysign * 4, coords1.z + zsign * (10 * cycle + 2)},
+                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
+                {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (10 * cycle + 4)},
+                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
+            }
+    }
 
     elseif cmd == "move" then
 
