@@ -121,6 +121,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         end
     end
     if turn then
+        local i = 0
         local compass = {
         [0] = "x",
         [1] = "z",
@@ -151,7 +152,7 @@ local function inspectAll()
             print("[111]ended MineChunk() routine, moving back down")
         end
     end
-    local block, blockdata = turtle.inspectDown()
+    block, blockdata = turtle.inspectDown()
     if block then
         print("[116]block detected below")
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
@@ -162,7 +163,7 @@ local function inspectAll()
         end
     end
     for turn = 1,4 do
-        local block, blockdata = turtle.inspect()
+        block, blockdata = turtle.inspect()
         if block then
             print("[127]block detected forward")
             if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
