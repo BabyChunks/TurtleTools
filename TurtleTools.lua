@@ -297,7 +297,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
     if rel.y < 0 then
         local move = 0
 
-        print("[301]mining ", yblocks, "blocks in the -y direction")
+        print("[300]mining ", yblocks, "blocks in the -y direction")
 
         while move < yblocks do
             while turtle.detectDown() do
@@ -310,7 +310,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
     elseif rel.y > 0 then
         local move = 0
 
-        print("[314]mining ", yblocks, "blocks in the y direction")
+        print("[313]mining ", yblocks, "blocks in the y direction")
 
         while move < yblocks do
             while turtle.detectUp() do
@@ -340,7 +340,7 @@ local function startup()
             Home = luaTools.argparse(ans, {"x", "y", "z"})
 
             incomplete = false
-            for _, coord in pairs(coords) do
+            for _, coord in pairs(Home) do
                 if type(coord) ~= "number" then
                     io.write("Input must be numbers\n")
                     incomplete = true
@@ -348,18 +348,66 @@ local function startup()
             end
         end
     end
-    
+
     io.write("Home base registered. please select a command")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
     io.write("\n")
 
-    local ans = textutils.complete(io.read(), options)
+    local cmd = textutils.complete(io.read(), options)
 
-    if ans == "mine" then
-        local quarry = {}
+    if cmd == "mine" then
+        incomplete = true
+        local coords1, coords2 = {}, {}
 
         io.write("first coordinates: ")
+
+        while incomplete do
+            coords1 = luaTools.argparse(io.read(), {"x", "y", "z"})
+
+            incomplete = false
+            for _, coord in pairs(coords1) do
+                if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
+                end
+            end
+        end
+
+        incomplete = true
+        io.write("second coordinates: ")
+
+        while incomplete do
+            coords2 = luaTools.argparse(io.read(), {"x", "y", "z"})
+
+            incomplete = false
+            for _, coord in pairs(coords2) do
+                if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
+                end
+            end
+        end
+
+        local quarrySize = {
+            x = coords2.x - coords1.x + 1,
+            y = coords2.y - coords1.y + 1,
+            z = coords2.z - coords1.z + 1
+        }
+
+        Patterns = {
+            [1] = {
+                {coords1.x, coords1.y, coords1.z + (3 * pattern)}
+            },
+            [2] = {
+                {coords2.x, coords1.y, coords1.z},
+                {}
+            },
+            [3] = {},
+            [4] = {},
+            [5] = {}
+    }
+
 
     elseif ans == "move" then
 
