@@ -350,7 +350,7 @@ local function startup()
         end
     end
 
-    io.write("Home base registered. please select a command")
+    io.write("Home base registered. please select a command\n")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
     io.write("\n")
@@ -359,7 +359,8 @@ local function startup()
 
     if cmd == "mine" then
         incomplete = true
-        local coords1, coords2 = {}, {}
+        local coords1, coords2, quarrySize = {}, {}, {}
+        local ysign, zsign, cycle, endcycle, h = 0, 0, 0, 0, 0
 
         io.write("first coordinates: ")
 
@@ -390,11 +391,22 @@ local function startup()
             end
         end
 
-        local quarrySize = {
-            x = coords2.x - coords1.x + 1,
-            y = coords2.y - coords1.y + 1,
-            z = coords2.z - coords1.z + 1
+        quarrySize = {
+            x = math.abs(coords2.x - coords1.x) + 1,
+            y = math.abs(coords2.y - coords1.y) + 1,
+            z = math.abs(coords2.z - coords1.z) + 1
         }
+
+        if coords2.z - coords1.z > 0 then
+            zsign = 1
+        elseif coords2.z - coords1.z < 0 then
+            zsign = -1
+        end
+        if coords2.y - coords1.y > 0 then
+            ysign = 1
+        elseif coords2.y - coords1.y < 0 then
+            ysign = -1
+        end
 
         Patterns = {
             [1] = {
@@ -434,6 +446,31 @@ local function startup()
                 {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
             }
     }
+
+        if quarrySize.y == 1 then
+            endcycle = quarrySize.z // 3
+            h = 1
+        elseif quarrySize.y == 2 then
+            endcycle = quarrySize.z // 4
+            h = 2
+        elseif quarrySize.y == 3 then
+            endcycle = quarrySize.z // 5
+            h = 3
+        elseif quarrySize.y == 4 then
+            endcycle = quarrySize.z // 7
+            h = 4
+        else
+            endcycle = quarrySize.z // 5
+            h = 5
+        end
+
+        while cycle < endcycle do
+            for _, pattern in pairs(Patterns[h]) do
+                local x, y, z = pattern[1], pattern[2], pattern[3]
+                GoThere(x, y, z, true)
+            end
+            cycle = cycle + 1
+        end
 
     elseif cmd == "move" then
 
