@@ -58,7 +58,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         if not coords2.x then
             coords2 = noGPS("xz")
         end
-        print("[62]second coords: ", coords2.x, coords2.z) _ = io.read()
+        print("[62]second coords: ", coords2.x, coords2.z)
 
         if turtle.back() then
             print("[65]moving back...")
@@ -421,9 +421,9 @@ local function startup()
                 {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
                 {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
                 {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
-                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
+                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
+                {coords1.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)}
             },
             [4] = {
                 {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
@@ -439,11 +439,11 @@ local function startup()
                 {coords2.x, coords1.y + ysign * (5 * cycle + 1), coords1.z + zsign * (5 * cycle + 3)},
                 {coords1.x, coords1.y + ysign * (5 * cycle + 3), coords1.z + zsign * (5 * cycle + 4)},
                 {coords2.x, coords1.y + ysign * (5 * cycle), coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * (10 * cycle + 2), coords1.z + zsign * (10 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * (10 * cycle + 4), coords1.z + zsign * (10 * cycle + 2)},
-                {coords1.x, coords1.y + ysign * (10 * cycle + 1), coords1.z + zsign * (10 * cycle + 3)},
-                {coords2.x, coords1.y + ysign * (10 * cycle + 3), coords1.z + zsign * (10 * cycle + 4)},
-                {coords1.x, coords1.y + ysign * (10 * cycle), coords1.z + zsign * (10 * cycle + 10)}
+                {coords1.x, coords1.y + ysign * 2 * (5 * cycle + 2), coords1.z + zsign * 2 * (5 * cycle + 1)},
+                {coords2.x, coords1.y + ysign * 2 * (5 * cycle + 4), coords1.z + zsign * 2 * (5 * cycle + 2)},
+                {coords1.x, coords1.y + ysign * 2 * (5 * cycle + 1), coords1.z + zsign * 2 * (5 * cycle + 3)},
+                {coords2.x, coords1.y + ysign * 2 * (5 * cycle + 3), coords1.z + zsign * 2 * (5 * cycle + 4)},
+                {coords1.x, coords1.y + ysign * 2 * (5 * cycle), coords1.z + zsign * 2 * (5 * cycle + 5)}
             }
     }
 
