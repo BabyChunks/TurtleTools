@@ -448,19 +448,19 @@ local function startup()
     }
 
         if quarrySize.y == 1 then
-            endcycle = (quarrySize.z) // 3
+            endcycle = math.floor(quarrySize / 3)
             h = 1
         elseif quarrySize.y == 2 then
-            endcycle = (quarrySize.z) // 4
+            endcycle = math.floor(quarrySize.z / 4)
             h = 2
         elseif quarrySize.y == 3 then
-            endcycle = (quarrySize.z) // 5
+            endcycle = math.floor(quarrySize.z / 5)
             h = 3
         elseif quarrySize.y == 4 then
-            endcycle = (quarrySize.z) // 7
+            endcycle = math.floor(quarrySize.z / 7)
             h = 4
         else
-            endcycle = (quarrySize.z) // 5
+            endcycle = math.floor(quarrySize.z / 5)
             h = 5
         end
 
