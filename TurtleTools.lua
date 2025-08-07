@@ -360,7 +360,7 @@ local function startup()
     if cmd == "mine" then
         incomplete = true
         local coords1, coords2, quarrySize = {}, {}, {}
-        local ysign, zsign, cycle, endcycle, h = 0, 0, 0, 0, 0
+        local ysign, zsign, cycle, endcycle, h, layer, endlayer = 0, 0, 0, 0, 0, 0, 0
 
         io.write("first coordinates: ")
 
@@ -434,16 +434,16 @@ local function startup()
                 {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
             },
             [5] = {
-                {coords2.x, coords1.y + ysign * (5 * cycle + 2), coords1.z + zsign * (5 * cycle + 1)},
-                {coords1.x, coords1.y + ysign * (5 * cycle + 4), coords1.z + zsign * (5 * cycle + 2)},
-                {coords2.x, coords1.y + ysign * (5 * cycle + 1), coords1.z + zsign * (5 * cycle + 3)},
-                {coords1.x, coords1.y + ysign * (5 * cycle + 3), coords1.z + zsign * (5 * cycle + 4)},
-                {coords2.x, coords1.y + ysign * (5 * cycle), coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2 * (5 * cycle + 2), coords1.z + zsign * 2 * (5 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 2 * (5 * cycle + 4), coords1.z + zsign * 2 * (5 * cycle + 2)},
-                {coords1.x, coords1.y + ysign * 2 * (5 * cycle + 1), coords1.z + zsign * 2 * (5 * cycle + 3)},
-                {coords2.x, coords1.y + ysign * 2 * (5 * cycle + 3), coords1.z + zsign * 2 * (5 * cycle + 4)},
-                {coords1.x, coords1.y + ysign * 2 * (5 * cycle), coords1.z + zsign * 2 * (5 * cycle + 5)}
+                {coords2.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (5 * cycle + 1)},
+                {coords1.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (5 * cycle + 2)},
+                {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (5 * cycle + 3)},
+                {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (5 * cycle + 4)},
+                {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (5 * cycle + 5)},
+                {coords1.x, coords1.y + ysign * 2 * (5 * layer + 2), coords1.z + zsign * 2 * (5 * cycle + 1)},
+                {coords2.x, coords1.y + ysign * 2 * (5 * layer + 4), coords1.z + zsign * 2 * (5 * cycle + 2)},
+                {coords1.x, coords1.y + ysign * 2 * (5 * layer + 1), coords1.z + zsign * 2 * (5 * cycle + 3)},
+                {coords2.x, coords1.y + ysign * 2 * (5 * layer + 3), coords1.z + zsign * 2 * (5 * cycle + 4)},
+                {coords1.x, coords1.y + ysign * 2 * (5 * layer), coords1.z + zsign * 2 * (5 * cycle + 5)}
             }
     }
 
@@ -460,15 +460,19 @@ local function startup()
         end
 
         h = math.min(quarrySize.y, 5)
+        endlayer = math.floor(quarrySize.y / h)
 
         GoThere(coords1.x, coords1.y, coords1.z, false)
 
-        while cycle < endcycle do
-            print("cycle = " .. cycle)
-            for _, pattern in pairs(Patterns[h]) do
-                GoThere(pattern[1], pattern[2], pattern[3], true)
+        while layer < endlayer do
+            while cycle < endcycle do
+                print("cycle = " .. cycle)
+                for _, pattern in pairs(Patterns[h]) do
+                    GoThere(pattern[1], pattern[2], pattern[3], true)
+                end
+                cycle = cycle + 1
             end
-            cycle = cycle + 1
+            layer = layer + 1
         end
 
     elseif cmd == "move" then
