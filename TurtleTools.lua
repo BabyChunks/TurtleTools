@@ -434,40 +434,39 @@ local function startup()
                 {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
             },
             [5] = {
-                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
-                {coords1.x, coords1.y + ysign * 4, coords1.z + zsign * (5 * cycle + 2)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
-                {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (5 * cycle + 4)},
-                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 4, coords1.z + zsign * (10 * cycle + 2)},
-                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
-                {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (10 * cycle + 4)},
-                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
+                {coords2.x, coords1.y + ysign * (5 * cycle + 2), coords1.z + zsign * (5 * cycle + 1)},
+                {coords1.x, coords1.y + ysign * (5 * cycle + 4), coords1.z + zsign * (5 * cycle + 2)},
+                {coords2.x, coords1.y + ysign * (5 * cycle + 1), coords1.z + zsign * (5 * cycle + 3)},
+                {coords1.x, coords1.y + ysign * (5 * cycle + 3), coords1.z + zsign * (5 * cycle + 4)},
+                {coords2.x, coords1.y + ysign * (5 * cycle), coords1.z + zsign * (5 * cycle + 5)},
+                {coords1.x, coords1.y + ysign * (10 * cycle + 2), coords1.z + zsign * (10 * cycle + 1)},
+                {coords2.x, coords1.y + ysign * (10 * cycle + 4), coords1.z + zsign * (10 * cycle + 2)},
+                {coords1.x, coords1.y + ysign * (10 * cycle + 1), coords1.z + zsign * (10 * cycle + 3)},
+                {coords2.x, coords1.y + ysign * (10 * cycle + 3), coords1.z + zsign * (10 * cycle + 4)},
+                {coords1.x, coords1.y + ysign * (10 * cycle), coords1.z + zsign * (10 * cycle + 10)}
             }
     }
 
         if quarrySize.y == 1 then
             endcycle = math.floor(quarrySize / 3)
-            h = 1
         elseif quarrySize.y == 2 then
             endcycle = math.floor(quarrySize.z / 4)
-            h = 2
         elseif quarrySize.y == 3 then
             endcycle = math.floor(quarrySize.z / 5)
-            h = 3
         elseif quarrySize.y == 4 then
             endcycle = math.floor(quarrySize.z / 7)
-            h = 4
         else
             endcycle = math.floor(quarrySize.z / 5)
-            h = 5
         end
 
+        h = math.min(quarrySize.y, 5)
+
+        GoThere(coords1.x, coords1.y, coords1.z, false)
+
         while cycle < endcycle do
+            print("cycle = " .. cycle)
             for _, pattern in pairs(Patterns[h]) do
-                local x, y, z = pattern[1], pattern[2], pattern[3]
-                GoThere(x, y, z, true)
+                GoThere(pattern[1], pattern[2], pattern[3], true)
             end
             cycle = cycle + 1
         end
