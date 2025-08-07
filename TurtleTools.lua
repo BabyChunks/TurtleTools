@@ -355,7 +355,7 @@ local function startup()
     textutils.tabulate(options)
     io.write("\n")
 
-    local cmd = textutils.complete(io.read(), options)
+    local cmd = io.read()
 
     if cmd == "mine" then
         incomplete = true
@@ -477,7 +477,7 @@ local function startup()
     elseif cmd == "check fuel" then
 
     else
-
+        io.write("Couldn't recognize input")
     end
 
 end
