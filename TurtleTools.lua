@@ -316,6 +316,11 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
     end
 end
 
+function GoHome()
+    GoThere(Home.x, Home.y, Home.z, false)
+
+end
+
 local function startup()
     Home = {}
 
@@ -352,7 +357,7 @@ local function startup()
     if cmd == "mine" then
         incomplete = true
         local coords1, coords2, quarrySize = {}, {}, {}
-        local ysign, zsign, cycle, endcycle, h, layer, endlayer = 0, 0, 0, 0, 0, 0, 0
+        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot = 0, 0, 0, 0, 0, 0, 0, 0
 
         io.write("first coordinates: ")
 
@@ -464,6 +469,16 @@ local function startup()
                     GoThere(pattern[1], pattern[2], pattern[3], true)
                 end
                 cycle = cycle + 1
+
+                for slot = 1, 16 do
+                    if not turtle.getItemDetail(slot) then
+                        emptySlot = emptySlot + 1
+                    end
+                end
+                if emptySlot <= 3 then
+                    GoHome()
+                end
+
             end
             layer = layer + 1
         end
