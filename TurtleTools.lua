@@ -1,6 +1,13 @@
 local luaTools = require("LuaTools")
 
 Heading = nil
+_FUELS = {
+        "minecraft:coal",
+        "minecraft:coal_block",
+        "minecraft:lava_bucket",
+        "immersiveengineering:coke_coal",
+        "immersiveengineering:coke_coal_block"
+    }
 
 local function noGPS(dim) --manually enter xy or xyz coords
     local format, ans = "", ""
@@ -317,7 +324,10 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
 end
 
 function GoHome()
-    GoThere(Home.x, Home.y, Home.z, false)
+    local invs = {}
+    local keyItem = ""
+
+    GoThere(Home.x, Home.y, Home.z, false)    
 
 end
 
@@ -344,8 +354,12 @@ local function startup()
                     incomplete = true
                 end
             end
+
+            GoThere(Home.x, Home.y, Home.z, false)
         end
     end
+
+    
 
     io.write("Home base registered. please select a command\n")
     local options = {"mine", "move", "check fuel"}
