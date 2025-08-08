@@ -50,11 +50,8 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
             turtle.dig()
             turtle.suck()
         end
-        if turtle.forward() then
-            print("[54]moving forward...")
-        else
-            error("GetHeading() terminated: not enough fuel")
-        end
+        
+        assert(turtle.forward(), "GetHeading() terminated: not enough fuel")
 
         coords2.x, _, coords2.z = gps.locate()
         if not coords2.x then
@@ -62,11 +59,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         end
         print("[63]second coords: ", coords2.x, coords2.z)
 
-        if turtle.back() then
-            print("[66]moving back...")
-        else
-            error("GetHeading() terminated: not enough fuel")
-        end
+        assert(turtle.back(), "GetHeading() terminated: not enough fuel")
 
         if coords2.x - coords1.x > 0 then
             Heading =  "x"
@@ -109,7 +102,7 @@ local function inspectAll() --in tandem with MineChunk(). Inspects adjacent bloc
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
             print("[110]block is an ore")
             MineChunk("up")
-            turtle.down()
+            assert(turtle.down())
             print("[113]ended MineChunk() routine, moving back down")
         end
     end
@@ -119,7 +112,7 @@ local function inspectAll() --in tandem with MineChunk(). Inspects adjacent bloc
         if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
             print("[120]block is an ore")
             MineChunk("down")
-            turtle.up()
+            assert(turtle.up())
             print("[123]ended MineChunk() routine, moving back up")
         end
     end
@@ -130,7 +123,7 @@ local function inspectAll() --in tandem with MineChunk(). Inspects adjacent bloc
             if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
                 print("[131]block is an ore")
                 MineChunk()
-                turtle.back()
+                assert(turtle.back())
                 print("[134]ended MineChunk() routine, moving back")
             end
         end
@@ -146,19 +139,19 @@ function MineChunk(target) --in tandem with inspectAll(). Mine ore block, move i
     if target == "up" then
         turtle.digUp()
         turtle.suckUp()
-        turtle.up()
+        assert(turtle.up())
         print("[150]mining and moving up")
         inspectAll()
     elseif target == "down" then
         turtle.digDown()
         turtle.suckDown()
-        turtle.down()
+        assert(turtle.down())
         print("[156]mining and moving down")
         inspectAll()
     else
         turtle.dig()
         turtle.suck()
-        turtle.forward()
+        assert(turtle.forward())
         print("[162]mining and moving forward")
         inspectAll()
     end
@@ -183,12 +176,12 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
             turtle.dig()
             turtle.suck()
         end
-        turtle.forward()
+        assert(turtle.forward())
         move = move + 1
     end
 end
 
-function GoThere(x, y, z, strip) -- main function for navigation. Specify heading if known.
+function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
     print("[192]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
     local bot, rel = {}, {}
@@ -303,7 +296,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
                 turtle.suckDown()
             end
 
-            turtle.down()
+            assert(turtle.down())
             move = move + 1
         end
     elseif rel.y > 0 then
@@ -317,7 +310,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Specify headin
                 turtle.suckUp()
             end
 
-            turtle.up()
+            assert(turtle.up())
             move = move + 1
         end
     end
@@ -464,8 +457,9 @@ local function startup()
         GoThere(coords1.x, coords1.y, coords1.z, false)
 
         while layer < endlayer do
+            print("[467}layer = ]" .. layer)
             while cycle < endcycle do
-                print("cycle = " .. cycle)
+                print("[469]cycle = " .. cycle)
                 for _, pattern in pairs(Patterns[h]) do
                     GoThere(pattern[1], pattern[2], pattern[3], true)
                 end
