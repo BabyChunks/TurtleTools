@@ -324,10 +324,8 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
 end
 
 function GoHome()
-    local invs = {}
-    local keyItem = ""
 
-    GoThere(Home.x, Home.y, Home.z, false)    
+    GoThere(Home.x, Home.y, Home.z, false)
 
 end
 
@@ -359,8 +357,6 @@ local function startup()
         end
     end
 
-    
-
     io.write("Home base registered. please select a command\n")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
@@ -370,8 +366,8 @@ local function startup()
 
     if cmd == "mine" then
         incomplete = true
-        local coords1, coords2, quarrySize = {}, {}, {}
-        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot = 0, 0, 0, 0, 0, 0, 0, 0
+        local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
+        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, currFuel = 0, 0, 0, 0, 0, 0, 0, 0, 0
 
         io.write("first coordinates: ")
 
@@ -475,6 +471,29 @@ local function startup()
 
         GoThere(coords1.x, coords1.y, coords1.z, false)
 
+        currFuel = turtle.getFuelLevel()
+        fuelNeeded = {
+            [1] = endlayer * endcycle * (quarrySize.x + 3),
+            [2] = endlayer * endcycle * (2 * quarrySize.x + 6),
+            [3] = endlayer * endcycle * (3 * quarrySize.x + 9),
+            [4] = endlayer * endcycle * (6 * quarrySize.x + 19),
+            [5] = endlayer * endcycle * (5 * quarrySize.x + 17)
+        }
+
+        while currFuel < fuelNeeded[h] do
+            for slot = 1, 16 do
+                turtle.select(slot)
+                item = turtle.getItemDetail(slot)
+                if luaTools.tableContainsKey(_FUELS, item.name) then
+                    turtle.refuel()
+                end
+            end
+            if  currFuel < fuelNeeded [h] then
+                io.write("Unsufficient fuel. Add" .. fuelNeeded - currFuel .. "fuel units to turtle's inventory")
+                os.pullEvent("turtle_inventory")
+            end
+        end
+
         while layer < endlayer do
             print("[467}layer = ]" .. layer)
             while cycle < endcycle do
@@ -488,6 +507,7 @@ local function startup()
                     if not turtle.getItemDetail(slot) then
                         emptySlot = emptySlot + 1
                     end
+                    slot = slot + 1
                 end
                 if emptySlot <= 3 then
                     GoHome()
