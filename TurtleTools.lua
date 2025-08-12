@@ -379,7 +379,7 @@ local function startup()
         for slot = 1, 16 do
             turtle.select(slot)
             item = turtle.getItemDetail(slot)
-            if luaTools.tableContainsValue(_INVS, item) then
+            if luaTools.tableContainsValue(_INVS, item.name) then
                 incomplete = false
             end
         end
@@ -397,7 +397,7 @@ local function startup()
     local cmd = io.read()
 
     if cmd == "mine" then
-        local incomplete = true
+        incomplete = true
         local coords1, coords2, quarrySize, fuelNeeded = {}, {}, {}, {}
         local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot = 0, 0, 0, 0, 0, 0, 0, 0
 
@@ -502,7 +502,7 @@ local function startup()
         endlayer = math.floor(quarrySize.y / h)
 
         GoThere(coords1.x, coords1.y, coords1.z, false)
-        
+
         fuelNeeded = {
             [1] = endlayer * endcycle * (quarrySize.x + 3),
             [2] = endlayer * endcycle * (2 * quarrySize.x + 6),
