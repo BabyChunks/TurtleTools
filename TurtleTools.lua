@@ -10,6 +10,35 @@ _FUELS = {
         "immersiveengineering:coal_coke",
         "immersiveengineering:coke"
     }
+_INVS = {
+    "forge:chests",
+    "immersiveengineering:crate",
+    "immersiveengineering:reinforced_crate",
+    "forge:barrels",
+    "computercraft:turtle",
+    "forge:boxes/shulker",
+    "farmersdelight:cabinets",
+    "sophisticatedbackpacks:backpack"
+}
+
+local function checkFuel(fuelNeeded)
+    local item = {}
+    local currFuel = turtle.getFuelLevel()
+
+    while currFuel < fuelNeeded do
+        for slot = 1, 16 do
+            turtle.select(slot)
+            item = turtle.getItemDetail(slot)
+            if luaTools.tableContainsValue(_FUELS, item.name) then
+                turtle.refuel()
+            end
+        end
+        if  currFuel < fuelNeeded[h] then
+            io.write("Unsufficient fuel. Add" .. fuelNeeded - currFuel .. "fuel units to turtle's inventory")
+            os.pullEvent("turtle_inventory")
+        end
+    end
+end
 
 local function noGPS(dim) --manually enter xy or xyz coords
     local format, ans = "", ""
@@ -103,7 +132,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
     end
 end
 
-local function stripMine() --in tandem with MineChunk(). Inspects adjacent blocks and enters a MineChunk() instance if ore is found
+local function stripMine() --Inspects adjacent blocks and enters a new stripMine() instance if ore is found
     print("[107]entered new stripMine() routine")
     local block, blockdata = turtle.inspectUp()
     if block then
@@ -153,7 +182,7 @@ local function stripMine() --in tandem with MineChunk(). Inspects adjacent block
         turn = turn + 1
         print("[154]turning right. heading is now = ", Heading)
     end
-    print("[156]completed a turn. Ending stripMine()")
+    print("[156]completed a turn. Ending stripMine() instance")
 end
 
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
@@ -183,8 +212,8 @@ end
 function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
     print("[184]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
-    local bot, rel = {}, {}
-    local xblocks, yblocks, zblocks = 0, 0, 0
+    local bot, rel, item = {}, {}, {}
+    local xblocks, yblocks, zblocks, currFuel, fuelNeeded = 0, 0, 0, 0, 0
 
     bot.x, bot.y, bot.z = gps.locate()
     if not bot.x then
@@ -203,6 +232,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
     print("y= ", rel.y)
     print("z= ", rel.z)
 
+    checkFuel(rel.x + rel.y + rel.z)
     GetHeading()
     print("[207]heading acquired: ", Heading)
 
@@ -248,11 +278,9 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
             turtle.turnRight()
 
         elseif Heading == "x" then
-
             turtle.turnLeft()
 
         elseif Heading == "-x" then
-
             turtle.turnRight()
 
         end
@@ -260,20 +288,16 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "-z"
 
     elseif rel.z > 0 then
-        if Heading == "z" then
-
-        elseif Heading == "-z" then
-
+        if Heading == "-z" then
             turtle.turnRight()
             turtle.turnRight()
 
         elseif Heading == "x" then
-
             turtle.turnRight()
 
         elseif Heading == "-x" then
-
             turtle.turnLeft()
+
         end
 
         Heading = "z"
@@ -323,6 +347,7 @@ end
 
 local function startup()
     Home = {}
+    local item, necessaryItems = {}, {}
 
     io.write("Startup sequence for mining turtle. Use current location as home base? (y/[provide xyz coordinates])\n")
     local incomplete = true
@@ -345,10 +370,25 @@ local function startup()
                 end
             end
 
-            GoThere(Home.x, Home.y, Home.z, false)
+            GoThere(Home.x, Home.y, Home.z)
         end
     end
     -- write code here to setup Home base
+    incomplete = true
+    while incomplete do
+        for slot = 1, 16 do
+            turtle.select(slot)
+            item = turtle.getItemDetail(slot)
+            if luaTools.tableContainsValue(_INVS, item) then
+                incomplete = false
+            end
+        end
+        if incomplete then
+            io.write("Insert a valid inventory item to begin")
+            os.pullEvent("turtle_inventory")
+        end
+    end
+
     io.write("Home base registered. please select a command\n")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
@@ -357,9 +397,9 @@ local function startup()
     local cmd = io.read()
 
     if cmd == "mine" then
-        incomplete = true
-        local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
-        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, currFuel = 0, 0, 0, 0, 0, 0, 0, 0, 0
+        local incomplete = true
+        local coords1, coords2, quarrySize, fuelNeeded = {}, {}, {}, {}
+        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot = 0, 0, 0, 0, 0, 0, 0, 0
 
         io.write("first coordinates: ")
 
@@ -417,12 +457,12 @@ local function startup()
                 {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
             },
             [3] = {
-                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
-                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
-                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
-                {coords1.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)}
+                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
+                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
+                {coords2.x, coords1.y, coords1.z + zsign * (10 * cycle + 5)},
+                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 6)},
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 8)},
+                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
             },
             [4] = {
                 {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
@@ -438,16 +478,16 @@ local function startup()
                 {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (5 * cycle + 3)},
                 {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (5 * cycle + 4)},
                 {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (5 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2 * (5 * layer + 2), coords1.z + zsign * 2 * (5 * cycle + 1)},
-                {coords2.x, coords1.y + ysign * 2 * (5 * layer + 4), coords1.z + zsign * 2 * (5 * cycle + 2)},
-                {coords1.x, coords1.y + ysign * 2 * (5 * layer + 1), coords1.z + zsign * 2 * (5 * cycle + 3)},
-                {coords2.x, coords1.y + ysign * 2 * (5 * layer + 3), coords1.z + zsign * 2 * (5 * cycle + 4)},
-                {coords1.x, coords1.y + ysign * 2 * (5 * layer), coords1.z + zsign * 2 * (5 * cycle + 5)}
+                {coords1.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (5 * cycle + 6)},
+                {coords2.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (5 * cycle + 7)},
+                {coords1.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (5 * cycle + 8)},
+                {coords2.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (5 * cycle + 9)},
+                {coords1.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (5 * cycle + 10)}
             }
     }
 
         if quarrySize.y == 1 then
-            endcycle = math.floor(quarrySize / 3)
+            endcycle = math.floor(quarrySize / 6)
         elseif quarrySize.y == 2 then
             endcycle = math.floor(quarrySize.z / 4)
         elseif quarrySize.y == 3 then
@@ -462,8 +502,7 @@ local function startup()
         endlayer = math.floor(quarrySize.y / h)
 
         GoThere(coords1.x, coords1.y, coords1.z, false)
-
-        currFuel = turtle.getFuelLevel()
+        
         fuelNeeded = {
             [1] = endlayer * endcycle * (quarrySize.x + 3),
             [2] = endlayer * endcycle * (2 * quarrySize.x + 6),
@@ -472,19 +511,7 @@ local function startup()
             [5] = endlayer * endcycle * (5 * quarrySize.x + 17)
         }
 
-        while currFuel < fuelNeeded[h] do
-            for slot = 1, 16 do
-                turtle.select(slot)
-                item = turtle.getItemDetail(slot)
-                if luaTools.tableContainsValue(_FUELS, item.name) then
-                    turtle.refuel()
-                end
-            end
-            if  currFuel < fuelNeeded[h] then
-                io.write("Unsufficient fuel. Add" .. fuelNeeded - currFuel .. "fuel units to turtle's inventory")
-                os.pullEvent("turtle_inventory")
-            end
-        end
+        checkFuel(fuelNeeded[h])
 
         while layer < endlayer do
             print("[490}layer = ]" .. layer)
