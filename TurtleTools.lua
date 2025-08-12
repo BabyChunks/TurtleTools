@@ -462,12 +462,12 @@ local function startup()
                 {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
             },
             [3] = {
-                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
-                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
-                {coords2.x, coords1.y, coords1.z + zsign * (10 * cycle + 5)},
-                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 6)},
-                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 8)},
-                {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
+                {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
+                {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
+                {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
+                {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 6)},
+                {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 8)},
+                {coords1.x, coords1.y, coords1.z + zsign * (5 * cycle + 10)}
             },
             [4] = {
                 {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
@@ -496,11 +496,11 @@ local function startup()
         elseif quarrySize.y == 2 then
             endcycle = math.floor(quarrySize.z / 4)
         elseif quarrySize.y == 3 then
-            endcycle = math.floor(quarrySize.z / 5)
+            endcycle = math.floor(quarrySize.z / 10)
         elseif quarrySize.y == 4 then
             endcycle = math.floor(quarrySize.z / 7)
         else
-            endcycle = math.floor(quarrySize.z / 5)
+            endcycle = math.floor(quarrySize.z / 10)
         end
 
         h = math.min(quarrySize.y, 5)
