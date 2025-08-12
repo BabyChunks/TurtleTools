@@ -32,11 +32,12 @@ local function checkFuel(fuelNeeded)
             if item then
                 if luaTools.tableContainsValue(_FUELS, item.name) then
                     turtle.refuel()
+                    currFuel = turtle.getFuelLevel()
                 end
             end
         end
-        if  currFuel < fuelNeeded[h] then
-            io.write("Unsufficient fuel. Add" .. fuelNeeded - currFuel .. "fuel units to turtle's inventory")
+        if  currFuel < fuelNeeded then
+            io.write("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory\n")
             os.pullEvent("turtle_inventory")
         end
     end
