@@ -29,8 +29,10 @@ local function checkFuel(fuelNeeded)
         for slot = 1, 16 do
             turtle.select(slot)
             item = turtle.getItemDetail(slot)
-            if luaTools.tableContainsValue(_FUELS, item.name) then
-                turtle.refuel()
+            if item then
+                if luaTools.tableContainsValue(_FUELS, item.name) then
+                    turtle.refuel()
+                end
             end
         end
         if  currFuel < fuelNeeded[h] then
@@ -379,8 +381,10 @@ local function startup()
         for slot = 1, 16 do
             turtle.select(slot)
             item = turtle.getItemDetail(slot)
-            if luaTools.tableContainsValue(_INVS, item.name) then
-                incomplete = false
+            if item then
+                if luaTools.tableContainsValue(_INVS, item.name) then
+                    incomplete = false
+                end
             end
         end
         if incomplete then
