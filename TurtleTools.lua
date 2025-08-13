@@ -11,14 +11,14 @@ _FUELS = {
     "immersiveengineering:coke"
 }
 _INVS = {
-    "forge:chests",
+    ["forge:chests"] = true,
     "immersiveengineering:crate",
     "immersiveengineering:reinforced_crate",
-    "forge:barrels",
-    "computercraft:turtle",
-    "forge:boxes/shulker",
-    "farmersdelight:cabinets",
-    "sophisticatedbackpacks:backpack"
+    ["forge:barrels"] = true,
+    ["computercraft:turtle"] = true,
+    ["forge:boxes/shulker"] = true,
+    ["farmersdelight:cabinets"] = true,
+    ["sophisticatedbackpacks:backpack"] = true
 }
 
 local function checkFuel(fuelNeeded)
@@ -359,14 +359,12 @@ function Unload(unloadSlot)
     assert(turtle.place())
 
     for slot = 1, 16 do
-        item = turtle.getItemDetail(slot)
-            if item then
-                if not slot == unloadSlot then
-                    turtle.select(slot)
-                    assert(turtle.drop())
-                end
-            end
+        if not slot == unloadSlot then
+            turtle.select(slot)
+            assert(turtle.drop())
+        end
     end
+
 
 end
 
@@ -387,9 +385,9 @@ local function startup()
 
         while incomplete do
             for slot = 1, 16 do
-                item = turtle.getItemDetail(slot)
+                item = turtle.getItemDetail(slot, true)
                 if item then
-                    if lt.tableContainsValue(_INVS, item.name) or lt.tableContainsValue(_INVS, item.tags)then
+                    if lt.tableContainsValue(_INVS, item.name) or lt.tablesOverlap(_INVS, item.tags)then
                         unloadSlot = slot
                         if turtle.getItemCount(unloadSlot) == 64 then
                             incomplete = false

@@ -23,6 +23,17 @@ local function getKeyForValue(t, value)
   return nil
 end
 
+local function tablesOverlap(t1, t2)
+  for k1, v1 in pairs(t1) do
+    for k2, v2 in pairs(t2) do
+      if k1 == k2 or v1 == v2 then
+        return true
+      end
+    end
+  end
+  return false
+end
+
 local function argparse(str, keys)
   local parsed = {}
   local args = {}
@@ -55,5 +66,6 @@ return {
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,
+  tablesOverlap = tablesOverlap,
   argparse = argparse
 }
