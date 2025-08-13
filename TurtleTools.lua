@@ -348,15 +348,32 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
     end
 end
 
-function GoHome()
+function Unload(unloadSlot)
+    local item = {}
 
-    GoThere(Home.x, Home.y, Home.z)
+    while turtle.detect() do
+        turtle.dig()
+        turtle.suck()
+    end
+    turtle.select(unloadSlot)
+    assert(turtle.place())
+
+    for slot = 1, 16 do
+        item = turtle.getItemDetail(slot)
+            if item then
+                if not slot == unloadSlot then
+                    turtle.select(slot)
+                    assert(turtle.drop())
+                end
+            end
+    end
 
 end
 
 local function startup()
     Home = {}
     local item, necessaryItems = {}, {}
+    local unloadSlot = 0
 
     io.write("Startup sequence for mining turtle. Use current location as home base? (y/[provide xyz coordinates])\n")
     local incomplete = true
@@ -396,20 +413,20 @@ local function startup()
             item = turtle.getItemDetail(slot)
             if item then
                 if lt.tableContainsValue(_INVS, item.name) or lt.tableContainsValue(_INVS, item.tags)then
-                    turtle.select(slot)
-                    incomplete = false
+                    unloadSlot = slot
+                    if turtle.getItemCount(unloadSlot) == 64 then
+                        incomplete = false
+                    end
                 end
             end
         end
         if incomplete then
-            io.write("Insert a valid inventory item to begin")
+            io.write("Insert a stack of valid inventory items to begin")
             os.pullEvent("turtle_inventory")
         end
     end
 
-    assert(turtle.place())
-
-    io.write("Home base registered. please select a command\n")
+    io.write("Please select a command\n")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
     io.write("\n")
@@ -534,7 +551,7 @@ local function startup()
         checkFuel(fuelNeeded[h])
 
         while layer < endlayer do
-            print("[490}layer = ]" .. layer)
+            print("[490]layer = " .. layer)
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
                 for _, pattern in pairs(Patterns[h]) do
@@ -549,7 +566,7 @@ local function startup()
                     slot = slot + 1
                 end
                 if emptySlot <= 3 then
-                    GoHome()
+                    Unload(unloadSlot)
                 end
 
             end
