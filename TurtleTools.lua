@@ -82,6 +82,8 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
     if not Heading then
         local coords1, coords2 = {}, {}
 
+        checkFuel(2)
+
         coords1.x, _, coords1.z = gps.locate()
         if not coords1.x then
             coords1 = noGPS("xz")
@@ -217,8 +219,8 @@ end
 function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
     print("[184]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
-    local bot, rel, item = {}, {}, {}
-    local xblocks, yblocks, zblocks, currFuel, fuelNeeded = 0, 0, 0, 0, 0
+    local bot, rel = {}, {}
+    local xblocks, yblocks, zblocks = 0, 0, 0
 
     bot.x, bot.y, bot.z = gps.locate()
     if not bot.x then
@@ -346,7 +348,7 @@ end
 
 function GoHome()
 
-    GoThere(Home.x, Home.y, Home.z, false)
+    GoThere(Home.x, Home.y, Home.z)
 
 end
 
@@ -374,12 +376,12 @@ local function startup()
                     incomplete = true
                 end
             end
+            if not incomplete then
+                GoThere(Home.x, Home.y, Home.z)
+            end
         end
     end
 
-    GoThere(Home.x, Home.y, Home.z)
-
-    checkFuel(2)
     while Heading ~= z do
         turtle.turnRight()
         GetHeading("right")
@@ -516,7 +518,7 @@ local function startup()
         h = math.min(quarrySize.y, 5)
         endlayer = math.floor(quarrySize.y / h)
 
-        GoThere(coords1.x, coords1.y, coords1.z, false)
+        GoThere(coords1.x, coords1.y, coords1.z)
 
         fuelNeeded = {
             [1] = endlayer * endcycle * (quarrySize.x + 3),
