@@ -27,10 +27,10 @@ local function checkFuel(fuelNeeded)
 
     while currFuel < fuelNeeded do
         for slot = 1, 16 do
-            turtle.select(slot)
             item = turtle.getItemDetail(slot)
             if item then
                 if luaTools.tableContainsValue(_FUELS, item.name) then
+                    turtle.select(slot)
                     turtle.refuel()
                     currFuel = turtle.getFuelLevel()
                 end
@@ -43,7 +43,7 @@ local function checkFuel(fuelNeeded)
     end
 end
 
-local function noGPS(dim) --manually enter xy or xyz coords
+local function noGPS(dim) --manually enter xz or xyz coords
     local format, ans = "", ""
     local keys, coords = {}, {}
 
@@ -372,18 +372,24 @@ local function startup()
                     incomplete = true
                 end
             end
-
-            GoThere(Home.x, Home.y, Home.z)
         end
     end
-    -- write code here to setup Home base
+
+    GoThere(Home.x, Home.y, Home.z)
+
+    checkFuel(2)
+    while Heading ~= z do
+        turtle.turnRight()
+        GetHeading("right")
+    end
+
     incomplete = true
     while incomplete do
         for slot = 1, 16 do
-            turtle.select(slot)
             item = turtle.getItemDetail(slot)
             if item then
                 if luaTools.tableContainsValue(_INVS, item.name) then
+                    turtle.select(slot)
                     incomplete = false
                 end
             end
@@ -393,6 +399,8 @@ local function startup()
             os.pullEvent("turtle_inventory")
         end
     end
+
+    assert(turtle.place())
 
     io.write("Home base registered. please select a command\n")
     local options = {"mine", "move", "check fuel"}
