@@ -40,6 +40,7 @@ local function checkFuel(fuelNeeded)
         if  currFuel < fuelNeeded then
             io.write("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory\n")
             os.pullEvent("turtle_inventory")
+            os.pullEvent("turtle_inventory")
         end
     end
 end
@@ -96,7 +97,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
             turtle.dig()
             turtle.suck()
         end
-        
+
         assert(turtle.forward(), "GetHeading() terminated: not enough fuel")
 
         coords2.x, _, coords2.z = gps.locate()
