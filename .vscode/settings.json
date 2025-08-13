@@ -3,6 +3,8 @@
         "gps",
         "turtle",
         "textutils",
-        "peripheral"
+        "peripheral",
+        "fs",
+        "shell"
     ]
 }
