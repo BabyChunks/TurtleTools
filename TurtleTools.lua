@@ -32,7 +32,7 @@ local function checkFuel(fuelNeeded)
                 if lt.tableContainsValue(_FUELS, item.name) then
                     turtle.select(slot)
                     turtle.refuel()
-                    _ = os.pullEvent("turte_inventory")
+                    os.queueEvent("buffer")
                     currFuel = turtle.getFuelLevel()
                 end
             end
