@@ -384,7 +384,7 @@ local function startup()
     end
 
     GetHeading()
-    while Heading ~= z do
+    while Heading ~= "z" do
         turtle.turnRight()
         GetHeading("right")
     end
