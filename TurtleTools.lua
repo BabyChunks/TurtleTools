@@ -32,6 +32,7 @@ local function checkFuel(fuelNeeded)
                 if lt.tableContainsValue(_FUELS, item.name) then
                     turtle.select(slot)
                     turtle.refuel()
+                    _ = os.pullEvent("turte_inventory")
                     currFuel = turtle.getFuelLevel()
                 end
             end
@@ -361,7 +362,7 @@ local function startup()
     while incomplete do
         local ans = io.read()
         if ans == "y" or ans == "Y" then
-            Home.x, Home.y, Home.z = gps.locate()
+            Home.x, Home.y, Home.z =  gps.locate()
             if not Home.x then
                 Home = noGPS("xyz")
             end
@@ -382,6 +383,7 @@ local function startup()
         end
     end
 
+    GetHeading()
     while Heading ~= z do
         turtle.turnRight()
         GetHeading("right")
