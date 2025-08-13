@@ -98,7 +98,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
             turtle.suck()
         end
 
-        assert(turtle.forward(), "GetHeading() terminated: not enough fuel")
+        assert(turtle.forward())
 
         coords2.x, _, coords2.z = gps.locate()
         if not coords2.x then
@@ -106,7 +106,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         end
         print("[69]second coords: ", coords2.x, coords2.z)
 
-        assert(turtle.back(), "GetHeading() terminated: not enough fuel")
+        assert(turtle.back())
 
         if coords2.x - coords1.x > 0 then
             Heading =  "x"
@@ -395,7 +395,7 @@ local function startup()
         for slot = 1, 16 do
             item = turtle.getItemDetail(slot)
             if item then
-                if lt.tableContainsValue(_INVS, item.name) then
+                if lt.tableContainsValue(_INVS, item.name) or lt.tableContainsValue(_INVS, item.tags)then
                     turtle.select(slot)
                     incomplete = false
                 end
