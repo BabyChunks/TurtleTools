@@ -398,13 +398,14 @@ local function startup()
                 end
             end
             if incomplete then
-                io.write("Insert a stack of valid inventory items to begin")
+                io.write("Insert a stack of valid inventory items to begin\n")
                 os.pullEvent("turtle_inventory")
             end
         end
 
-        io.write("first coordinates: ")
+        io.write("first coordinates: \n")
 
+        incomplete = true
         while incomplete do
             coords1 = lt.argparse(io.read(), {"x", "y", "z"})
 
@@ -418,7 +419,7 @@ local function startup()
         end
 
         incomplete = true
-        io.write("second coordinates: ")
+        io.write("second coordinates: \n")
 
         while incomplete do
             coords2 = lt.argparse(io.read(), {"x", "y", "z"})
