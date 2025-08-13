@@ -66,10 +66,12 @@ local function noGPS(dim) --manually enter xz or xyz coords
 
         coords = lt.argparse(ans, keys)
 
+        incomplete = false
         for _, coord in pairs(coords) do
             if type(coord) ~= "number" then
                 io.write("Input must be numbers\n")
                 incomplete = true
+                break
             end
         end
     end
