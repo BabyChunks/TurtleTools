@@ -1,4 +1,4 @@
-local luaTools = require("LuaTools")
+local lt = require("luaTools")
 
 Heading = nil
 _FUELS = {
@@ -29,7 +29,7 @@ local function checkFuel(fuelNeeded)
         for slot = 1, 16 do
             item = turtle.getItemDetail(slot)
             if item then
-                if luaTools.tableContainsValue(_FUELS, item.name) then
+                if lt.tableContainsValue(_FUELS, item.name) then
                     turtle.select(slot)
                     turtle.refuel()
                     currFuel = turtle.getFuelLevel()
@@ -64,7 +64,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
             os.reboot()
         end
 
-        coords = luaTools.argparse(ans, keys)
+        coords = lt.argparse(ans, keys)
 
         for _, coord in pairs(coords) do
             if type(coord) ~= "number" then
@@ -124,10 +124,10 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         [3] = "-z"
     }
         if turn == "right" then
-            i = luaTools.getKeyForValue(compass, Heading) + 1
+            i = lt.getKeyForValue(compass, Heading) + 1
 
         elseif turn == "left" then
-            i = luaTools.getKeyForValue(compass, Heading) - 1
+            i = lt.getKeyForValue(compass, Heading) - 1
         end
         if i == 4 then i = 0 end
 
@@ -140,7 +140,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
     local block, blockdata = turtle.inspectUp()
     if block then
         print("[110]block detected above")
-        if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
+        if lt.tableContainsKey(blockdata.tags, "forge:ores") then
             print("[112]block is an ore")
             turtle.digUp()
             turtle.suckUp()
@@ -154,7 +154,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
     block, blockdata = turtle.inspectDown()
     if block then
         print("[124]block detected below")
-        if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
+        if lt.tableContainsKey(blockdata.tags, "forge:ores") then
             print("[126]block is an ore")
             turtle.digDown()
             turtle.suckDown()
@@ -169,7 +169,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
         block, blockdata = turtle.inspect()
         if block then
             print("[139]block detected forward")
-            if luaTools.tableContainsKey(blockdata.tags, "forge:ores") then
+            if lt.tableContainsKey(blockdata.tags, "forge:ores") then
                 print("[141]block is an ore")
                 turtle.dig()
                 turtle.suck()
@@ -363,7 +363,7 @@ local function startup()
             end
             incomplete = false
         else
-            Home = luaTools.argparse(ans, {"x", "y", "z"})
+            Home = lt.argparse(ans, {"x", "y", "z"})
 
             incomplete = false
             for _, coord in pairs(Home) do
@@ -388,7 +388,7 @@ local function startup()
         for slot = 1, 16 do
             item = turtle.getItemDetail(slot)
             if item then
-                if luaTools.tableContainsValue(_INVS, item.name) then
+                if lt.tableContainsValue(_INVS, item.name) then
                     turtle.select(slot)
                     incomplete = false
                 end
@@ -417,7 +417,7 @@ local function startup()
         io.write("first coordinates: ")
 
         while incomplete do
-            coords1 = luaTools.argparse(io.read(), {"x", "y", "z"})
+            coords1 = lt.argparse(io.read(), {"x", "y", "z"})
 
             incomplete = false
             for _, coord in pairs(coords1) do
@@ -432,7 +432,7 @@ local function startup()
         io.write("second coordinates: ")
 
         while incomplete do
-            coords2 = luaTools.argparse(io.read(), {"x", "y", "z"})
+            coords2 = lt.argparse(io.read(), {"x", "y", "z"})
 
             incomplete = false
             for _, coord in pairs(coords2) do
