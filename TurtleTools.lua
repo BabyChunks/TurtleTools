@@ -40,7 +40,6 @@ local function checkFuel(fuelNeeded)
         if  currFuel < fuelNeeded then
             io.write("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory\n")
             os.pullEvent("turtle_inventory")
-            os.pullEvent("turtle_inventory")
         end
     end
 end
@@ -371,61 +370,7 @@ function Unload(unloadSlot)
 end
 
 local function startup()
-    Home = {}
-    local item, necessaryItems = {}, {}
-    local unloadSlot = 0
-
-    io.write("Startup sequence for mining turtle. Use current location as home base? (y/[provide xyz coordinates])\n")
-    local incomplete = true
-    while incomplete do
-        local ans = io.read()
-        if ans == "y" or ans == "Y" then
-            Home.x, Home.y, Home.z =  gps.locate()
-            if not Home.x then
-                Home = noGPS("xyz")
-            end
-            incomplete = false
-        else
-            Home = lt.argparse(ans, {"x", "y", "z"})
-
-            incomplete = false
-            for _, coord in pairs(Home) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
-                end
-            end
-            if not incomplete then
-                GoThere(Home.x, Home.y, Home.z)
-            end
-        end
-    end
-
-    GetHeading()
-    while Heading ~= "z" do
-        turtle.turnRight()
-        GetHeading("right")
-    end
-
-    incomplete = true
-    while incomplete do
-        for slot = 1, 16 do
-            item = turtle.getItemDetail(slot)
-            if item then
-                if lt.tableContainsValue(_INVS, item.name) or lt.tableContainsValue(_INVS, item.tags)then
-                    unloadSlot = slot
-                    if turtle.getItemCount(unloadSlot) == 64 then
-                        incomplete = false
-                    end
-                end
-            end
-        end
-        if incomplete then
-            io.write("Insert a stack of valid inventory items to begin")
-            os.pullEvent("turtle_inventory")
-        end
-    end
-
+    io.write("Startup sequence for mining turtle.")
     io.write("Please select a command\n")
     local options = {"mine", "move", "check fuel"}
     textutils.tabulate(options)
@@ -434,9 +379,28 @@ local function startup()
     local cmd = io.read()
 
     if cmd == "mine" then
-        incomplete = true
-        local coords1, coords2, quarrySize, fuelNeeded = {}, {}, {}, {}
-        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot = 0, 0, 0, 0, 0, 0, 0, 0
+        local incomplete = true
+        local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
+        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, unloadSlot = 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+
+        while incomplete do
+            for slot = 1, 16 do
+                item = turtle.getItemDetail(slot)
+                if item then
+                    if lt.tableContainsValue(_INVS, item.name) or lt.tableContainsValue(_INVS, item.tags)then
+                        unloadSlot = slot
+                        if turtle.getItemCount(unloadSlot) == 64 then
+                            incomplete = false
+                        end
+                    end
+                end
+            end
+            if incomplete then
+                io.write("Insert a stack of valid inventory items to begin")
+                os.pullEvent("turtle_inventory")
+            end
+        end
 
         io.write("first coordinates: ")
 
