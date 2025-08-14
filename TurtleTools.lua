@@ -490,12 +490,12 @@ local function startup()
                         {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
                     },
                     [3] = {
-                        {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 1)},
-                        {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 3)},
-                        {coords2.x, coords1.y, coords1.z + zsign * (5 * cycle + 5)},
-                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (5 * cycle + 6)},
-                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (5 * cycle + 8)},
-                        {coords1.x, coords1.y, coords1.z + zsign * (5 * cycle + 10)}
+                        {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
+                        {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
+                        {coords2.x, coords1.y, coords1.z + zsign * (10 * cycle + 5)},
+                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 6)},
+                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 8)},
+                        {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
                     },
                     [4] = {
                         {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
@@ -506,16 +506,16 @@ local function startup()
                         {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
                     },
                     [5] = {
-                        {coords2.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (5 * cycle + 1)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (5 * cycle + 2)},
-                        {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (5 * cycle + 3)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (5 * cycle + 4)},
-                        {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (5 * cycle + 5)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (5 * cycle + 6)},
-                        {coords2.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (5 * cycle + 7)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (5 * cycle + 8)},
-                        {coords2.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (5 * cycle + 9)},
-                        {coords1.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (5 * cycle + 10)}
+                        {coords2.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 1)},
+                        {coords1.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 2)},
+                        {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 3)},
+                        {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 4)},
+                        {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 5)},
+                        {coords1.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 6)},
+                        {coords2.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 7)},
+                        {coords1.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 8)},
+                        {coords2.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 9)},
+                        {coords1.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 10)}
                     }
                 }
 
@@ -560,7 +560,7 @@ local function startup()
 
         GoThere(base.x, base.y, base.z)
 
-        local itemsNeeded = {
+        local partsNeeded = {
             {["computercraft:computer_normal"] = {n = 4, check = false},
              ["computercraft:computer_advanced"] = {n = 4, check = false}},
             {["computercraft:wireless_modem_normal"] = {n = 4, check = false},
@@ -570,12 +570,14 @@ local function startup()
         }
 
         while incomplete do
-            for slot = 1, 16 do
-                local item = turtle.getItemDetail(slot)
-                if item then
-                    if lt.tableContainsValue(_INVS, item.name) then
-
-                        incomplete = false
+            for i, part in pairs(partsNeeded) do
+                for slot = 1, 16 do
+                    local item = turtle.getItemDetail(slot)
+                    if item then
+                        if lt.tableContainsKey(part, item.name) then
+                            if turtle.getItemCount(slot) >= part.n then
+                            end
+                        end
                     end
                 end
             end
