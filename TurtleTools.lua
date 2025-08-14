@@ -373,7 +373,7 @@ local function startup()
 
     io.write("Startup sequence for mining turtle.")
     io.write("Please select a command\n")
-    local options = {"mine", "move", "GPS"}
+    local options = {"mine"}
     textutils.tabulate(options)
 
     local cmd = io.read()
@@ -477,6 +477,7 @@ local function startup()
 
         while layer < endlayer do
             print("[490]layer = " .. layer)
+            cycle = 0
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
 
@@ -519,19 +520,20 @@ local function startup()
                     }
                 }
 
-                for _, pattern in pairs(Patterns[h]) do
+                for _, pattern in pairs(table.sort(Patterns[h], function (a, b) if layer % 2 == 0 then return a < b else return a > b end end)) do
                     GoThere(pattern[1], pattern[2], pattern[3], true)
                 end
                 cycle = cycle + 1
 
                 for slot = 1, 16 do
-                    if not turtle.getItemDetail(slot) then
+                    if turtle.getItemCount(slot) == 0 then
                         emptySlot = emptySlot + 1
                     end
                     slot = slot + 1
                 end
-                if emptySlot <= 3 then
+                if emptySlot <= 4 then
                     Unload(unloadSlot)
+                    emptySlot = 0
                 end
 
             end
@@ -561,28 +563,32 @@ local function startup()
         GoThere(base.x, base.y, base.z)
 
         local partsNeeded = {
-            {["computercraft:computer_normal"] = {n = 4, check = false},
-             ["computercraft:computer_advanced"] = {n = 4, check = false}},
-            {["computercraft:wireless_modem_normal"] = {n = 4, check = false},
-             ["computercraft:wireless_modem_advanced"] = {n = 4, check = false}},
-            {["computercraft:wired_modem"] = {n = 6, check = false}},
-            {["computercraft:cable"] = {n = 9, check = false}}
+            [1] = {names = {"computercraft:computer_normal", "computercraft:computer_advanced"}, n = 4, check = false},
+            [2] = {names = {"computercraft:wireless_modem_normal", "computercraft:wireless_modem_advanced"}, n = 4, check = false},
+            [3] = {names = {"computercraft:wired_modem"}, n = 6, check = false},
+            [4] = {names = {"computercraft:cable"}, n = 9, check = false}
         }
 
         while incomplete do
-            for i, part in pairs(partsNeeded) do
+            incomplete = false
+            for _, part in pairs(partsNeeded) do
                 for slot = 1, 16 do
                     local item = turtle.getItemDetail(slot)
                     if item then
-                        if lt.tableContainsKey(part, item.name) then
-                            if turtle.getItemCount(slot) >= part.n then
+                        if lt.tableContainsValue(part.names, item.name) then
+                            if item.count >= part.n then
+                                part.check = true
                             end
                         end
                     end
                 end
+                if not part.check then
+                    incomplete = true
+                end
             end
             if incomplete then
-                io.write("Insert a stack of valid inventory items to begin\n")
+                io.write("List of objects to put in inventory:\n")
+                textutils.tabulate({4, 4, 6, 9},{"Computers", "Wireless Modems", "Wired Modems", "Wires"})
                 os.pullEvent("turtle_inventory")
             end
         end
