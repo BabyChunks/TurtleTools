@@ -369,20 +369,20 @@ function Unload(unloadSlot)
 end
 
 local function startup()
+    local incomplete = true
+
     io.write("Startup sequence for mining turtle.")
     io.write("Please select a command\n")
-    local options = {"mine", "move", "check fuel"}
+    local options = {"mine", "move", "GPS"}
     textutils.tabulate(options)
-    io.write("\n")
 
     local cmd = io.read()
 
     if cmd == "mine" then
-        local incomplete = true
         local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
         local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, unloadSlot = 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-
+        incomplete = true
         while incomplete do
             for slot = 1, 16 do
                 item = turtle.getItemDetail(slot, true)
@@ -540,7 +540,57 @@ local function startup()
 
     elseif cmd == "move" then
 
-    elseif cmd == "check fuel" then
+    elseif cmd == "GPS" then
+        local base = {}
+        io.write("Setting up a GPS array. Please input base coordinates.\n")
+
+        incomplete = true
+        while incomplete do
+            base = lt.argparse(io.read(), {"x", "y", "z"})
+            
+            incomplete = false
+            for _, coord in pairs(base) do
+                if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
+                    break
+                end
+            end
+        end
+
+        GoThere(base.x, base.y, base.z)
+
+        local itemsNeeded = {
+            {["computercraft:computer_normal"] = {n = 4, check = false},
+             ["computercraft:computer_advanced"] = {n = 4, check = false}},
+            {["computercraft:wireless_modem_normal"] = {n = 4, check = false},
+             ["computercraft:wireless_modem_advanced"] = {n = 4, check = false}},
+            {["computercraft:wired_modem"] = {n = 6, check = false}},
+            {["computercraft:cable"] = {n = 9, check = false}}
+        }
+
+        while incomplete do
+            for slot = 1, 16 do
+                local item = turtle.getItemDetail(slot)
+                if item then
+                    if lt.tableContainsValue(_INVS, item.name) then
+
+                        incomplete = false
+                    end
+                end
+            end
+            if incomplete then
+                io.write("Insert a stack of valid inventory items to begin\n")
+                os.pullEvent("turtle_inventory")
+            end
+        end
+
+        io.write("Clear a space of 5 blocks in the positive x and z direction, as well as a clearance of 5 blocks above the square delimited thus. Press Enter when this is done.\n")
+        _ = io.read()
+
+        for i = 1,5 do
+            assert(turtle.forward())
+        end
 
     else
         io.write("Couldn't recognize input")
