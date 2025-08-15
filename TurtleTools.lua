@@ -431,49 +431,74 @@ local function startup()
             end
         end
 
+        --if coords2.z - coords1.z > 0 then
+        --    zsign = 1
+        --elseif coords2.z - coords1.z < 0 then
+        --    zsign = -1
+        --end
+        --if coords2.y - coords1.y > 0 then
+        --    ysign = 1
+        --elseif coords2.y - coords1.y < 0 then
+        --    ysign = -1
+        --end
+
+        i = math.min(quarrySize.y, 5)
+
+        Patterns ={
+                    [1] = {
+                        tunnels = 1, endCap = 3, cycleLn = 3, yOffset = {0}, zOffset = {3}
+                    },
+                    [2] = {
+                        tunnels = 2, endCap = 6, cycleLn = 4, yOffset = {1, 0}, zOffset = {2, 4}
+                    },
+                    [3] = {
+                        tunnels = 3, endCap = 9, cycleLn = 5, yOffset = {2, 1, 0}, zOffset = {1, 3, 5}
+                    },
+                    [4] = {
+                        tunnels = 6, endCap = 19, cycleLn = 7, yOffset = {3, 2, 0, 3, 1, 0}, zOffset = {0, 2, 3, 4, 5, 7}
+                    },
+                    [5] = {
+                        tunnels = 5, endCap = 17, cycleLn = 5, yOffset = {2, 4, 1, 3, 0}, zOffset = {1, 2, 3, 4, 5}
+                    },
+                }
+
         quarrySize = {
             x = math.abs(coords2.x - coords1.x) + 1,
             y = math.abs(coords2.y - coords1.y) + 1,
             z = math.abs(coords2.z - coords1.z) + 1
         }
+        --if quarrySize.y == 1 then
+        --    endcycle = math.floor(quarrySize.z / 6)
+        --elseif quarrySize.y == 2 then
+        --    endcycle = math.floor(quarrySize.z / 4)
+        --elseif quarrySize.y == 3 then
+        --    endcycle = math.floor(quarrySize.z / 10)
+        --elseif quarrySize.y == 4 then
+        --    endcycle = math.floor(quarrySize.z / 7)
+        --else
+        --    endcycle = math.floor(quarrySize.z / 10)
+        --end
 
-        if coords2.z - coords1.z > 0 then
-            zsign = 1
-        elseif coords2.z - coords1.z < 0 then
-            zsign = -1
-        end
-        if coords2.y - coords1.y > 0 then
-            ysign = 1
-        elseif coords2.y - coords1.y < 0 then
-            ysign = -1
-        end
+        --h = math.min(quarrySize.y, 5)
 
-        if quarrySize.y == 1 then
-            endcycle = math.floor(quarrySize / 6)
-        elseif quarrySize.y == 2 then
-            endcycle = math.floor(quarrySize.z / 4)
-        elseif quarrySize.y == 3 then
-            endcycle = math.floor(quarrySize.z / 10)
-        elseif quarrySize.y == 4 then
-            endcycle = math.floor(quarrySize.z / 7)
-        else
-            endcycle = math.floor(quarrySize.z / 10)
-        end
-
-        h = math.min(quarrySize.y, 5)
-        endlayer = math.floor(quarrySize.y / h)
+        pattern = Patterns[i]
+        ysign = (coords2.y - coords1.y) / math.abs(coords2.y - coords1.y)
+        zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
+        endlayer = math.floor(quarrySize.y / i)
+        endcycle = math.floor(quarrySize.z / pattern.cycleLn)
+        fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap)
+        
+--       fuelNeeded = {
+--            [1] = endlayer * endcycle * (quarrySize.x + 3),
+--            [2] = endlayer * endcycle * (2 * quarrySize.x + 6),
+--            [3] = endlayer * endcycle * (3 * quarrySize.x + 9),
+--            [4] = endlayer * endcycle * (6 * quarrySize.x + 19),
+--            [5] = endlayer * endcycle * (5 * quarrySize.x + 17)
+--        }
 
         GoThere(coords1.x, coords1.y, coords1.z)
-
-        fuelNeeded = {
-            [1] = endlayer * endcycle * (quarrySize.x + 3),
-            [2] = endlayer * endcycle * (2 * quarrySize.x + 6),
-            [3] = endlayer * endcycle * (3 * quarrySize.x + 9),
-            [4] = endlayer * endcycle * (6 * quarrySize.x + 19),
-            [5] = endlayer * endcycle * (5 * quarrySize.x + 17)
-        }
-
-        checkFuel(fuelNeeded[h])
+        checkFuel(fuelNeeded)
+--        checkFuel(fuelNeeded[h])
 
         while layer < endlayer do
             print("[490]layer = " .. layer)
@@ -481,46 +506,53 @@ local function startup()
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
 
-                Patterns = {
-                    [1] = {
-                        {coords2.x, coords1.y, coords1.z + zsign * (6 * cycle + 3)},
-                        {coords1.x, coords1.y, coords1.z + zsign * (6 * cycle + 6)}
-                    },
-                    [2] = {
-                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (4 * cycle + 2)},
-                        {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
-                    },
-                    [3] = {
-                        {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
-                        {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
-                        {coords2.x, coords1.y, coords1.z + zsign * (10 * cycle + 5)},
-                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 6)},
-                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 8)},
-                        {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
-                    },
-                    [4] = {
-                        {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
-                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (7 * cycle + 2)},
-                        {coords2.x, coords1.y , coords1.z + zsign * (7 * cycle + 3)},
-                        {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle + 4)},
-                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (7 * cycle + 5)},
-                        {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
-                    },
-                    [5] = {
-                        {coords2.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 1)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 2)},
-                        {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 3)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 4)},
-                        {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 5)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 6)},
-                        {coords2.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 7)},
-                        {coords1.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 8)},
-                        {coords2.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 9)},
-                        {coords1.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 10)}
-                    }
-                }
+                for t = 1, pattern.tunnels do
+                    x = coords1.x + t % 2 * quarrySize.x
+                    y = coords1.y + ysign * (pattern.cycleLn * layer + pattern.yOffset[t])
+                    z = coords1.z + zsign * (pattern.cycleLn * cycle + pattern.zOffset[t * -(layer % 2)])
+                    GoThere(x, y, z, true)
+                end
 
-                for _, pattern in pairs(table.sort(Patterns[h], function (a, b) if layer % 2 == 0 then return a < b else return a > b end end)) do
+--                Patterns = {
+--                    [1] = {
+--                        {coords2.x, coords1.y, coords1.z + zsign * (6 * cycle + 3)},
+--                        {coords1.x, coords1.y, coords1.z + zsign * (6 * cycle + 6)}
+--                    },
+--                    [2] = {
+--                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (4 * cycle + 2)},
+--                        {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
+--                    },
+--                    [3] = {
+--                        {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
+--                        {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
+--                        {coords2.x, coords1.y, coords1.z + zsign * (10 * cycle + 5)},
+--                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 6)},
+--                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 8)},
+--                        {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
+--                    },
+--                    [4] = {
+--                        {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
+--                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (7 * cycle + 2)},
+--                        {coords2.x, coords1.y , coords1.z + zsign * (7 * cycle + 3)},
+--                        {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle + 4)},
+--                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (7 * cycle + 5)},
+--                        {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
+--                    },
+--                    [5] = {
+--                        {coords2.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 1)},
+--                        {coords1.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 2)},
+--                        {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 3)},
+--                        {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 4)},
+--                        {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 5)},
+--                        {coords1.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 6)},
+--                        {coords2.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 7)},
+--                        {coords1.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 8)},
+--                        {coords2.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 9)},
+--                        {coords1.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 10)}
+--                    }
+--                }
+
+                for _, pattern in pairs(Patterns[h]) do
                     GoThere(pattern[1], pattern[2], pattern[3], true)
                 end
                 cycle = cycle + 1
