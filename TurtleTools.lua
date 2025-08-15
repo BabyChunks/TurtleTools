@@ -505,11 +505,12 @@ local function startup()
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
 
-                for t = 1, pattern.tunnels do
+                for t = 0, pattern.tunnels - 1 do
                     x = coords1.x + t % 2 * quarrySize.x
                     y = coords1.y + ysign * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + zsign * (pattern.cycleLn * cycle + pattern.zOffset[t * (-(layer % 2))])
                     GoThere(x, y, z, true)
+                    t = t + 1
                 end
 
 --                Patterns = {
