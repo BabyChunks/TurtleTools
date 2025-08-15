@@ -508,7 +508,7 @@ local function startup()
                 for t = 1, pattern.tunnels do
                     x = coords1.x + t % 2 * quarrySize.x
                     y = coords1.y + ysign * (pattern.cycleLn * layer + pattern.yOffset[t])
-                    z = coords1.z + zsign * (pattern.cycleLn * cycle + pattern.zOffset[t * -(layer % 2)])
+                    z = coords1.z + zsign * (pattern.cycleLn * cycle + pattern.zOffset[t * (-(layer % 2))])
                     GoThere(x, y, z, true)
                 end
 
