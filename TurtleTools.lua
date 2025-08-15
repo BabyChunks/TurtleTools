@@ -442,8 +442,6 @@ local function startup()
         --    ysign = -1
         --end
 
-        i = math.min(quarrySize.y, 5)
-
         Patterns ={
                     [1] = {
                         tunnels = 1, endCap = 3, cycleLn = 3, yOffset = {0}, zOffset = {3}
@@ -481,6 +479,7 @@ local function startup()
 
         --h = math.min(quarrySize.y, 5)
 
+        i = math.min(quarrySize.y, 5)
         pattern = Patterns[i]
         ysign = (coords2.y - coords1.y) / math.abs(coords2.y - coords1.y)
         zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
@@ -552,9 +551,9 @@ local function startup()
 --                    }
 --                }
 
-                for _, pattern in pairs(Patterns[h]) do
-                    GoThere(pattern[1], pattern[2], pattern[3], true)
-                end
+--                for _, pattern in pairs(Patterns[h]) do
+--                    GoThere(pattern[1], pattern[2], pattern[3], true)
+--                end
                 cycle = cycle + 1
 
                 for slot = 1, 16 do
