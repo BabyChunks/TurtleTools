@@ -490,11 +490,11 @@ local function startup()
             z = coords2.z - coords1.z
         }
 
-        for _, sign in pairs(signs) do
-            if sign < 0 then sign = -1
-            elseif sign >= 0 then sign = 1
-            print(sign)
+        for dim, sign in pairs(signs) do
+            if sign < 0 then signs[dim] = -1
+            elseif sign >= 0 then signs[dim] = 1
             end
+            print(sign)
         end
 
         --xsign = (coords2.x - coords1.x) / math.abs(coords2.x - coords1.x)
