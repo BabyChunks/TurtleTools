@@ -1,6 +1,7 @@
 local lt = require("luatools")
 
 Heading = nil
+
 _FUELS = {
     "minecraft:coal",
     "minecraft:coal_block",
@@ -349,7 +350,6 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
 end
 
 function Unload(unloadSlot)
-    local item = {}
 
     while turtle.detect() do
         turtle.dig()
@@ -371,9 +371,9 @@ end
 local function startup()
     local incomplete = true
 
-    io.write("Startup sequence for mining turtle.")
+    io.write("Startup sequence for mining turtle.\n")
     io.write("Please select a command\n")
-    local options = {"mine"}
+    local options = {"mine", "quit"}
     textutils.tabulate(options)
 
     local cmd = io.read()
@@ -381,6 +381,8 @@ local function startup()
     if cmd == "mine" then
         local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
         local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, unloadSlot = 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+        Cargos = {}
 
         incomplete = true
         while incomplete do
@@ -530,14 +532,37 @@ local function startup()
             --print("mod = " .. mod)
             while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
+                
+                if layer % 2 == 0 then
+                    a = pattern.tunnels
+                    b = 1
+                else
+                    a = 1
+                    b = pattern.tunnels
+                end
 
-                for t = 1, pattern.tunnels do
+                for t = a, b do
                     print("t = " .. t)
+                    
                     x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
-                    z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[((layer + 1) % 2) * t + ((layer + 2)  % 2) * (pattern.tunnels - t + 1)])
+                    z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
                     print("xyz = ", x, y, z)
+                    
                     GoThere(x, y, z, true)
+
+                    if t % 2 == 0 then
+                        for slot = 1, 16 do
+                            if turtle.getItemCount(slot) == 0 then
+                                emptySlot = emptySlot + 1
+                            end
+                            slot = slot + 1
+                        end
+                        if emptySlot <= 3 then
+                            Unload(unloadSlot)
+                        end
+                        emptySlot = 0
+                    end
                 end
 
 --                Patterns = {
@@ -659,9 +684,13 @@ local function startup()
         for i = 1,5 do
             assert(turtle.forward())
         end
-
+    elseif cmd == "quit" then
+        io.write("Goodbye")
+        os.sleep(3)
+        os.reboot()
     else
-        io.write("Couldn't recognize input")
+        io.write("Couldn't recognize input\n")
+        startup()
     end
 end
 
