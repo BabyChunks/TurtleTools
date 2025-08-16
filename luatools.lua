@@ -75,5 +75,6 @@ return {
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,
   tablesOverlap = tablesOverlap,
+  tableSum = tableSum,
   argparse = argparse
 }
