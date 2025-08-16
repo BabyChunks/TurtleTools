@@ -522,7 +522,7 @@ local function startup()
         checkFuel(fuelNeeded)
 --        checkFuel(fuelNeeded[h])
 
-        while layer <= endlayer do
+        while layer < endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
             mod = -(layer % 2)
@@ -535,7 +535,7 @@ local function startup()
                     print("t = " .. t)
                     x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
-                    z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
+                    z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[((layer + 1) % 2) * t + ((layer + 2)  % 2) * (#t - t + 1)])
                     print("xyz = ", x, y, z) 
                     GoThere(x, y, z, true)
                 end
