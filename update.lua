@@ -1,7 +1,7 @@
 local results = {}
 local files = {
-    "TurtleTools.lua",
-    "LuaTools.lua"
+    "turtle.lua",
+    "luatools.lua"
 }
 
 for _, file in pairs(files) do
