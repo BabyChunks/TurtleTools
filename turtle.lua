@@ -444,7 +444,7 @@ local function startup()
 
         Patterns ={
                     [1] = {
-                        tunnels = 2, endCap = 3, cycleLn = 6, yOffset = {0}, zOffset = {3, 6}
+                        tunnels = 2, endCap = 3, cycleLn = 6, yOffset = {0, 0}, zOffset = {3, 6}
                     },
                     [2] = {
                         tunnels = 2, endCap = 6, cycleLn = 4, yOffset = {1, 0}, zOffset = {2, 4}
