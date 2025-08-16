@@ -465,6 +465,7 @@ local function startup()
             y = math.abs(coords2.y - coords1.y) + 1,
             z = math.abs(coords2.z - coords1.z) + 1
         }
+        for k, v in pairs(quarrySize) do print(k, v) end _ = io.read()
         --if quarrySize.y == 1 then
         --    endcycle = math.floor(quarrySize.z / 6)
         --elseif quarrySize.y == 2 then
@@ -494,7 +495,7 @@ local function startup()
             if sign < 0 then signs[dim] = -1
             elseif sign >= 0 then signs[dim] = 1
             end
-            print(sign)
+            print(dim, sign)
         end
 
         --xsign = (coords2.x - coords1.x) / math.abs(coords2.x - coords1.x)
