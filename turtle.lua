@@ -480,11 +480,17 @@ local function startup()
         --h = math.min(quarrySize.y, 5)
 
         i = math.min(quarrySize.y, 5)
+        print("i= " .. i)
         pattern = Patterns[i]
+        for k, v in pairs(pattern) do print(k, v) end _ = io.read()
         ysign = (coords2.y - coords1.y) / math.abs(coords2.y - coords1.y)
+        print("ysign = " .. ysign)
         zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
+        print("zsign = " .. zsign)
         endlayer = math.floor(quarrySize.y / i)
+        print("endlayer=" .. endlayer)
         endcycle = math.floor(quarrySize.z / pattern.cycleLn)
+        print("endcycle = " .. endcycle) _ = io.read()
         fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap)
         
 --       fuelNeeded = {
@@ -503,6 +509,7 @@ local function startup()
             print("[490]layer = " .. layer)
             cycle = 0
             mod = -(layer % 2)
+            print("mod = " .. mod)
             if mod == 0 then mod = 1 end
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
@@ -511,7 +518,8 @@ local function startup()
                     x = coords1.x + t % 2 * quarrySize.x
                     y = coords1.y + ysign * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + zsign * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
-                    GoThere(x, y, z, true)
+                    print(x, y, z) _ = io.read()
+                    GoThere("xyz = ", x, y, z, true)
                     t = t + 1
                 end
 
