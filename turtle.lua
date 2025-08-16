@@ -535,7 +535,7 @@ local function startup()
                     x = coords1.x + signs.x * t % 2 * quarrySize.x
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
-                    print(coords1.x .. " + " .. signs.x .. " * " .. t .. " % 2 * " .. quarrySize.x .. " = " .. x)
+                    print(coords1.x .. " + " .. signs.x .. " * " .. t  % 2 .. " * " .. quarrySize.x .. " = " .. x)
                     print("xyz = ", x, y, z) _ = io.read()
                     GoThere(x, y, z, true)
                     t = t + 1
