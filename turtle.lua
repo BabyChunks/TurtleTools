@@ -505,7 +505,7 @@ local function startup()
         --zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
         print("zsign = " .. signs.z)
         endlayer = math.floor(quarrySize.y / i)
-        print("endlayer=" .. endlayer)
+        print("endlayer = " .. endlayer)
         endcycle = math.floor(quarrySize.z / pattern.cycleLn)
         print("endcycle = " .. endcycle) _ = io.read()
         fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap)
@@ -535,8 +535,9 @@ local function startup()
                     x = coords1.x + signs.x * t % 2 * quarrySize.x
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
-                    print(x, y, z) _ = io.read()
-                    GoThere("xyz = ", x, y, z, true)
+                    print(coords1.x .. " + " .. signs.x .. " * " .. t .. " % 2 * " .. quarrySize.x .. " = " .. x)
+                    print("xyz = ", x, y, z) _ = io.read()
+                    GoThere(x, y, z, true)
                     t = t + 1
                 end
 
