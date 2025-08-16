@@ -522,13 +522,13 @@ local function startup()
         checkFuel(fuelNeeded)
 --        checkFuel(fuelNeeded[h])
 
-        while layer < endlayer do
+        while layer <= endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
             mod = -(layer % 2)
             if mod == 0 then mod = 1 end
              print("mod = " .. mod)
-            while cycle < endcycle do
+            while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
 
                 for t = 1, pattern.tunnels do
