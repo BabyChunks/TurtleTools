@@ -533,7 +533,7 @@ local function startup()
 
                 for t = 1, pattern.tunnels do
                     print("t = " .. t)
-                    x = coords1.x + signs.x * ((t * cycle) % 2) * (quarrySize.x - 1)
+                    x = coords1.x + signs.x * ((t * (cycle + 2)) % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
                     print(coords1.x .. " + " .. signs.x .. " * " .. t  % 2 .. " * " .. quarrySize.x .. " = " .. x)
