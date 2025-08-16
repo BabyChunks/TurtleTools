@@ -444,19 +444,19 @@ local function startup()
 
         Patterns ={
                     [1] = {
-                        tunnels = 1, endCap = 3, cycleLn = 3, yOffset = {0}, zOffset = {3}
+                        tunnels = 2, endCap = 3, cycleLn = 6, yOffset = {0}, zOffset = {3, 6}
                     },
                     [2] = {
                         tunnels = 2, endCap = 6, cycleLn = 4, yOffset = {1, 0}, zOffset = {2, 4}
                     },
                     [3] = {
-                        tunnels = 3, endCap = 9, cycleLn = 5, yOffset = {2, 1, 0}, zOffset = {1, 3, 5}
+                        tunnels = 6, endCap = 9, cycleLn = 10, yOffset = {2, 1, 0, 2, 1, 0}, zOffset = {1, 3, 5, 6, 8, 10}
                     },
                     [4] = {
                         tunnels = 6, endCap = 19, cycleLn = 7, yOffset = {3, 2, 0, 3, 1, 0}, zOffset = {0, 2, 3, 4, 5, 7}
                     },
                     [5] = {
-                        tunnels = 5, endCap = 17, cycleLn = 5, yOffset = {2, 4, 1, 3, 0}, zOffset = {1, 2, 3, 4, 5}
+                        tunnels = 10, endCap = 17, cycleLn = 10, yOffset = {2, 4, 1, 3, 0, 2, 4, 1, 3, 0}, zOffset = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
                     },
                 }
 
@@ -533,10 +533,9 @@ local function startup()
 
                 for t = 1, pattern.tunnels do
                     print("t = " .. t)
-                    x = coords1.x + signs.x * ((t * (cycle + 1)) % 2) * (quarrySize.x - 1)
+                    x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
-                    print(coords1.x .. " + " .. signs.x .. " * " .. t  % 2 .. " * " .. quarrySize.x .. " = " .. x)
                     print("xyz = ", x, y, z) 
                     GoThere(x, y, z, true)
                 end
