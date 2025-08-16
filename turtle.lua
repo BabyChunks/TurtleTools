@@ -525,9 +525,9 @@ local function startup()
         while layer < endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
-            mod = -(layer % 2)
-            if mod == 0 then mod = 1 end
-             print("mod = " .. mod)
+            --mod = -(layer % 2)
+            --if mod == 0 then mod = 1 end
+            --print("mod = " .. mod)
             while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
 
