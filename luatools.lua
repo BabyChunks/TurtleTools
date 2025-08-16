@@ -34,6 +34,14 @@ local function tablesOverlap(t1, t2)
   return false
 end
 
+local function tableSum(t)
+  local sum = 0
+  for _, v in pairs(t) do
+    sum = sum + v
+  end
+  return sum
+end
+
 local function argparse(str, keys)
   local parsed = {}
   local args = {}
