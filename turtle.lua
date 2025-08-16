@@ -465,7 +465,7 @@ local function startup()
             y = math.abs(coords2.y - coords1.y) + 1,
             z = math.abs(coords2.z - coords1.z) + 1
         }
-        for k, v in pairs(quarrySize) do print(k, v) end _ = io.read()
+        for k, v in pairs(quarrySize) do print(k, v) end
         --if quarrySize.y == 1 then
         --    endcycle = math.floor(quarrySize.z / 6)
         --elseif quarrySize.y == 2 then
@@ -483,7 +483,7 @@ local function startup()
         i = math.min(quarrySize.y, 5)
         print("i= " .. i)
         pattern = Patterns[i]
-        for k, v in pairs(pattern) do print(k, v) end _ = io.read()
+        for k, v in pairs(pattern) do print(k, v) end
 
         signs = {
             x = coords2.x - coords1.x,
@@ -507,8 +507,8 @@ local function startup()
         endlayer = math.floor(quarrySize.y / i)
         print("endlayer = " .. endlayer)
         endcycle = math.floor(quarrySize.z / pattern.cycleLn)
-        print("endcycle = " .. endcycle) _ = io.read()
-        fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap)
+        print("endcycle = " .. endcycle)
+        fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap) + lt.tableSum(quarrySize)
         
 --       fuelNeeded = {
 --            [1] = endlayer * endcycle * (quarrySize.x + 3),
@@ -537,7 +537,7 @@ local function startup()
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
                     print(coords1.x .. " + " .. signs.x .. " * " .. t  % 2 .. " * " .. quarrySize.x .. " = " .. x)
-                    print("xyz = ", x, y, z) _ = io.read()
+                    print("xyz = ", x, y, z) 
                     GoThere(x, y, z, true)
                 end
 
@@ -599,6 +599,7 @@ local function startup()
             end
             layer = layer + 1
         end
+        GoThere(coords1.x, coords1.y, coords1.z)
 
     elseif cmd == "move" then
 
