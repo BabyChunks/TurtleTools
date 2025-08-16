@@ -531,7 +531,7 @@ local function startup()
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
 
-                for t = 1, pattern.tunnels do
+                for t = 1, pattern.tunnels + 1 do
                     print("t = " .. t)
                     x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
@@ -539,7 +539,6 @@ local function startup()
                     print(coords1.x .. " + " .. signs.x .. " * " .. t  % 2 .. " * " .. quarrySize.x .. " = " .. x)
                     print("xyz = ", x, y, z) _ = io.read()
                     GoThere(x, y, z, true)
-                    t = t + 1
                 end
 
 --                Patterns = {
