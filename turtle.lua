@@ -483,10 +483,26 @@ local function startup()
         print("i= " .. i)
         pattern = Patterns[i]
         for k, v in pairs(pattern) do print(k, v) end _ = io.read()
-        ysign = (coords2.y - coords1.y) / math.abs(coords2.y - coords1.y)
-        print("ysign = " .. ysign)
-        zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
-        print("zsign = " .. zsign)
+
+        signs = {
+            x = coords2.x - coords1.x,
+            y = coords2.y - coords1.y,
+            z = coords2.z - coords1.z
+        }
+
+        for _, sign in pairs(signs) do
+            if sign < 0 then sign = -1
+            elseif sign >= 0 then sign = 1
+            print(sign)
+            end
+        end
+
+        --xsign = (coords2.x - coords1.x) / math.abs(coords2.x - coords1.x)
+        --ysign = (coords2.y - coords1.y) / math.abs(coords2.y - coords1.y)
+        print("xsign = " .. signs.x)
+        print("ysign = " .. signs.y)
+        --zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
+        print("zsign = " .. signs.z)
         endlayer = math.floor(quarrySize.y / i)
         print("endlayer=" .. endlayer)
         endcycle = math.floor(quarrySize.z / pattern.cycleLn)
@@ -509,15 +525,15 @@ local function startup()
             print("[490]layer = " .. layer)
             cycle = 0
             mod = -(layer % 2)
-            print("mod = " .. mod)
             if mod == 0 then mod = 1 end
+             print("mod = " .. mod)
             while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
 
                 for t = 1, pattern.tunnels do
-                    x = coords1.x + t % 2 * quarrySize.x
-                    y = coords1.y + ysign * (pattern.cycleLn * layer + pattern.yOffset[t])
-                    z = coords1.z + zsign * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
+                    x = coords1.x + signs.x * t % 2 * quarrySize.x
+                    y = coords1.y + signs.y * (pattern.cycleLn * layer + pattern.yOffset[t])
+                    z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t * mod])
                     print(x, y, z) _ = io.read()
                     GoThere("xyz = ", x, y, z, true)
                     t = t + 1
