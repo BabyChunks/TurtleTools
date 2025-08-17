@@ -506,19 +506,18 @@ local function startup()
         while layer < endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
+            if layer % 2 == 0 then
+                a = 1
+                b = pattern.tunnels
+            else
+                a = pattern.tunnels
+                b = 1
+            end
             --mod = -(layer % 2)
             --if mod == 0 then mod = 1 end
             --print("mod = " .. mod)
             while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
-
-                if layer % 2 == 0 then
-                    a = 1
-                    b = pattern.tunnels
-                else
-                    a = pattern.tunnels
-                    b = 1
-                end
 
                 for t = a, b do
                     print("t = " .. t)
