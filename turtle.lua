@@ -549,19 +549,24 @@ local function startup()
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
                     print("xyz = ", x, y, z)
                     
-                    GoThere(x, y, z, true)
+                    if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.z then
+                        GoThere(x, y, z, true)
+                        
+                        if t % 2 == 0 then
+                            for slot = 1, 16 do
+                                if turtle.getItemCount(slot) == 0 then
+                                    emptySlot = emptySlot + 1
 
-                    if t % 2 == 0 then
-                        for slot = 1, 16 do
-                            if turtle.getItemCount(slot) == 0 then
-                                emptySlot = emptySlot + 1
+                                end
+                                slot = slot + 1
+
                             end
-                            slot = slot + 1
+                            if emptySlot <= 3 then
+                                Unload(unloadSlot)
+                                
+                            end
+                            emptySlot = 0
                         end
-                        if emptySlot <= 3 then
-                            Unload(unloadSlot)
-                        end
-                        emptySlot = 0
                     end
                 end
 
