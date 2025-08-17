@@ -363,26 +363,24 @@ local function startup()
         local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
         local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, unloadSlot = 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-        Cargos = {}
-
-        incomplete = true
-        while incomplete do
-            for slot = 1, 16 do
-                item = turtle.getItemDetail(slot, true)
-                if item then
-                    if lt.tableContainsValue(_INVS, item.name) or lt.tablesOverlap(_INVS, item.tags)then
-                        unloadSlot = slot
-                        if turtle.getItemCount(unloadSlot) == 64 then
-                            incomplete = false
-                        end
-                    end
-                end
-            end
-            if incomplete then
-                io.write("Insert a stack of valid inventory items to begin\n")
-                os.pullEvent("turtle_inventory")
-            end
-        end
+--        incomplete = true
+--        while incomplete do
+--            for slot = 1, 16 do
+--                item = turtle.getItemDetail(slot, true)
+--                if item then
+--                    if lt.tableContainsValue(_INVS, item.name) or lt.tablesOverlap(_INVS, item.tags)then
+--                        unloadSlot = slot
+--                        if turtle.getItemCount(unloadSlot) == 64 then
+--                            incomplete = false
+--                        end
+--                    end
+--                end
+--            end
+--            if incomplete then
+--                io.write("Insert a stack of valid inventory items to begin\n")
+--                os.pullEvent("turtle_inventory")
+--            end
+--       end
 
         io.write("first coordinates: \n")
 
