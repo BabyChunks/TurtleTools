@@ -349,25 +349,6 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
     end
 end
 
-function Unload(unloadSlot)
-
-    while turtle.detect() do
-        turtle.dig()
-        turtle.suck()
-    end
-    turtle.select(unloadSlot)
-    assert(turtle.place())
-
-    for slot = 1, 16 do
-        if not slot == unloadSlot then
-            turtle.select(slot)
-            assert(turtle.drop())
-        end
-    end
-
-
-end
-
 local function startup()
     local incomplete = true
 
@@ -532,26 +513,26 @@ local function startup()
             --print("mod = " .. mod)
             while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
-                
+
                 if layer % 2 == 0 then
-                    a = pattern.tunnels
-                    b = 1
-                else
                     a = 1
                     b = pattern.tunnels
+                else
+                    a = pattern.tunnels
+                    b = 1
                 end
 
                 for t = a, b do
                     print("t = " .. t)
-                    
+
                     x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
                     z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
                     print("xyz = ", x, y, z)
-                    
+
                     if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.z then
                         GoThere(x, y, z, true)
-                        
+
                         if t % 2 == 0 then
                             for slot = 1, 16 do
                                 if turtle.getItemCount(slot) == 0 then
@@ -562,8 +543,10 @@ local function startup()
 
                             end
                             if emptySlot <= 3 then
-                                Unload(unloadSlot)
-                                
+                                GoThere(coords1.x, coords1.y, coords1.z)
+                                io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.")
+                                _ = io.read()
+
                             end
                             emptySlot = 0
                         end
@@ -614,16 +597,16 @@ local function startup()
 --                end
                 cycle = cycle + 1
 
-                for slot = 1, 16 do
-                    if turtle.getItemCount(slot) == 0 then
-                        emptySlot = emptySlot + 1
-                    end
-                    slot = slot + 1
-                end
-                if emptySlot <= 4 then
-                    Unload(unloadSlot)
-                end
-                emptySlot = 0
+--              for slot = 1, 16 do
+--                  if turtle.getItemCount(slot) == 0 then
+--                      emptySlot = emptySlot + 1
+--                  end
+--                  slot = slot + 1
+--               end
+--                if emptySlot <= 4 then
+--                    Unload(unloadSlot)
+--                end
+--                emptySlot = 0
 
             end
             layer = layer + 1
@@ -695,6 +678,7 @@ local function startup()
         os.reboot()
     else
         io.write("Couldn't recognize input\n")
+        os.sleep(2)
         startup()
     end
 end
