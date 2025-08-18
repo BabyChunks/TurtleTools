@@ -520,7 +520,7 @@ local function startup()
                 print("[492]cycle = " .. cycle)
 
                 for t = a, b do
-                    print("t = " .. t)
+                    print("t = " .. t) _ = io.read()
 
                     x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
                     y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
