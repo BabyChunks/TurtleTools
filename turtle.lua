@@ -503,7 +503,7 @@ local function startup()
         checkFuel(fuelNeeded)
 --        checkFuel(fuelNeeded[h])
 
-        while layer < endlayer do
+        while layer <= endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
             if layer % 2 == 0 then
