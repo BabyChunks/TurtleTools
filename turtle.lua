@@ -502,8 +502,8 @@ local function startup()
         GoThere(coords1.x, coords1.y, coords1.z)
         checkFuel(fuelNeeded)
 --        checkFuel(fuelNeeded[h])
-
-        while layer <= endlayer do
+        a, b = 0, 0
+        while layer < endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
             if layer % 2 == 0 then
