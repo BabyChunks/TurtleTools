@@ -502,10 +502,11 @@ local function startup()
         GoThere(coords1.x, coords1.y, coords1.z)
         checkFuel(fuelNeeded)
 --        checkFuel(fuelNeeded[h])
-        a, b = 0, 0
         while layer < endlayer do
             print("[490]layer = " .. layer)
             cycle = 0
+            local a, b = 0, 0 
+
             if layer % 2 == 0 then
                 a = 1
                 b = pattern.tunnels
