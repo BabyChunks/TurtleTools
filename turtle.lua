@@ -451,6 +451,7 @@ local function startup()
             print("[490]layer = " .. layer)
             cycle = 0
             local a, b = 0, 0
+            local t = 0
 
             if layer % 2 == 0 then
                 a = 1
