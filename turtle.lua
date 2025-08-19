@@ -393,17 +393,6 @@ local function startup()
             end
         end
 
-        --if coords2.z - coords1.z > 0 then
-        --    zsign = 1
-        --elseif coords2.z - coords1.z < 0 then
-        --    zsign = -1
-        --end
-        --if coords2.y - coords1.y > 0 then
-        --    ysign = 1
-        --elseif coords2.y - coords1.y < 0 then
-        --    ysign = -1
-        --end
-
         Patterns ={
                     [1] = {
                         tunnels = 2, endCap = 3, cycleLn = 6, yOffset = {0, 0}, zOffset = {3, 6}
@@ -444,15 +433,14 @@ local function startup()
             if sign < 0 then signs[dim] = -1
             elseif sign >= 0 then signs[dim] = 1
             end
-            print(dim, sign)
         end
 
         print("xsign = " .. signs.x)
         print("ysign = " .. signs.y)
         print("zsign = " .. signs.z)
-        endlayer = math.floor(quarrySize.y / i)
+        endlayer = math.ceil(quarrySize.y / i)
         print("endlayer = " .. endlayer)
-        endcycle = math.floor(quarrySize.z / pattern.cycleLn)
+        endcycle = math.ceil(quarrySize.z / pattern.cycleLn)
         print("endcycle = " .. endcycle) _ = io.read()
         fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap) + lt.tableSum(quarrySize)
 
@@ -472,7 +460,7 @@ local function startup()
                 b = 1
             end
             print("a, b = " .. a, b) _ = io.read()
-            while cycle <= endcycle do
+            while cycle < endcycle do
                 print("[492]cycle = " .. cycle)
 
                 for t = a, b do
