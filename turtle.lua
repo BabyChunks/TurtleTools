@@ -199,16 +199,16 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
     strip = strip or false
     local move = 0
 
-    print("[163]beginning sequence to mine ", blocks, " blocks")
+--    print("[163]beginning sequence to mine ", blocks, " blocks")
 
     GetHeading()
-    print("[166]heading acquired: ", Heading)
+--    print("[166]heading acquired: ", Heading)
 
     while move < blocks do
 
         if strip then
             stripMine()
-            print("[172]initial stripMine() terminated. Moving forward")
+--           print("[172]initial stripMine() terminated. Moving forward")
         end
         while turtle.detect() do
             turtle.dig()
@@ -220,7 +220,7 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
 end
 
 function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
-    print("[184]Starting sequence to move to coords:", x, y, z)
+--    print("[184]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
     local bot, rel = {}, {}
     local xblocks, yblocks, zblocks = 0, 0, 0
@@ -230,21 +230,21 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         bot = noGPS("xyz")
     end
 
-    print("[194]turtle location acquired: ", bot.x, bot.y, bot.z)
+--    print("[194]turtle location acquired: ", bot.x, bot.y, bot.z)
 
     rel = {
         x = (x - bot.x),
         y = (y - bot.y),
         z = (z - bot.z)
     }
-    print("[201]computed movement necessary:")
-    print("x= ", rel.x)
-    print("y= ", rel.y)
-    print("z= ", rel.z)
+--    print("[201]computed movement necessary:")
+--    print("x= ", rel.x)
+--    print("y= ", rel.y)
+--    print("z= ", rel.z)
 
     checkFuel(rel.x + rel.y + rel.z)
     GetHeading()
-    print("[207]heading acquired: ", Heading)
+--    print("[207]heading acquired: ", Heading)
 
     xblocks = math.abs(rel.x)
 
@@ -277,7 +277,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "x"
     end
 
-    print("[240]mining ", xblocks, "blocks in the ", Heading, " direction")
+--    print("[240]mining ", xblocks, "blocks in the ", Heading, " direction")
     Mine(xblocks, strip)
 
     zblocks = math.abs(rel.z)
@@ -313,7 +313,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "z"
     end
 
-    print("[282]mining ", zblocks, "blocks in the ", Heading, " direction")
+--    print("[282]mining ", zblocks, "blocks in the ", Heading, " direction")
     Mine(zblocks, strip)
 
     yblocks = math.abs(rel.y)
@@ -321,7 +321,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
     if rel.y < 0 then
         local move = 0
 
-        print("[290]mining ", yblocks, "blocks in the -y direction")
+--        print("[290]mining ", yblocks, "blocks in the -y direction")
 
         while move < yblocks do
             while turtle.detectDown() do
@@ -335,7 +335,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
     elseif rel.y > 0 then
         local move = 0
 
-        print("[304]mining ", yblocks, "blocks in the y direction")
+--        print("[304]mining ", yblocks, "blocks in the y direction")
 
         while move < yblocks do
             while turtle.detectUp() do
@@ -360,27 +360,8 @@ local function startup()
     local cmd = io.read()
 
     if cmd == "mine" then
-        local coords1, coords2, quarrySize, fuelNeeded, item = {}, {}, {}, {}, {}
-        local ysign, zsign, cycle, endcycle, h, layer, endlayer, emptySlot, unloadSlot = 0, 0, 0, 0, 0, 0, 0, 0, 0
-
---        incomplete = true
---        while incomplete do
---            for slot = 1, 16 do
---                item = turtle.getItemDetail(slot, true)
---                if item then
---                    if lt.tableContainsValue(_INVS, item.name) or lt.tablesOverlap(_INVS, item.tags)then
---                        unloadSlot = slot
---                        if turtle.getItemCount(unloadSlot) == 64 then
---                            incomplete = false
---                        end
---                    end
---                end
---            end
---            if incomplete then
---                io.write("Insert a stack of valid inventory items to begin\n")
---                os.pullEvent("turtle_inventory")
---            end
---       end
+        local coords1, coords2, quarrySize, fuelNeeded = {}, {}, {}, {}
+        local cycle, endcycle, layer, endlayer, emptySlot = 0, 0, 0, 0, 0
 
         io.write("first coordinates: \n")
 
@@ -447,19 +428,6 @@ local function startup()
             z = math.abs(coords2.z - coords1.z) + 1
         }
         for k, v in pairs(quarrySize) do print(k, v) end
-        --if quarrySize.y == 1 then
-        --    endcycle = math.floor(quarrySize.z / 6)
-        --elseif quarrySize.y == 2 then
-        --    endcycle = math.floor(quarrySize.z / 4)
-        --elseif quarrySize.y == 3 then
-        --    endcycle = math.floor(quarrySize.z / 10)
-        --elseif quarrySize.y == 4 then
-        --    endcycle = math.floor(quarrySize.z / 7)
-        --else
-        --    endcycle = math.floor(quarrySize.z / 10)
-        --end
-
-        --h = math.min(quarrySize.y, 5)
 
         i = math.min(quarrySize.y, 5)
         print("i= " .. i)
@@ -479,31 +447,20 @@ local function startup()
             print(dim, sign)
         end
 
-        --xsign = (coords2.x - coords1.x) / math.abs(coords2.x - coords1.x)
-        --ysign = (coords2.y - coords1.y) / math.abs(coords2.y - coords1.y)
         print("xsign = " .. signs.x)
         print("ysign = " .. signs.y)
-        --zsign = (coords2.z - coords1.z) / math.abs(coords2.z - coords1.z)
         print("zsign = " .. signs.z)
         endlayer = math.floor(quarrySize.y / i)
         print("endlayer = " .. endlayer)
         endcycle = math.floor(quarrySize.z / pattern.cycleLn)
-        print("endcycle = " .. endcycle)
+        print("endcycle = " .. endcycle) _ = io.read()
         fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap) + lt.tableSum(quarrySize)
-        
---       fuelNeeded = {
---            [1] = endlayer * endcycle * (quarrySize.x + 3),
---            [2] = endlayer * endcycle * (2 * quarrySize.x + 6),
---            [3] = endlayer * endcycle * (3 * quarrySize.x + 9),
---            [4] = endlayer * endcycle * (6 * quarrySize.x + 19),
---            [5] = endlayer * endcycle * (5 * quarrySize.x + 17)
---        }
 
         GoThere(coords1.x, coords1.y, coords1.z)
         checkFuel(fuelNeeded)
---        checkFuel(fuelNeeded[h])
+
         while layer < endlayer do
-            print("[490]layer = " .. layer)
+            print("[490]layer = " .. layer) _ = io.read()
             cycle = 0
             local a, b = 0, 0
 
@@ -514,9 +471,7 @@ local function startup()
                 a = pattern.tunnels
                 b = 1
             end
-            --mod = -(layer % 2)
-            --if mod == 0 then mod = 1 end
-            --print("mod = " .. mod)
+
             while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
 
@@ -550,61 +505,7 @@ local function startup()
                         end
                     end
                 end
-
---                Patterns = {
---                    [1] = {
---                        {coords2.x, coords1.y, coords1.z + zsign * (6 * cycle + 3)},
---                        {coords1.x, coords1.y, coords1.z + zsign * (6 * cycle + 6)}
---                    },
---                    [2] = {
---                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (4 * cycle + 2)},
---                        {coords1.x, coords1.y, coords1.z + zsign * (4 * cycle + 4)}
---                    },
---                    [3] = {
---                        {coords2.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 1)},
---                        {coords1.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 3)},
---                        {coords2.x, coords1.y, coords1.z + zsign * (10 * cycle + 5)},
---                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (10 * cycle + 6)},
---                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (10 * cycle + 8)},
---                        {coords1.x, coords1.y, coords1.z + zsign * (10 * cycle + 10)}
---                    },
---                    [4] = {
---                        {coords2.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle)},
---                        {coords1.x, coords1.y + ysign * 2, coords1.z + zsign * (7 * cycle + 2)},
---                        {coords2.x, coords1.y , coords1.z + zsign * (7 * cycle + 3)},
---                        {coords1.x, coords1.y + ysign * 3, coords1.z + zsign * (7 * cycle + 4)},
---                        {coords2.x, coords1.y + ysign * 1, coords1.z + zsign * (7 * cycle + 5)},
---                        {coords1.x, coords1.y, coords1.z + zsign * (7 * cycle + 7)}
---                    },
---                    [5] = {
---                        {coords2.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 1)},
---                        {coords1.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 2)},
---                        {coords2.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 3)},
---                        {coords1.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 4)},
---                        {coords2.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 5)},
---                        {coords1.x, coords1.y + ysign * (5 * layer + 2), coords1.z + zsign * (10 * cycle + 6)},
---                        {coords2.x, coords1.y + ysign * (5 * layer + 4), coords1.z + zsign * (10 * cycle + 7)},
---                        {coords1.x, coords1.y + ysign * (5 * layer + 1), coords1.z + zsign * (10 * cycle + 8)},
---                        {coords2.x, coords1.y + ysign * (5 * layer + 3), coords1.z + zsign * (10 * cycle + 9)},
---                        {coords1.x, coords1.y + ysign * (5 * layer), coords1.z + zsign * (10 * cycle + 10)}
---                    }
---                }
-
---                for _, pattern in pairs(Patterns[h]) do
---                    GoThere(pattern[1], pattern[2], pattern[3], true)
---                end
                 cycle = cycle + 1
-
---              for slot = 1, 16 do
---                  if turtle.getItemCount(slot) == 0 then
---                      emptySlot = emptySlot + 1
---                  end
---                  slot = slot + 1
---               end
---                if emptySlot <= 4 then
---                    Unload(unloadSlot)
---                end
---                emptySlot = 0
 
             end
             layer = layer + 1
