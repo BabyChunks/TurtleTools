@@ -460,7 +460,7 @@ local function startup()
         checkFuel(fuelNeeded)
 
         while layer < endlayer do
-            print("[490]layer = " .. layer) _ = io.read()
+            print("[490]layer = " .. layer)
             cycle = 0
             local a, b = 0, 0
 
@@ -471,7 +471,7 @@ local function startup()
                 a = pattern.tunnels
                 b = 1
             end
-
+            print("a, b = " .. a, b) _ = io.read()
             while cycle <= endcycle do
                 print("[492]cycle = " .. cycle)
 
