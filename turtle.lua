@@ -456,12 +456,12 @@ local function startup()
                 tunnelStart = 1
                 tunnelStop = pattern.tunnels
                 cycleStart = 0
-                cycleStop = nCycle
+                cycleStop = nCycle + 1
                 step = 1
             else
                 tunnelStart = pattern.tunnels
                 tunnelStop = 1
-                cycleStart = nCycle
+                cycleStart = nCycle + 1
                 cycleStop = 0
                 step = -1
             end
@@ -479,7 +479,7 @@ local function startup()
 
                     if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.abs.z then
                         local emptySLot = 0
-                        GoThere(x, y, z)
+                        GoThere(x, y, z, true)
 
                         if t % 2 == 0 then
                             for slot = 1, 16 do
