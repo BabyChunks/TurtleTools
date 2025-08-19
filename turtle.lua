@@ -466,7 +466,7 @@ local function startup()
             end
             print("a, b = " .. a, b) _ = io.read()
             for cycle = c, d do
-                print("[492]cycle = " .. cycle)
+                print("[492]cycle = " .. cycle, "t = " .. t)
 
                 for t = a, b do
                     print("t = " .. t) _ = io.read()
