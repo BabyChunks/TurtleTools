@@ -361,7 +361,7 @@ local function startup()
 
     if cmd == "mine" then
         local coords1, coords2, pattern, signs, fuelNeeded = {}, {}, {}, {}, {}
-        local i, nCycle, layer, nLayer, emptySlot = 0, 0, 0, 0, 0
+        local i, nCycle, layer, nLayer= 0, 0, 0, 0
 
         io.write("first coordinates: \n")
 
@@ -478,7 +478,7 @@ local function startup()
                     print("xyz = ", x, y, z)
 
                     if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.abs.z then
-                        local emptySLot = 0
+                        local emptySlot = 0
                         GoThere(x, y, z, true)
 
                         if t % 2 == 0 then
@@ -487,8 +487,6 @@ local function startup()
                                     emptySlot = emptySlot + 1
                                     print("emptySlot = " .. emptySlot) _ = io.read()
                                 end
-                                slot = slot + 1
-
                             end
                             if emptySlot <= 3 then
                                 GoThere(coords1.x, coords1.y, coords1.z)
