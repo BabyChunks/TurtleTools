@@ -485,7 +485,7 @@ local function startup()
                             for slot = 1, 16 do
                                 if turtle.getItemCount(slot) == 0 then
                                     emptySlot = emptySlot + 1
-
+                                    print("emptySlot = " .. emptySlot) _ = io.read()
                                 end
                                 slot = slot + 1
 
