@@ -452,6 +452,7 @@ local function startup()
             local a, b = 0, 0
             local t = 0
             local cycle = 0
+            local s = 0
 
             if layer % 2 == 0 then
                 a = 1
