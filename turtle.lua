@@ -449,19 +449,21 @@ local function startup()
 
         while layer < endlayer do
             print("[490]layer = " .. layer)
-            cycle = 0
             local a, b = 0, 0
-            local t = 0
 
             if layer % 2 == 0 then
                 a = 1
                 b = pattern.tunnels
+                c = 0
+                d = endcycle
             else
                 a = pattern.tunnels
                 b = 1
+                c = endcycle
+                d = 0
             end
             print("a, b = " .. a, b) _ = io.read()
-            while cycle < endcycle do
+            for cycle = c, d do
                 print("[492]cycle = " .. cycle)
 
                 for t = a, b do
