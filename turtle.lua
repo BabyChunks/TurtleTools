@@ -479,7 +479,7 @@ local function startup()
                     print("xyz = ", x, y, z)
 
                     if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.z then
-                        GoThere(x, y, z, true)
+                        GoThere(x, y, z)
 
                         if t % 2 == 0 then
                             for slot = 1, 16 do
