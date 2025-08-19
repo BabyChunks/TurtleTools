@@ -463,12 +463,13 @@ local function startup()
                 b = 1
                 c = endcycle
                 d = 0
+                s = -1
             end
             print("a, b = " .. a, b) _ = io.read()
-            for cycle = c, d do
+            for cycle = c, d, s do
                 print("[492]cycle = " .. cycle, "t = " .. t)
 
-                for t = a, b do
+                for t = a, b, s  do
                     print("t = " .. t) _ = io.read()
 
                     x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
