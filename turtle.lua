@@ -432,7 +432,7 @@ local function startup()
         i = math.min(quarrySize.y, 5)
         print("i= " .. i) _ = io.read()
         pattern = Patterns[i]
-        for k, v in pairs(pattern) do print(k, v) end
+        for k, v in pairs(pattern) do print(k, v) end _ = io.read()
 
         signs = {
             x = coords2.x - coords1.x,
