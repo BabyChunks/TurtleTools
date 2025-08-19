@@ -477,7 +477,7 @@ local function startup()
                     local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
                     print("xyz = ", x, y, z)
 
-                    if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.z then
+                    if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.abs.z then
                         local emptySLot = 0
                         GoThere(x, y, z)
 
