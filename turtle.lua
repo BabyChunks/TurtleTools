@@ -430,7 +430,7 @@ local function startup()
         for k, v in pairs(quarrySize) do print(k, v) end
 
         i = math.min(quarrySize.y, 5)
-        print("i= " .. i)
+        print("i= " .. i) _ = io.read()
         pattern = Patterns[i]
         for k, v in pairs(pattern) do print(k, v) end
 
@@ -573,7 +573,7 @@ local function startup()
         end
     elseif cmd == "quit" then
         io.write("Goodbye")
-        os.sleep(3)
+        os.sleep(2)
         os.reboot()
     else
         io.write("Couldn't recognize input\n")
