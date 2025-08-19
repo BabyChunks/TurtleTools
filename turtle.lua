@@ -458,6 +458,7 @@ local function startup()
                 b = pattern.tunnels
                 c = 0
                 d = endcycle
+                s = 1
             else
                 a = pattern.tunnels
                 b = 1
