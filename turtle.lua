@@ -360,8 +360,8 @@ local function startup()
     local cmd = io.read()
 
     if cmd == "mine" then
-        local coords1, coords2, quarrySize, fuelNeeded = {}, {}, {}, {}
-        local cycle, endcycle, layer, endlayer, emptySlot = 0, 0, 0, 0, 0
+        local coords1, coords2, pattern, signs, fuelNeeded = {}, {}, {}, {}, {}
+        local i, nCycle, layer, nLayer, emptySlot = 0, 0, 0, 0, 0
 
         io.write("first coordinates: \n")
 
@@ -411,75 +411,74 @@ local function startup()
                     },
                 }
 
-        quarrySize = {
-            x = math.abs(coords2.x - coords1.x) + 1,
-            y = math.abs(coords2.y - coords1.y) + 1,
-            z = math.abs(coords2.z - coords1.z) + 1
+        local quarrySize = {
+            abs ={
+                x = math.abs(coords2.x - coords1.x) + 1,
+                y = math.abs(coords2.y - coords1.y) + 1,
+                z = math.abs(coords2.z - coords1.z) + 1
+            },
+            rel = {
+                x = coords2.x - coords1.x,
+                y = coords2.y - coords1.y,
+                z = coords2.z - coords1.z
+            }
         }
-        for k, v in pairs(quarrySize) do print(k, v) end
 
-        i = math.min(quarrySize.y, 5)
-        print("i= " .. i) _ = io.read()
+        for k, v in pairs(quarrySize.abs) do print(k, v) end
+
+        i = math.min(quarrySize.abs.y, 5)
+        print("i= " .. i)
         pattern = Patterns[i]
-        for k, v in pairs(pattern) do print(k, v) end _ = io.read()
+        for k, v in pairs(pattern) do print(k, v) end
 
-        signs = {
-            x = coords2.x - coords1.x,
-            y = coords2.y - coords1.y,
-            z = coords2.z - coords1.z
-        }
-
-        for dim, sign in pairs(signs) do
-            if sign < 0 then signs[dim] = -1
-            elseif sign >= 0 then signs[dim] = 1
+        for dim, size in pairs(quarrySize.rel) do
+            if size < 0 then signs[dim] = -1
+            elseif size >= 0 then signs[dim] = 1
             end
         end
 
         print("xsign = " .. signs.x)
         print("ysign = " .. signs.y)
         print("zsign = " .. signs.z)
-        endlayer = math.ceil(quarrySize.y / i)
-        print("endlayer = " .. endlayer)
-        endcycle = math.ceil(quarrySize.z / pattern.cycleLn)
-        print("endcycle = " .. endcycle) _ = io.read()
-        fuelNeeded = endlayer * endcycle * (pattern.tunnels * quarrySize.x + pattern.endCap) + lt.tableSum(quarrySize)
+        nLayer = math.ceil(quarrySize.abs.y / i)
+        print("nLayer = " .. nLayer)
+        nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
+        fuelNeeded = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap) + lt.tableSum(quarrySize.abs)
 
         GoThere(coords1.x, coords1.y, coords1.z)
         checkFuel(fuelNeeded)
 
-        while layer < endlayer do
+        while layer < nLayer do
             print("[490]layer = " .. layer)
-            local a, b = 0, 0
-            local t = 0
-            local cycle = 0
-            local s = 0
+            local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
 
             if layer % 2 == 0 then
-                a = 1
-                b = pattern.tunnels
-                c = 0
-                d = endcycle
-                s = 1
+                tunnelStart = 1
+                tunnelStop = pattern.tunnels
+                cycleStart = 0
+                cycleStop = nCycle
+                step = 1
             else
-                a = pattern.tunnels
-                b = 1
-                c = endcycle
-                d = 0
-                s = -1
+                tunnelStart = pattern.tunnels
+                tunnelStop = 1
+                cycleStart = nCycle
+                cycleStop = 0
+                step = -1
             end
-            print("a, b = " .. a, b) _ = io.read()
-            for cycle = c, d, s do
-                print("[492]cycle = " .. cycle, "t = " .. t)
 
-                for t = a, b, s  do
-                    print("t = " .. t) _ = io.read()
+            for cycle = cycleStart, cycleStop, step do
+                print("[492]cycle = " .. cycle)
 
-                    x = coords1.x + signs.x * (t % 2) * (quarrySize.x - 1)
-                    y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
-                    z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
+                for t = tunnelStart, tunnelStop, step  do
+                    print("t = " .. t)
+
+                    local x = coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1)
+                    local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
+                    local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
                     print("xyz = ", x, y, z)
 
-                    if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.z then
+                    if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.z then
+                        local emptySLot = 0
                         GoThere(x, y, z)
 
                         if t % 2 == 0 then
@@ -495,9 +494,9 @@ local function startup()
                                 GoThere(coords1.x, coords1.y, coords1.z)
                                 io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.")
                                 _ = io.read()
+                                GoThere(x, y ,z)
 
                             end
-                            emptySlot = 0
                         end
                     end
                 end
