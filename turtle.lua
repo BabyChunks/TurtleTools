@@ -450,6 +450,8 @@ local function startup()
         while layer < endlayer do
             print("[490]layer = " .. layer)
             local a, b = 0, 0
+            local t = 0
+            local cycle = 0
 
             if layer % 2 == 0 then
                 a = 1
