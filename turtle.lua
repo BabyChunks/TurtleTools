@@ -90,22 +90,17 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         checkFuel(2)
 
         coords1.x, coords1.z = Coords.x, Coords.z
-        print("[55]first coords: " .. coords1.x .. coords1.z)
 
         if turtle.detect() then
-            print("[58]block detected in front of turtle")
             turtle.dig()
             turtle.suck()
         end
-
         assert(turtle.forward())
 
         coords2.x, _, coords2.z = gps.locate()
         if not coords2.x then
             coords2 = noGPS("xz")
         end
-        print("[69]second coords: ", coords2.x, coords2.z)
-
         assert(turtle.back())
 
         if coords2.x - coords1.x > 0 then
@@ -119,6 +114,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 
         elseif coords2.z - coords1.z < 0 then
             Heading = "-z"
+
         end
     end
     if turn then
@@ -135,7 +131,9 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 
         elseif turn == "left" then
             i = lt.getKeyForValue(compass, Heading) - 1
+
         end
+
         if i == 4 then i = 0 end
         if i == -1 then i = 4 end
 
@@ -144,70 +142,59 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 end
 
 local function stripMine() --Inspects adjacent blocks and enters a new stripMine() instance if ore is found
-    print("[107]entered new stripMine() routine")
     local block, blockdata = turtle.inspectUp()
+
     if block then
-        print("[110]block detected above")
         if lt.tableContainsKey(blockdata.tags, "forge:ores") then
-            print("[112]block is an ore")
             turtle.digUp()
             turtle.suckUp()
             assert(turtle.up())
-            print("[116]mining and moving up")
             stripMine()
             assert(turtle.down())
-            print("[119]ended previous stripMine() routine, moving back down")
         end
     end
+
     block, blockdata = turtle.inspectDown()
+
     if block then
-        print("[124]block detected below")
         if lt.tableContainsKey(blockdata.tags, "forge:ores") then
-            print("[126]block is an ore")
             turtle.digDown()
             turtle.suckDown()
             assert(turtle.down())
-            print("[130]mining and moving down")
             stripMine()
             assert(turtle.up())
-            print("[133]ended previous stripMine() routine, moving back up")
         end
     end
+
     for turn = 1,4 do
         block, blockdata = turtle.inspect()
+
         if block then
-            print("[139]block detected forward")
             if lt.tableContainsKey(blockdata.tags, "forge:ores") then
-                print("[141]block is an ore")
                 turtle.dig()
                 turtle.suck()
                 assert(turtle.forward())
-                print("[145]mining and moving forward")
                 stripMine()
                 assert(turtle.back())
-                print("[148]ended previous stripMine() routine, moving back")
             end
         end
+
         turtle.turnRight()
         GetHeading("right")
         turn = turn + 1
-        print("[154]turning right. heading is now = ", Heading)
     end
-    print("[156]completed a turn. Ending stripMine() instance")
 end
 
 function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
     local move = 0
 
---    print("[163]beginning sequence to mine ", blocks, " blocks")
-
     while move < blocks do
 
         if strip then
             stripMine()
---           print("[172]initial stripMine() terminated. Moving forward")
         end
+
         while turtle.detect() do
             turtle.dig()
             turtle.suck()
@@ -218,30 +205,17 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
 end
 
 function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
---    print("[184]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
     local rel = {}
     local xblocks, yblocks, zblocks = 0, 0, 0
-
---    bot.x, bot.y, bot.z = gps.locate()
---    if not bot.x then
---        bot = noGPS("xyz")
---    end
-
---    print("[194]turtle location acquired: ", bot.x, bot.y, bot.z)
 
     rel = {
         x = (x - Coords.x),
         y = (y - Coords.y),
         z = (z - Coords.z)
     }
---    print("[201]computed movement necessary:")
---    print("x= ", rel.x)
---    print("y= ", rel.y)
---    print("z= ", rel.z)
 
     checkFuel(rel.x + rel.y + rel.z)
---    print("[207]heading acquired: ", Heading)
 
     xblocks = math.abs(rel.x)
 
@@ -274,7 +248,6 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "x"
     end
 
---    print("[240]mining ", xblocks, "blocks in the ", Heading, " direction")
     Mine(xblocks, strip)
 
     zblocks = math.abs(rel.z)
@@ -310,15 +283,12 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "z"
     end
 
---    print("[282]mining ", zblocks, "blocks in the ", Heading, " direction")
     Mine(zblocks, strip)
 
     yblocks = math.abs(rel.y)
 
     if rel.y < 0 then
         local move = 0
-
---        print("[290]mining ", yblocks, "blocks in the -y direction")
 
         while move < yblocks do
             while turtle.detectDown() do
@@ -331,8 +301,6 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         end
     elseif rel.y > 0 then
         local move = 0
-
---        print("[304]mining ", yblocks, "blocks in the y direction")
 
         while move < yblocks do
             while turtle.detectUp() do
@@ -437,7 +405,6 @@ local function startup()
         for k, v in pairs(quarrySize.abs) do print(k, v) end
 
         i = math.min(quarrySize.abs.y, 5)
-        print("i= " .. i)
         pattern = Patterns[i]
         for k, v in pairs(pattern) do print(k, v) end
 
@@ -447,11 +414,7 @@ local function startup()
             end
         end
 
-        print("xsign = " .. signs.x)
-        print("ysign = " .. signs.y)
-        print("zsign = " .. signs.z)
         nLayer = math.ceil(quarrySize.abs.y / i)
-        print("nLayer = " .. nLayer)
         nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
         fuelNeeded = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap) + lt.tableSum(quarrySize.abs)
 
@@ -459,7 +422,6 @@ local function startup()
         checkFuel(fuelNeeded)
 
         while layer < nLayer do
-            print("[490]layer = " .. layer)
             local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
 
             if layer % 2 == 0 then
@@ -477,15 +439,12 @@ local function startup()
             end
 
             for cycle = cycleStart, cycleStop, step do
-                print("[492]cycle = " .. cycle)
 
                 for t = tunnelStart, tunnelStop, step  do
-                    print("t = " .. t)
 
                     local x = coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1)
                     local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
                     local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
-                    print("xyz = ", x, y, z)
 
                     if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.abs.z then
                         local emptySlot = 0
@@ -495,7 +454,6 @@ local function startup()
                             for slot = 1, NSLOTS do
                                 if turtle.getItemCount(slot) == 0 then
                                     emptySlot = emptySlot + 1
-                                    print("emptySlot = " .. emptySlot)
                                 end
                             end
                             if emptySlot <= 3 then
@@ -568,12 +526,9 @@ local function startup()
             end
         end
 
-        io.write("Clear a space of 5 blocks in the positive x and z direction, as well as a clearance of 5 blocks above the square delimited thus. Press Enter when this is done.\n")
+        io.write("Clear a space of 6 blocks in the positive x and z direction, as well as a clearance of 6 blocks above the square delimited thus. Press Enter when this is done.\n")
         _ = io.read()
 
-        for i = 1,5 do
-            assert(turtle.forward())
-        end
     elseif cmd == "quit" then
         io.write("Goodbye")
         os.sleep(2)
