@@ -1,8 +1,11 @@
 local lt = require("luatools")
 
 Heading = nil
+Coords = {}
 
-_FUELS = {
+NSLOTS = 16
+
+FUELS = {
     "minecraft:coal",
     "minecraft:coal_block",
     "minecraft:charcoal",
@@ -11,7 +14,7 @@ _FUELS = {
     "immersiveengineering:coal_coke",
     "immersiveengineering:coke"
 }
-_INVS = {
+INVS = {
     ["forge:chests"] = true,
     "immersiveengineering:crate",
     "immersiveengineering:reinforced_crate",
@@ -27,10 +30,10 @@ local function checkFuel(fuelNeeded)
     local currFuel = turtle.getFuelLevel()
 
     while currFuel < fuelNeeded do
-        for slot = 1, 16 do
+        for slot = 1, NSLOTS do
             item = turtle.getItemDetail(slot)
             if item then
-                if lt.tableContainsValue(_FUELS, item.name) then
+                if lt.tableContainsValue(FUELS, item.name) then
                     turtle.select(slot)
                     turtle.refuel()
                     os.queueEvent("buffer")
@@ -86,10 +89,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
 
         checkFuel(2)
 
-        coords1.x, _, coords1.z = gps.locate()
-        if not coords1.x then
-            coords1 = noGPS("xz")
-        end
+        coords1.x, coords1.z = Coords.x, Coords.z
         print("[55]first coords: " .. coords1.x .. coords1.z)
 
         if turtle.detect() then
@@ -137,6 +137,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
             i = lt.getKeyForValue(compass, Heading) - 1
         end
         if i == 4 then i = 0 end
+        if i == -1 then i = 4 end
 
         Heading = compass[i]
     end
@@ -201,9 +202,6 @@ function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. 
 
 --    print("[163]beginning sequence to mine ", blocks, " blocks")
 
-    GetHeading()
---    print("[166]heading acquired: ", Heading)
-
     while move < blocks do
 
         if strip then
@@ -222,20 +220,20 @@ end
 function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
 --    print("[184]Starting sequence to move to coords:", x, y, z)
     strip = strip or false
-    local bot, rel = {}, {}
+    local rel = {}
     local xblocks, yblocks, zblocks = 0, 0, 0
 
-    bot.x, bot.y, bot.z = gps.locate()
-    if not bot.x then
-        bot = noGPS("xyz")
-    end
+--    bot.x, bot.y, bot.z = gps.locate()
+--    if not bot.x then
+--        bot = noGPS("xyz")
+--    end
 
 --    print("[194]turtle location acquired: ", bot.x, bot.y, bot.z)
 
     rel = {
-        x = (x - bot.x),
-        y = (y - bot.y),
-        z = (z - bot.z)
+        x = (x - Coords.x),
+        y = (y - Coords.y),
+        z = (z - Coords.z)
     }
 --    print("[201]computed movement necessary:")
 --    print("x= ", rel.x)
@@ -243,7 +241,6 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
 --    print("z= ", rel.z)
 
     checkFuel(rel.x + rel.y + rel.z)
-    GetHeading()
 --    print("[207]heading acquired: ", Heading)
 
     xblocks = math.abs(rel.x)
@@ -347,12 +344,24 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
             move = move + 1
         end
     end
+    Coords = {
+        x = x,
+        y = y,
+        z = z
+    }
 end
 
 local function startup()
     local incomplete = true
 
     io.write("Startup sequence for mining turtle.\n")
+
+    Coords.x, Coords.y, Coords.z = gps.locate()
+    if not Coords.x then
+        Coords = noGPS("xyz")
+    end
+    GetHeading()
+
     io.write("Please select a command\n")
     local options = {"mine", "quit"}
     textutils.tabulate(options)
@@ -482,10 +491,10 @@ local function startup()
                         GoThere(x, y, z, true)
 
                         if t % 2 == 0 then
-                            for slot = 1, 16 do
+                            for slot = 1, NSLOTS do
                                 if turtle.getItemCount(slot) == 0 then
                                     emptySlot = emptySlot + 1
-                                    print("emptySlot = " .. emptySlot) _ = io.read()
+                                    print("emptySlot = " .. emptySlot)
                                 end
                             end
                             if emptySlot <= 3 then
