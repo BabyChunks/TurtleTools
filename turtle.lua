@@ -355,6 +355,7 @@ local function startup()
     local incomplete = true
 
     io.write("Startup sequence for mining turtle.\n")
+    os.sleep(2)
 
     Coords.x, Coords.y, Coords.z = gps.locate()
     if not Coords.x then
