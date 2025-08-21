@@ -418,6 +418,8 @@ local function startup()
         GoThere(coords1.x, coords1.y, coords1.z)
         checkFuel(fuelNeeded)
 
+        io.write("Beginning mining...")
+
         while layer < nLayer do
             local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
 
@@ -469,6 +471,7 @@ local function startup()
             layer = layer + 1
         end
         GoThere(coords1.x, coords1.y, coords1.z)
+        io.write("Mining sequence done!")
 
     elseif cmd == "move" then
 
