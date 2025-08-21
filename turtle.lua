@@ -346,7 +346,7 @@ local function startup()
         local i, nCycle, layer, nLayer= 0, 0, 0, 0
         local err = false
 
-        io.write("Use current coordinates as recall point? (y/[xyz])")
+        io.write("Use current coordinates as recall point? (y/[xyz]\n)")
         incomplete = true
         while incomplete do
             local ans = io.read()
@@ -453,7 +453,7 @@ local function startup()
         GoThere(coords1.x, coords1.y, coords1.z)
         checkFuel(fuelNeeded)
 
-        io.write("Beginning mining...")
+        io.write("Beginning mining...\n")
 
         while layer < nLayer do
             local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
@@ -492,9 +492,9 @@ local function startup()
                             end
                             if emptySlot <= 3 then
                                 GoThere(Recall.x, Recall.y, Recall.z)
-                                io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.")
+                                io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.\n")
                                 _ = io.read()
-                                io.write("Resume mining...")
+                                io.write("Resume mining...\n")
                                 GoThere(x, y ,z)
 
                             end
@@ -507,7 +507,7 @@ local function startup()
             layer = layer + 1
         end
         GoThere(Recall.x, Recall.y, Recall.z)
-        io.write("Mining sequence done!")
+        io.write("Mining sequence done!\n")
 
     elseif cmd == "move" then
 
