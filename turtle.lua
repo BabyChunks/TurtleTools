@@ -323,7 +323,7 @@ local function startup()
     local incomplete = true
 
     io.write("Startup sequence for mining turtle.\n")
-    os.sleep(2)
+    os.sleep(1)
 
     Coords.x, Coords.y, Coords.z = gps.locate()
     if not Coords.x then
@@ -401,8 +401,6 @@ local function startup()
                 z = coords2.z - coords1.z
             }
         }
-
-        for k, v in pairs(quarrySize.abs) do print(k, v) end
 
         i = math.min(quarrySize.abs.y, 5)
         pattern = Patterns[i]
