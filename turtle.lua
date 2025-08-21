@@ -71,20 +71,18 @@ local function noGPS(dim) --manually enter xz or xyz coords
         end
 
         err, coords = pcall(lt.argparse, ans, keys)
-        if not err then
-            io.write(coords .. "\n")
-            goto continue
-        end
-
-        incomplete = false
-        for _, coord in pairs(coords) do
-            if type(coord) ~= "number" then
-                io.write("Input must be numbers\n")
-                incomplete = true
-                break
+        if err then
+            incomplete = false
+            for _, coord in pairs(coords) do
+                if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
+                    break
+                end
             end
+        else
+            io.write(coords .. "\n")
         end
-        ::continue::
     end
     return coords
 end
@@ -357,20 +355,19 @@ local function startup()
                 incomplete = false
             else
                 err, Recall = pcall(lt.argparse, ans, {"x", "y", "z"})
-                if not err then
-                    io.write(Recall .. "\n")
-                    goto continue
-                end
-                incomplete = false
-                for _, coord in pairs(Recall) do
-                    if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
-                    break
+                if err then
+                    incomplete = false
+                    for _, coord in pairs(Recall) do
+                        if type(coord) ~= "number" then
+                        io.write("Input must be numbers\n")
+                        incomplete = true
+                        break
+                        end
                     end
+                else
+                    io.write(Recall .. "\n")
                 end
             end
-            ::continue::
         end
 
         io.write("first coordinates: \n")
@@ -378,18 +375,17 @@ local function startup()
         incomplete = true
         while incomplete do
             err, coords1 = pcall(lt.argparse, io.read(), {"x", "y", "z"})
-            if not err then
-                io.write(coords1 .. "\n")
-                goto continue
-            end
-            incomplete = false
-            for _, coord in pairs(coords1) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
+            if err then
+                incomplete = false
+                for _, coord in pairs(coords1) do
+                    if type(coord) ~= "number" then
+                        io.write("Input must be numbers\n")
+                        incomplete = true
+                    end
                 end
+            else
+                io.write(coords1 .. "\n")
             end
-            ::continue::
         end
 
         incomplete = true
@@ -397,18 +393,17 @@ local function startup()
 
         while incomplete do
             err, coords2 = pcall(lt.argparse, io.read(), {"x", "y", "z"})
-            if not err then
-                io.write(coords2 .. "\n")
-                goto continue
-            end
-            incomplete = false
-            for _, coord in pairs(coords2) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
+            if err then
+                incomplete = false
+                for _, coord in pairs(coords2) do
+                    if type(coord) ~= "number" then
+                        io.write("Input must be numbers\n")
+                        incomplete = true
+                    end
                 end
+            else
+                io.write(coords2 .. "\n")
             end
-            ::continue::
         end
 
         Patterns ={
@@ -499,6 +494,7 @@ local function startup()
                                 GoThere(Recall.x, Recall.y, Recall.z)
                                 io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.")
                                 _ = io.read()
+                                io.write("Resume mining...")
                                 GoThere(x, y ,z)
 
                             end
@@ -523,19 +519,18 @@ local function startup()
         incomplete = true
         while incomplete do
             err, base = pcall(lt.argparse, io.read(), {"x", "y", "z"})
-            if not err then
-                io.write(base .. "\n")
-                goto continue
-            end
-            incomplete = false
-            for _, coord in pairs(base) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
-                    break
+            if err then
+                incomplete = false
+                for _, coord in pairs(base) do
+                    if type(coord) ~= "number" then
+                        io.write("Input must be numbers\n")
+                        incomplete = true
+                        break
+                    end
                 end
+            else
+                io.write(base .. "\n")
             end
-            ::continue::
         end
 
         GoThere(base.x, base.y, base.z)
