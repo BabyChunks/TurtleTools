@@ -51,6 +51,7 @@ end
 local function noGPS(dim) --manually enter xz or xyz coords
     local format, ans = "", ""
     local keys, coords = {}, {}
+    local err = false
 
     if dim == "xyz" then
         format = "x, y, z"
@@ -69,7 +70,11 @@ local function noGPS(dim) --manually enter xz or xyz coords
             os.reboot()
         end
 
-        coords = lt.argparse(ans, keys)
+        err, coords = pcall(lt.argparse, ans, keys)
+        if not err then
+            io.write(coords .. "\n")
+            goto continue
+        end
 
         incomplete = false
         for _, coord in pairs(coords) do
@@ -79,6 +84,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
                 break
             end
         end
+        ::continue::
     end
     return coords
 end
@@ -340,6 +346,7 @@ local function startup()
     if cmd == "mine" then
         local coords1, coords2, pattern, signs, fuelNeeded = {}, {}, {}, {}, {}
         local i, nCycle, layer, nLayer= 0, 0, 0, 0
+        local err = false
 
         io.write("Use current coordinates as recall point? (y/[xyz])")
         incomplete = true
@@ -349,7 +356,11 @@ local function startup()
                 Recall = Coords
                 incomplete = false
             else
-                Recall = lt.argparse(ans, {"x", "y", "z"})
+                err, Recall = pcall(lt.argparse, ans, {"x", "y", "z"})
+                if not err then
+                    io.write(Recall .. "\n")
+                    goto continue
+                end
                 incomplete = false
                 for _, coord in pairs(Recall) do
                     if type(coord) ~= "number" then
@@ -359,14 +370,18 @@ local function startup()
                     end
                 end
             end
+            ::continue::
         end
 
         io.write("first coordinates: \n")
 
         incomplete = true
         while incomplete do
-            coords1 = lt.argparse(io.read(), {"x", "y", "z"})
-
+            err, coords1 = pcall(lt.argparse, io.read(), {"x", "y", "z"})
+            if not err then
+                io.write(coords1 .. "\n")
+                goto continue
+            end
             incomplete = false
             for _, coord in pairs(coords1) do
                 if type(coord) ~= "number" then
@@ -374,14 +389,18 @@ local function startup()
                     incomplete = true
                 end
             end
+            ::continue::
         end
 
         incomplete = true
         io.write("second coordinates: \n")
 
         while incomplete do
-            coords2 = lt.argparse(io.read(), {"x", "y", "z"})
-
+            err, coords2 = pcall(lt.argparse, io.read(), {"x", "y", "z"})
+            if not err then
+                io.write(coords2 .. "\n")
+                goto continue
+            end
             incomplete = false
             for _, coord in pairs(coords2) do
                 if type(coord) ~= "number" then
@@ -389,6 +408,7 @@ local function startup()
                     incomplete = true
                 end
             end
+            ::continue::
         end
 
         Patterns ={
@@ -497,12 +517,16 @@ local function startup()
 
     elseif cmd == "GPS" then
         local base = {}
+        local err = false
         io.write("Setting up a GPS array. Please input base coordinates.\n")
 
         incomplete = true
         while incomplete do
-            base = lt.argparse(io.read(), {"x", "y", "z"})
-            
+            err, base = pcall(lt.argparse, io.read(), {"x", "y", "z"})
+            if not err then
+                io.write(base .. "\n")
+                goto continue
+            end
             incomplete = false
             for _, coord in pairs(base) do
                 if type(coord) ~= "number" then
@@ -511,6 +535,7 @@ local function startup()
                     break
                 end
             end
+            ::continue::
         end
 
         GoThere(base.x, base.y, base.z)
