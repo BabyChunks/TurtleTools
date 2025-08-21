@@ -341,6 +341,26 @@ local function startup()
         local coords1, coords2, pattern, signs, fuelNeeded = {}, {}, {}, {}, {}
         local i, nCycle, layer, nLayer= 0, 0, 0, 0
 
+        io.write("Use current coordinates as recall point? (y/[xyz])")
+        incomplete = true
+        while incomplete do
+            local ans = io.read()
+            if ans == "y" or ans == "Y" then
+                Recall = Coords
+                incomplete = false
+            else
+                Recall = lt.argparse(ans, {"x", "y", "z"})
+                incomplete = false
+                for _, coord in pairs(Recall) do
+                    if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
+                    break
+                    end
+                end
+            end
+        end
+
         io.write("first coordinates: \n")
 
         incomplete = true
@@ -456,7 +476,7 @@ local function startup()
                                 end
                             end
                             if emptySlot <= 3 then
-                                GoThere(coords1.x, coords1.y, coords1.z)
+                                GoThere(Recall.x, Recall.y, Recall.z)
                                 io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.")
                                 _ = io.read()
                                 GoThere(x, y ,z)
@@ -470,7 +490,7 @@ local function startup()
             end
             layer = layer + 1
         end
-        GoThere(coords1.x, coords1.y, coords1.z)
+        GoThere(Recall.x, Recall.y, Recall.z)
         io.write("Mining sequence done!")
 
     elseif cmd == "move" then
