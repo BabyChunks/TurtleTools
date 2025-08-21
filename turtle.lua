@@ -404,7 +404,6 @@ local function startup()
 
         i = math.min(quarrySize.abs.y, 5)
         pattern = Patterns[i]
-        for k, v in pairs(pattern) do print(k, v) end
 
         for dim, size in pairs(quarrySize.rel) do
             if size < 0 then signs[dim] = -1
