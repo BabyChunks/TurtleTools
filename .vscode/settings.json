@@ -8,6 +8,8 @@
         "shell",
         "multishell",
         "term",
-        "window"
+        "window",
+        "colours",
+        "keys"
     ]
 }
