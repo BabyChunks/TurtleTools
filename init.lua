@@ -11,7 +11,7 @@ for _, file in pairs(files) do
             fs.delete(result)
         end
     end
-    shell.run("wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/" .. file)
+    shell.run("bg","wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/" .. file)
 end
 
 local lt = require("luatools")
