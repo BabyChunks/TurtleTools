@@ -25,6 +25,7 @@ local function initFiles()
     whisper = term.redirect(whisper)
 end
 
+initFiles()
 local lt = require(filePath.."luatools")
 local tt = require(filePath.."quarry")
 
@@ -95,5 +96,4 @@ local function menu()
     navMenu(options, actions)
 end
 
-initFiles()
 menu()
