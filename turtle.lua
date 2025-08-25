@@ -1,5 +1,5 @@
 local lt = require("luatools")
-local st = require ("settings.lua")
+local st = require ("settings")
 
 Heading = nil
 Coords = {}
