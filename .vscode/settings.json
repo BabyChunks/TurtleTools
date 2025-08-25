@@ -5,6 +5,9 @@
         "textutils",
         "peripheral",
         "fs",
-        "shell"
+        "shell",
+        "multishell",
+        "term",
+        "window"
     ]
 }

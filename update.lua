@@ -3,6 +3,7 @@ local files = {
     "turtle.lua",
     "luatools.lua"
 }
+local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
 for _, file in pairs(files) do
     results = fs.find(file)
@@ -11,5 +12,5 @@ for _, file in pairs(files) do
             fs.delete(result)
         end
     end
-    local id = shell.execute("bg", "wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/" .. file)
+    shell.execute("wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"..file)
 end
