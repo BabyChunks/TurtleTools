@@ -11,5 +11,7 @@ for _, file in pairs(files) do
             fs.delete(result)
         end
     end
-    shell.run("bg", "wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/" .. file)
+    local id = shell.openTab("bg", "wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/" .. file)
+    shell.switchTab(id)
+    shell.exit()
 end
