@@ -14,3 +14,9 @@ for _, file in pairs(files) do
     end
     shell.execute("wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"..file)
 end
+
+print("this should be whispered.")
+
+whisper = term.redirect(whisper)
+
+print("this should not.")
