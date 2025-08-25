@@ -2,7 +2,7 @@ local base = {}
 local err = false
 io.write("Setting up a GPS array. Please input base coordinates.\n")
 
-incomplete = true
+local incomplete = true
 while incomplete do
     err, base = pcall(lt.argparse, io.read(), {"x", "y", "z"})
     if err then

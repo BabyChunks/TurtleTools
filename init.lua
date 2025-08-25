@@ -55,10 +55,10 @@ local function navMenu(options, actions)
             if i == selected then
                 term.write(">")
                 term.setTextColour(colours.yellow)
-                term.write(option)
+                term.write(option.."\n")
                 term.setTextColour(colours.white)
             else
-                term.write(" "..option)
+                term.write(" "..option.."\n")
             end
         end
 
