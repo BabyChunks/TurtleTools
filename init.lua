@@ -15,7 +15,9 @@ local function initFiles()
         results = fs.find(file)
         if #results ~= 0 then
             for _, result in pairs(results) do
+                if fs.getName(result) ~= "settings.lua" or arg[1] == "-r" then
                 fs.delete(result)
+                end
             end
         end
         shell.execute("wget", gitPath..file, filePath..file)
@@ -28,6 +30,7 @@ end
 initFiles()
 local lt = require(filePath.."luatools")
 local tt = require(filePath.."quarry")
+local st = require(filePath.."settings")
 
 local function corpBanner()
     local logo = "CHUNKSWARE TECHNOLOGY®"

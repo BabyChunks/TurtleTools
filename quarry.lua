@@ -1,5 +1,7 @@
-local lt = require("luatools")
-local st = require ("settings")
+local filePath = "/ChunksWare/"
+
+--local lt = require(filePath.."luatools")
+--local st = require (filePath.."settings")
 
 Heading = nil
 Coords = {}
