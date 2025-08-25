@@ -3,6 +3,9 @@ local files = {
     "turtle.lua",
     "luatools.lua"
 }
+local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
+local filePath = "/ChunksWare/"
+-- whipser On
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
 for _, file in pairs(files) do
@@ -12,11 +15,8 @@ for _, file in pairs(files) do
             fs.delete(result)
         end
     end
-    shell.execute("wget", "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"..file)
+    shell.execute("wget", gitPath..file, filePath..file)
 end
 
-print("this should be whispered.")
-
+--whisper Off
 whisper = term.redirect(whisper)
-
-print("this should not.")
