@@ -131,8 +131,10 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
 
     if block then
         if lt.tableContainsKey(blockdata.tags, "forge:ores") then
-            turtle.digUp()
-            turtle.suckUp()
+            while turtle.detectUp() do
+                turtle.digUp()
+                turtle.suckUp()
+            end
             assert(turtle.up())
             stripMine()
             assert(turtle.down())
@@ -143,8 +145,10 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
 
     if block then
         if lt.tableContainsKey(blockdata.tags, "forge:ores") then
-            turtle.digDown()
-            turtle.suckDown()
+            while turtle.detectDown() do
+                turtle.digDown()
+                turtle.suckDown()
+            end
             assert(turtle.down())
             stripMine()
             assert(turtle.up())
@@ -156,8 +160,10 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
 
         if block then
             if lt.tableContainsKey(blockdata.tags, "forge:ores") then
-                turtle.dig()
-                turtle.suck()
+                while turtle.detect() do
+                    turtle.dig()
+                    turtle.suck()
+                end
                 assert(turtle.forward())
                 stripMine()
                 assert(turtle.back())
