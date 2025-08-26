@@ -50,18 +50,20 @@ print(string.rep("#", termWidth))
 
 term.redirect(console)
 
-local tools = {{"minecraft:diamond_pickaxe"},{"computercraft:wireless_modem_normal","computercraft:wireless_modem_advanced"}}
-local incomplete = true
+if not turtle.getEquippedRight() or not turtle.getEquippedLeft() then
+    local tools = {{"minecraft:diamond_pickaxe"},{"computercraft:wireless_modem_normal","computercraft:wireless_modem_advanced"}}
+    local incomplete = true
 
-while incomplete do
-    local equipment = {}
-    table.insert(equipment, turtle.getEquippedRight().name)
-    table.insert(equipment, turtle.getEquippedLeft().name)
-    incomplete = false
-    for _, tool in ipairs(tools) do
-        if not Lt.tablesOverlap(tool, equipment) then
-            print("Turtle requires a diamond pickaxe and a wireless modem equipped to function.")
-            incomplete = false
+    while incomplete do
+        local equipment = {}
+        table.insert(equipment, turtle.getEquippedRight().name)
+        table.insert(equipment, turtle.getEquippedLeft().name)
+        incomplete = false
+        for _, tool in ipairs(tools) do
+            if not Lt.tablesOverlap(tool, equipment) then
+                print("Turtle requires a diamond pickaxe and a wireless modem equipped to function.")
+                incomplete = false
+            end
         end
     end
 end
