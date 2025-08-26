@@ -323,7 +323,7 @@ local function startup()
     local i, nCycle, layer, nLayer= 0, 0, 0, 0
     local err = false
 
-    io.write("Use current coordinates as recall point? (y/[xyz]\n)")
+    io.write("Use current coordinates as recall point? (y/[xyz])\n")
     incomplete = true
     while incomplete do
         local ans = io.read()
