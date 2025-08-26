@@ -93,7 +93,6 @@ local function menu()
             Tt.startup()
         end,
         function()
-            corpBanner()
             print("Input destination coordinates [xyz]")
             local ans = Lt.argparse(io.read(), {"x", "y", "z"})
             term.clear()
