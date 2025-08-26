@@ -36,7 +36,7 @@ St = require(filePath.."settings")
 local termWidth, termHeight = term.getSize()
 local logo = "CHUNKSWARE TECH"
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
-local console = window.create(term.current(), 4, 1, termWidth, termHeight - 3)
+local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 
 --Corporation Banner--
 term.redirect(corpBanner)
