@@ -13,7 +13,7 @@ local filePath = "/ChunksWare/"
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
 for _, file in pairs(files) do
-    results = fs.find(file)
+    results = fs.find(filePath..file)
     if #results ~= 0 then
         for _, result in pairs(results) do
             fs.delete(result)
