@@ -48,7 +48,7 @@ print(filler..logo..filler)
 --term.setCursorPos(1,3)
 print(string.rep("#", termWidth))
 
-term.redirect(console)fdasfadfas
+term.redirect(console)
 
 local function navMenu(options, actions)
     local selected = 1
