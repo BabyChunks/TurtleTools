@@ -42,6 +42,7 @@ local function corpBanner()
     term.write(filler..logo..filler)
     term.setCursorPos(1,3)
     term.write(string.rep("#", termWidth))
+    term.setCursorPos(1,4)
 end
 
 local function navMenu(options, actions)
@@ -63,10 +64,10 @@ local function navMenu(options, actions)
         end
 
         local _, key = os.pullEvent("key")
-        if key == keys.w then
+        if key == keys.w or key == keys.up then
             selected = selected - 1
             if selected < 1 then selected = #options end
-        elseif key == keys.s then
+        elseif key == keys.s or key == keys.down then
             selected = selected + 1
             if selected > #options then selected = 1 end
         elseif key == keys.enter then
