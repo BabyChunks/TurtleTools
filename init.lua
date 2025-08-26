@@ -9,6 +9,7 @@ local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/h
 local filePath = "/ChunksWare/"
 
 local function initFiles()
+    print("this point gets reached")
     -- whipser On
     local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
@@ -26,6 +27,8 @@ local function initFiles()
 
     --whisper Off
     whisper = term.redirect(whisper)
+    print("files should have updated")
+    os.sleep(2)
 end
 
 initFiles()
