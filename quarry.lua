@@ -173,7 +173,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
     end
 end
 
-function Mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
+local function mine(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
     local move = 0
 
@@ -236,7 +236,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "x"
     end
 
-    Mine(xblocks, strip)
+    mine(xblocks, strip)
 
     zblocks = math.abs(rel.z)
 
@@ -271,7 +271,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         Heading = "z"
     end
 
-    Mine(zblocks, strip)
+    mine(zblocks, strip)
 
     yblocks = math.abs(rel.y)
 
@@ -488,6 +488,7 @@ local function startup()
 end
 
 return {
+    GetHeading = GetHeading,
+    GoThere = GoThere,
     startup = startup,
-    GoThere = GoThere
 }
