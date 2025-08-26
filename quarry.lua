@@ -127,7 +127,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
     local block, blockdata = turtle.inspectUp()
 
     if block then
-        if lt.tableContainsKey(blockdata.tags, "forge:ores") then
+        if Lt.tableContainsKey(blockdata.tags, "forge:ores") then
             while turtle.detectUp() do
                 turtle.digUp()
                 turtle.suckUp()
