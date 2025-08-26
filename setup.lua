@@ -1,10 +1,13 @@
 local results = {}
 local files = {
-    "turtle.lua",
+    "init.lua",
+    "settings.lua",
     "luatools.lua",
+    "quarry.lua"
 }
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 local filePath = "/ChunksWare/"
+
 -- whipser On
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
@@ -20,3 +23,5 @@ end
 
 --whisper Off
 whisper = term.redirect(whisper)
+
+print("Setup complete")

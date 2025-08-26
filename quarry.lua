@@ -1,8 +1,3 @@
-local filePath = "/ChunksWare/"
-
---local lt = require(filePath.."luatools")
---local st = require (filePath.."settings")
-
 Heading = nil
 Coords = {}
 
@@ -16,7 +11,7 @@ local function checkFuel(fuelNeeded)
         for slot = 1, NSLOTS do
             item = turtle.getItemDetail(slot)
             if item then
-                if lt.tableContainsValue(st.FUELS, item.name) then
+                if Lt.tableContainsValue(St.FUELS, item.name) then
                     turtle.select(slot)
                     turtle.refuel()
                     os.queueEvent("buffer")
@@ -53,7 +48,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
             os.reboot()
         end
 
-        err, coords = pcall(lt.argparse, ans, keys)
+        err, coords = pcall(Lt.argparse, ans, keys)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
@@ -114,10 +109,10 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
         }
 
         if turn == "right" then
-            i = lt.getKeyForValue(compass, Heading) + 1
+            i = Lt.getKeyForValue(compass, Heading) + 1
 
         elseif turn == "left" then
-            i = lt.getKeyForValue(compass, Heading) - 1
+            i = Lt.getKeyForValue(compass, Heading) - 1
 
         end
 
@@ -146,7 +141,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
     block, blockdata = turtle.inspectDown()
 
     if block then
-        if lt.tableContainsKey(blockdata.tags, "forge:ores") then
+        if Lt.tableContainsKey(blockdata.tags, "forge:ores") then
             while turtle.detectDown() do
                 turtle.digDown()
                 turtle.suckDown()
@@ -161,7 +156,7 @@ local function stripMine() --Inspects adjacent blocks and enters a new stripMine
         block, blockdata = turtle.inspect()
 
         if block then
-            if lt.tableContainsKey(blockdata.tags, "forge:ores") then
+            if Lt.tableContainsKey(blockdata.tags, "forge:ores") then
                 while turtle.detect() do
                     turtle.dig()
                     turtle.suck()
@@ -336,7 +331,7 @@ local function startup()
             Recall = Coords
             incomplete = false
         else
-            err, Recall = pcall(lt.argparse, ans, {"x", "y", "z"})
+            err, Recall = pcall(Lt.argparse, ans, {"x", "y", "z"})
             if err then
                 incomplete = false
                 for _, coord in pairs(Recall) do
@@ -356,7 +351,7 @@ local function startup()
 
     incomplete = true
     while incomplete do
-        err, coords1 = pcall(lt.argparse, io.read(), {"x", "y", "z"})
+        err, coords1 = pcall(Lt.argparse, io.read(), {"x", "y", "z"})
         if err then
             incomplete = false
             for _, coord in pairs(coords1) do
@@ -374,7 +369,7 @@ local function startup()
     io.write("second coordinates: \n")
 
     while incomplete do
-        err, coords2 = pcall(lt.argparse, io.read(), {"x", "y", "z"})
+        err, coords2 = pcall(Lt.argparse, io.read(), {"x", "y", "z"})
         if err then
             incomplete = false
             for _, coord in pairs(coords2) do
@@ -430,7 +425,7 @@ local function startup()
 
     nLayer = math.ceil(quarrySize.abs.y / i)
     nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
-    fuelNeeded = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap) + lt.tableSum(quarrySize.abs)
+    fuelNeeded = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap) + Lt.tableSum(quarrySize.abs)
 
     GoThere(coords1.x, coords1.y, coords1.z)
     checkFuel(fuelNeeded)

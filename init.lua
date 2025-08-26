@@ -2,7 +2,8 @@ local results = {}
 local files = {
     "settings.lua",
     "luatools.lua",
-    "quarry.lua"
+    "quarry.lua",
+    "GPS.lua"
 }
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 local filePath = "/ChunksWare/"
@@ -16,7 +17,7 @@ local function initFiles()
         if #results ~= 0 then
             for _, result in pairs(results) do
                 if fs.getName(result) ~= "settings.lua" or arg[1] == "-r" then
-                fs.delete(result)
+                    fs.delete(result)
                 end
             end
         end
@@ -28,12 +29,12 @@ local function initFiles()
 end
 
 initFiles()
-local lt = require(filePath.."luatools")
-local tt = require(filePath.."quarry")
-local st = require(filePath.."settings")
+Lt = require(filePath.."luatools")
+Tt = require(filePath.."quarry")
+St = require(filePath.."settings")
 
 local function corpBanner()
-    local logo = "CHUNKSWARE TECHNOLOGY®"
+    local logo = "CHUNKSWARE TECH"
     local termWidth, termHeight = term.getSize()
     term.setCursorPos(1,1)
     term.write(string.rep("#", termWidth))
@@ -85,14 +86,14 @@ local function menu()
 
     local actions = {
         function()
-            tt.startup()
+            Tt.startup()
         end,
         function()
             term.clear()
             corpBanner()
             print("Input destination coordinates [xyz]")
-            local ans = lt.argparse(io.read(), {"x", "y", "z"})
-            tt.GoThere(ans.x, ans.y, ans.z)
+            local ans = Lt.argparse(io.read(), {"x", "y", "z"})
+            Tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function()
             return true
