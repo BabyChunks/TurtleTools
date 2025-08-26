@@ -33,18 +33,22 @@ Lt = require(filePath.."luatools")
 Tt = require(filePath.."quarry")
 St = require(filePath.."settings")
 
-local function corpBanner()
-    local logo = "CHUNKSWARE TECH"
-    local termWidth, termHeight = term.getSize()
-    term.setCursorPos(1,1)
-    term.write(string.rep("#", termWidth))
-    term.setCursorPos(1,2)
-    local filler = string.rep("/", termWidth / 2 - string.len(logo) / 2)
-    term.write(filler..logo..filler)
-    term.setCursorPos(1,3)
-    term.write(string.rep("#", termWidth))
-    term.setCursorPos(1,4)
-end
+local termWidth, termHeight = term.getSize()
+local logo = "CHUNKSWARE TECH"
+local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
+local console = window.create(term.current(), 4, 1, termWidth, termHeight - 3)
+
+--Corporation Banner--
+term.redirect(corpBanner)
+term.setCursorPos(1,1)
+print(string.rep("#", termWidth))
+--term.setCursorPos(1,2)
+local filler = string.rep("/", termWidth / 2 - string.len(logo) / 2)
+print(filler..logo..filler)
+--term.setCursorPos(1,3)
+print(string.rep("#", termWidth))
+
+term.redirect(console)
 
 local function navMenu(options, actions)
     local selected = 1
@@ -72,6 +76,7 @@ local function navMenu(options, actions)
             selected = selected + 1
             if selected > #options then selected = 1 end
         elseif key == keys.enter then
+            term.clear()
             local action = actions[selected]
             if action then
                 local shouldExit = action()
@@ -89,10 +94,10 @@ local function menu()
             Tt.startup()
         end,
         function()
-            term.clear()
             corpBanner()
             print("Input destination coordinates [xyz]")
             local ans = Lt.argparse(io.read(), {"x", "y", "z"})
+            term.clear()
             Tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function()

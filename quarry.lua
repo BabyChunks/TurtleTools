@@ -20,7 +20,7 @@ local function checkFuel(fuelNeeded)
             end
         end
         if  currFuel < fuelNeeded then
-            io.write("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory\n")
+            print("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory")
             os.pullEvent("turtle_inventory")
         end
     end
