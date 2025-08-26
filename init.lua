@@ -71,6 +71,10 @@ local function navMenu(options, actions)
             if selected > #options then selected = 1 end
         elseif key == keys.enter then
             local action = actions[selected]
+            if action then
+                local shouldExit = action()
+                if shouldExit then return end
+            end
         end
     end
 end
