@@ -55,7 +55,6 @@ local function navMenu(options, actions)
 
     while true do
         term.clear()
-        corpBanner()
 
         for i, option in ipairs(options) do
             if i == selected then
