@@ -39,14 +39,14 @@ local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
 local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 
 --Corporation Banner--
-term.redirect(corpBanner)
-term.setCursorPos(1,1)
-print(string.rep("#", termWidth))
+--term.redirect(corpBanner)
+corpBanner.setCursorPos(1,1)
+corpBanner.write(string.rep("#", termWidth).."\n")
 --term.setCursorPos(1,2)
 local filler = string.rep("/", termWidth / 2 - string.len(logo) / 2)
-print(filler..logo..filler)
+corpBanner.write(filler..logo..filler.."\n")
 --term.setCursorPos(1,3)
-print(string.rep("#", termWidth))
+corpBanner.write(string.rep("#", termWidth).."\n")
 
 term.redirect(console)
 
