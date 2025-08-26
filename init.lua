@@ -92,7 +92,7 @@ local function menu()
             corpBanner()
             print("Input destination coordinates [xyz]")
             local ans = lt.argparse(io.read(), {"x", "y", "z"})
-            tt.GoThere(ans)
+            tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function()
             return true
