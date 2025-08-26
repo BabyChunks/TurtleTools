@@ -36,12 +36,12 @@ local function corpBanner()
     local logo = "CHUNKSWARE TECHNOLOGY®"
     local termWidth, termHeight = term.getSize()
     term.setCursorPos(1,1)
-    term.write(string.rep("#", termWidth).."\n")
-    --term.setCursorPos(1,2)
+    term.write(string.rep("#", termWidth))
+    term.setCursorPos(1,2)
     local filler = string.rep("/", termWidth / 2 - string.len(logo) / 2)
-    term.write(filler..logo..filler.."\n")
-    --term.setCursorPos(1,3)
-    term.write(string.rep("#", termWidth).."\n")
+    term.write(filler..logo..filler)
+    term.setCursorPos(1,3)
+    term.write(string.rep("#", termWidth))
 end
 
 local function navMenu(options, actions)
@@ -53,12 +53,12 @@ local function navMenu(options, actions)
 
         for i, option in ipairs(options) do
             if i == selected then
-                term.write(">")
+                print(">")
                 term.setTextColour(colours.yellow)
-                term.write(option.."\n")
+                print(option.."\n")
                 term.setTextColour(colours.white)
             else
-                term.write(" "..option.."\n")
+                print(" "..option.."\n")
             end
         end
 
@@ -76,7 +76,7 @@ local function navMenu(options, actions)
 end
 
 local function menu()
-    local options = {"Mine", "Move", "Update", "Quit"}
+    local options = {"Mine", "Move", "Quit"}
 
     local actions = {
         function()
@@ -85,12 +85,9 @@ local function menu()
         function()
             term.clear()
             corpBanner()
-            term.write("Input destination coordinates [xyz]")
+            print("Input destination coordinates [xyz]")
             local ans = lt.argparse(io.read(), {"x", "y", "z"})
             tt.GoThere(ans)
-        end,
-        function()
-            shell.execute(filePath.."update.lua")
         end,
         function()
             return true
