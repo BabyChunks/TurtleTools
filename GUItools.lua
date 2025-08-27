@@ -4,7 +4,6 @@ local function drawText(text, monitor, x, y, align, nL, txtColour, bkgColour)
     y = y or monitor.getCursorPos()[2]
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
-    align = align or "left"
 
     local w,h = monitor.getSize()
 
@@ -23,6 +22,8 @@ local function drawText(text, monitor, x, y, align, nL, txtColour, bkgColour)
         monitor.setCursorPos(w - #text)
     elseif align == "centerscreen" then
         monitor.setCursorPos(w / 2 - #text / 2, h / 2)
+    else
+        monitor.setCursorPos(x, y)
     end
 
     monitor.blit(text, txtColour, bkgColour)
