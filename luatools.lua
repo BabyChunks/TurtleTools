@@ -8,7 +8,7 @@ local function tableContainsValue(t, element) -- MiscUtil function that returns 
 end
 
 local function tableContainsKey(t, element) -- MiscUtil function that returns true if element is in table keys
-    for key, _ in ipairs(t) do
+    for key, _ in pairs(t) do
         if key == element then
             return true
         end
@@ -17,15 +17,15 @@ local function tableContainsKey(t, element) -- MiscUtil function that returns tr
 end
 
 local function getKeyForValue(t, value)
-  for k, v in ipairs(t) do
+  for k, v in pairs(t) do
     if v == value then return k end
   end
   return nil
 end
 
 local function tablesOverlap(t1, t2)
-  for k1, v1 in ipairs(t1) do
-    for k2, v2 in ipairs(t2) do
+  for k1, v1 in pairs(t1) do
+    for k2, v2 in pairs(t2) do
       if k1 == k2 or v1 == v2 then
         return true
       end
@@ -60,7 +60,7 @@ local function argparse(str, keys)
       error("Incorrect number of arguments")
     end
 
-    for i, key in pairs(keys) do
+    for i, key in ipairs(keys) do
     args[key] = parsed[i]
     end
 
