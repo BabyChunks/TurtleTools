@@ -19,4 +19,8 @@ whisper = term.redirect(whisper)
 
 print("Setup complete")
 
-shell.run("rm", "setup.lua")
+for _, v in ipairs(arg) do
+    if v == "-d" then
+        shell.run("rm", "setup.lua")
+    end
+end
