@@ -41,6 +41,16 @@ local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 local logo = "CHUNKSWARE TECH"
 local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
 local filler2 = ("#"):rep(termWidth)
+
+for fade = 1, 10 do
+    corpBanner.clear()
+    local txtColour = 17 + fade * (240 - 17) / 10
+    Gt.drawText(filler2, corpBanner, 1, 1, nil, true, txtColour)
+    Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, txtColour)
+    Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, txtColour)
+    os.sleep(0.3)
+end
+
 corpBanner.setCursorPos(1,1)
 corpBanner.write(filler2)
 corpBanner.setCursorPos(1,2)
