@@ -24,6 +24,8 @@ local function checkFuel(fuelNeeded)
             os.pullEvent("turtle_inventory")
         end
     end
+    term.clear()
+    term.setCursorPos(1,1)
 end
 
 local function noGPS(dim) --manually enter xz or xyz coords
@@ -39,7 +41,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
         keys = {"x", "z"}
     end
 
-    io.write("Could not locate turtle using gps. Input coordinates (" .. format .. ") manually or press Enter to terminate\n")
+    print("Could not locate turtle using gps. Input coordinates (" .. format .. ") manually or press Enter to terminate")
     local incomplete = true
 
     while incomplete do
@@ -53,7 +55,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
+                    print("Input must be numbers")
                     incomplete = true
                     break
                 end
@@ -310,8 +312,10 @@ end
 local function startup()
     local incomplete = true
 
-    io.write("Startup sequence for mining turtle.\n")
+    print("Startup sequence for Mine Turtle (tm)")
     os.sleep(1)
+    term.clear()
+    term.setCursorPos(1,1)
 
     Coords.x, Coords.y, Coords.z = gps.locate()
     if not Coords.x then
@@ -323,7 +327,7 @@ local function startup()
     local i, nCycle, layer, nLayer= 0, 0, 0, 0
     local err = false
 
-    io.write("Use current coordinates as recall point? (y/[xyz])\n")
+    print("Use current coordinates as recall point? (y/[xyz])")
     incomplete = true
     while incomplete do
         local ans = io.read()
@@ -347,7 +351,7 @@ local function startup()
         end
     end
 
-    io.write("first coordinates: \n")
+    print("first coordinates:")
 
     incomplete = true
     while incomplete do
@@ -366,7 +370,7 @@ local function startup()
     end
 
     incomplete = true
-    io.write("second coordinates: \n")
+    print("second coordinates:")
 
     while incomplete do
         err, coords2 = pcall(Lt.argparse, io.read(), {"x", "y", "z"})
@@ -430,7 +434,9 @@ local function startup()
     GoThere(coords1.x, coords1.y, coords1.z)
     checkFuel(fuelNeeded)
 
-    io.write("Beginning mining...\n")
+    term.clear()
+    term.setCursorPos(1,1)
+    print("Beginning mining...")
 
     while layer < nLayer do
         local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
@@ -485,6 +491,7 @@ local function startup()
     end
     GoThere(Recall.x, Recall.y, Recall.z)
     io.write("Mining sequence done!\n")
+    os.sleep(2)
 end
 
 return {
