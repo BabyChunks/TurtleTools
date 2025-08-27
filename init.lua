@@ -42,15 +42,9 @@ local logo = "CHUNKSWARE TECH"
 local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
 local filler2 = ("#"):rep(termWidth)
 
-for fade = 1, 10 do
-    corpBanner.clear()
-    local i = fade * 0.1
-    local txtColour = colours.toBlit(colours.packRGB(i, i, i))
-    Gt.drawText(filler2, corpBanner, 1, 1, nil, true, txtColour)
-    Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, txtColour)
-    Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, txtColour)
-    os.sleep(0.3)
-end
+Gt.drawText(filler2, corpBanner, 1, 1, nil, true)
+Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true)
+Gt.drawText(filler2, corpBanner, nil, nil, "left", nil)
 
 corpBanner.setCursorPos(1,1)
 corpBanner.write(filler2)
