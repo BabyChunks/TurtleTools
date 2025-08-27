@@ -50,7 +50,7 @@ local function argparse(str, keys)
     if tonumber(arg) then
       arg = tonumber(arg)
     end
-    parsed:insert(arg)
+    table.insert(parsed, arg)
   end
 
   if #parsed == 0 then
