@@ -3,6 +3,7 @@ local files = {
     "settings.lua",
     "luatools.lua",
     "quarry.lua",
+    "GUItools.lua",
     "GPS.lua"
 }
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
@@ -32,21 +33,22 @@ initFiles()
 Lt = require(filePath.."luatools")
 Tt = require(filePath.."quarry")
 St = require(filePath.."settings")
+Gt = require(filePath.."GUItools")
 
 local termWidth, termHeight = term.getSize()
-local logo = "CHUNKSWARE TECH"
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
 local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 
 --Corporation Banner--
---term.redirect(corpBanner)
+local logo = "CHUNKSWARE TECH"
+local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
+local filler2 = ("#"):rep(termWidth)
 corpBanner.setCursorPos(1,1)
-corpBanner.write(string.rep("#", termWidth).."\n")
---term.setCursorPos(1,2)
-local filler = string.rep("/", termWidth / 2 - string.len(logo) / 2)
-corpBanner.write(filler..logo..filler.."\n")
---term.setCursorPos(1,3)
-corpBanner.write(string.rep("#", termWidth).."\n")
+corpBanner.write(filler2)
+corpBanner.setCursorPos(1,2)
+corpBanner.write(filler1..logo..filler1)
+corpBanner.setCursorPos(1,3)
+corpBanner.write(filler2)
 
 term.redirect(console)
 
@@ -57,13 +59,11 @@ local function navMenu(options, actions)
         term.clear()
 
         for i, option in ipairs(options) do
+            term.setCursorPos(1, i)
             if i == selected then
-                io.write(">")
-                term.setTextColour(colours.yellow)
-                io.write(option.."\n")
-                term.setTextColour(colours.white)
+                term.blit(" > "..option, "000"..string.rep("4", #option), string.rep("f",#option + 3))
             else
-                print(" "..option)
+                term.blit("   "..option, string.rep("0", #option + 3), string.rep("f", #option + 3))
             end
         end
 
@@ -76,6 +76,7 @@ local function navMenu(options, actions)
             if selected > #options then selected = 1 end
         elseif key == keys.enter then
             term.clear()
+            term.setCursorPos(1,1)
             local action = actions[selected]
             if action then
                 local shouldExit = action()
@@ -96,6 +97,7 @@ local function menu()
             print("Input destination coordinates [xyz]")
             local ans = Lt.argparse(io.read(), {"x", "y", "z"})
             term.clear()
+            term.setCursorPos(1,1)
             Tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function()

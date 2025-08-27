@@ -1,5 +1,5 @@
 local function tableContainsValue(t, element) -- MiscUtil function that returns true if element is in table values
-    for _, value in pairs(t) do
+    for _, value in ipairs(t) do
         if value == element then
             return true
         end
@@ -8,7 +8,7 @@ local function tableContainsValue(t, element) -- MiscUtil function that returns 
 end
 
 local function tableContainsKey(t, element) -- MiscUtil function that returns true if element is in table keys
-    for key, _ in pairs(t) do
+    for key, _ in ipairs(t) do
         if key == element then
             return true
         end
@@ -17,15 +17,15 @@ local function tableContainsKey(t, element) -- MiscUtil function that returns tr
 end
 
 local function getKeyForValue(t, value)
-  for k, v in pairs(t) do
+  for k, v in ipairs(t) do
     if v == value then return k end
   end
   return nil
 end
 
 local function tablesOverlap(t1, t2)
-  for k1, v1 in pairs(t1) do
-    for k2, v2 in pairs(t2) do
+  for k1, v1 in ipairs(t1) do
+    for k2, v2 in ipairs(t2) do
       if k1 == k2 or v1 == v2 then
         return true
       end
@@ -36,7 +36,7 @@ end
 
 local function tableSum(t)
   local sum = 0
-  for _, v in pairs(t) do
+  for _, v in ipairs(t) do
     sum = sum + v
   end
   return sum
@@ -50,7 +50,7 @@ local function argparse(str, keys)
     if tonumber(arg) then
       arg = tonumber(arg)
     end
-    table.insert(parsed, arg)
+    parsed:insert(arg)
   end
 
   if #parsed == 0 then
