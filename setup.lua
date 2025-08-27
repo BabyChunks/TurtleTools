@@ -4,7 +4,8 @@ local files = {
     "settings.lua",
     "luatools.lua",
     "quarry.lua",
-    "GPS.lua"
+    "GPS.lua",
+    "GUItools.lua"
 }
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 local filePath = "/ChunksWare/"
