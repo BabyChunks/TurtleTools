@@ -473,10 +473,11 @@ local function startup()
                                 emptySlot = emptySlot + 1
                             end
                         end
-                        if emptySlot <= 3 then
+                        if emptySlot <= St.EmptySlots then
                             GoThere(Recall.x, Recall.y, Recall.z)
                             io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.\n")
                             _ = io.read()
+                            checkFuel(fuelNeeded / (1 - (0.1 * (layer / nLayer) + 0.01 * (cycle / nCycle))))
                             io.write("Resume mining...\n")
                             GoThere(x, y ,z)
 

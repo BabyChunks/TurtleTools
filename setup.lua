@@ -26,3 +26,5 @@ end
 whisper = term.redirect(whisper)
 
 print("Setup complete")
+
+shell.run("rm", "setup.lua")

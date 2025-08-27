@@ -18,6 +18,7 @@ Settings = {
         ["farmersdelight:cabinets"] = true,
         ["sophisticatedbackpacks:backpack"] = true
     },
+    emptySlots = 3
 
 }
 
