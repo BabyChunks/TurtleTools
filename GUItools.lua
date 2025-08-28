@@ -1,7 +1,7 @@
 local function drawText(text, monitor, x, y, align, nL, txtColour, bkgColour)
     monitor = monitor or term
-    x = x or monitor.getCursorPos()[1]
-    y = y or monitor.getCursorPos()[2]
+    x, y = x, y or monitor.getCursorPos()
+    print(x, y) _ = io.read()
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
 
