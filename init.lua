@@ -41,17 +41,9 @@ local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 local logo = "CHUNKSWARE TECH"
 local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
 local filler2 = ("#"):rep(termWidth)
-
 Gt.drawText(filler2, corpBanner, 1, 1, nil, true)
 Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true)
 Gt.drawText(filler2, corpBanner, nil, nil, "left", nil)
-
-corpBanner.setCursorPos(1,1)
-corpBanner.write(filler2)
-corpBanner.setCursorPos(1,2)
-corpBanner.write(filler1..logo..filler1)
-corpBanner.setCursorPos(1,3)
-corpBanner.write(filler2)
 
 term.redirect(console)
 
@@ -62,11 +54,14 @@ local function navMenu(options, actions)
         term.clear()
 
         for i, option in ipairs(options) do
-            term.setCursorPos(1, i)
+            --term.setCursorPos(1, i)
             if i == selected then
-                term.blit(" > "..option, "000"..string.rep("4", #option), string.rep("f",#option + 3))
+                Gt.drawText(" > ", nil, 1, i, nil, false)
+                Gt.drawText(option, nil, nil, nil, nil, false, colours.yellow)
+                --term.blit(" > "..option, "000"..string.rep("4", #option), string.rep("f",#option + 3))
             else
-                term.blit("   "..option, string.rep("0", #option + 3), string.rep("f", #option + 3))
+                Gt.drawText("   "..option, nil, 1, i, nil, false)
+                --term.blit("   "..option, string.rep("0", #option + 3), string.rep("f", #option + 3))
             end
         end
 
