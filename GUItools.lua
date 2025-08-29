@@ -1,8 +1,7 @@
 local function drawText(text, monitor, x, y, align, nL, txtColour, bkgColour)
     monitor = monitor or term
     x = x or monitor.getCursorPos()
-    _, y = _, y or monitor.getCursorPos()
-    print(x, y) _ = io.read()
+    if not y then _, y = monitor.getCursorPos() end
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
 
@@ -17,12 +16,15 @@ local function drawText(text, monitor, x, y, align, nL, txtColour, bkgColour)
 
     if align == "left" then
         monitor.setCursorPos(1, y)
+        monitor.clearLine()
     elseif align == "center" then
         monitor.setCursorPos(w / 2 - #text / 2, y)
+        monitor.clearLine()
     elseif align == "right" then
         monitor.setCursorPos(w - #text)
     elseif align == "centerscreen" then
         monitor.setCursorPos(w / 2 - #text / 2, h / 2)
+        monitor.clearLine()
     else
         monitor.setCursorPos(x, y)
     end
@@ -30,7 +32,7 @@ local function drawText(text, monitor, x, y, align, nL, txtColour, bkgColour)
     monitor.blit(text, txtColour, bkgColour)
 
     if nL then
-        print()
+        monitor.setCursorPos(x, y + 1)
     end
 end
 

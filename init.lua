@@ -1,7 +1,6 @@
 local results = {}
 local files = {
     "settings.lua",
-    "luatools.lua",
     "quarry.lua",
     "GUItools.lua",
     "GPS.lua"
@@ -9,26 +8,26 @@ local files = {
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 local filePath = "/ChunksWare/"
 
-
--- whipser On
-local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
-
-    for _, file in pairs(files) do
-        results = fs.find(filePath..file)
-        if #results ~= 0 then
-            for _, result in pairs(results) do
-                if fs.getName(result) ~= "settings.lua" or arg[1] == "-r" then
-                    fs.delete(result)
+Lt = require(filePath.."luatools")
+if Lt.tableContainsValue(arg, "-u") then
+    --whipser On
+    local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
+        for _, file in pairs(files) do
+            results = fs.find(filePath..file)
+            if #results ~= 0 then
+                for _, result in pairs(results) do
+                    if fs.getName(result) ~= "settings.lua" or Lt.tableContainsValue(arg, "-r") then
+                        fs.delete(result)
+                    end
                 end
             end
+            shell.execute("wget", gitPath..file, filePath..file)
         end
-        shell.execute("wget", gitPath..file, filePath..file)
-    end
 
---whisper Off
-whisper = term.redirect(whisper)
+    --whisper Off
+    whisper = term.redirect(whisper)
+end
 
-Lt = require(filePath.."luatools")
 Tt = require(filePath.."quarry")
 St = require(filePath.."settings")
 Gt = require(filePath.."GUItools")
@@ -41,9 +40,9 @@ local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 local logo = "CHUNKSWARE TECH"
 local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
 local filler2 = ("#"):rep(termWidth)
-Gt.drawText(filler2, corpBanner, 1, 1, nil, true)
-Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true)
-Gt.drawText(filler2, corpBanner, nil, nil, "left", nil)
+Gt.drawText(filler2, corpBanner, 1, 1, nil, true, colours.yellow)
+Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, colours.yellow)
+Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, colours.yellow)
 
 term.redirect(console)
 
@@ -53,15 +52,12 @@ local function navMenu(options, actions)
     while true do
         term.clear()
 
-        for i, option in ipairs(options) do
-            --term.setCursorPos(1, i)
+        for i, option in pairs(options) do
             if i == selected then
                 Gt.drawText(" > ", nil, 1, i, nil, false)
                 Gt.drawText(option, nil, nil, nil, nil, false, colours.yellow)
-                --term.blit(" > "..option, "000"..string.rep("4", #option), string.rep("f",#option + 3))
             else
                 Gt.drawText("   "..option, nil, 1, i, nil, false)
-                --term.blit("   "..option, string.rep("0", #option + 3), string.rep("f", #option + 3))
             end
         end
 
