@@ -3,7 +3,7 @@ local files = {
     "settings.lua",
     "quarry.lua",
     "GUItools.lua",
-    "GPS.lua"
+    "GPS.lua",
 }
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 local filePath = "/ChunksWare/"
@@ -22,6 +22,7 @@ if Lt.tableContainsValue(arg, "-u") then
                 end
             end
             shell.execute("wget", gitPath..file, filePath..file)
+
         end
 
     --whisper Off
@@ -31,6 +32,7 @@ end
 Tt = require(filePath.."quarry")
 St = require(filePath.."settings")
 Gt = require(filePath.."GUItools")
+GPS = require(filePath.."GPS")
 
 local termWidth, termHeight = term.getSize()
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
