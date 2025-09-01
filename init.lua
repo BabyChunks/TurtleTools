@@ -55,12 +55,12 @@ local function navMenu(options, actions)
         term.clear()
 
         for i, option in pairs(options) do
-            if i == selected then
-                Gt.drawText(" > ", nil, 1, i, nil, false)
-                Gt.drawText(option, nil, nil, nil, nil, false, colours.yellow)
-            else
-                Gt.drawText("   "..option, nil, 1, i, nil, false)
-            end
+            --if i == selected then
+                Gt.drawText((i == selected) and " > " or "   ", nil, {1, i})
+                Gt.drawText(option, nil, nil, false, (i == selected) and colours.yellow or colours.white)
+            --else
+                --Gt.drawText("   "..option, nil, 1, i, nil, false)
+            --end
         end
 
         local _, key = os.pullEvent("key")
