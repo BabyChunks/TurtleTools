@@ -1,10 +1,12 @@
 local results = {}
 local files = {
     "settings.lua",
+    "quarry.lua",
     "GUItools.lua",
+    "GPS.lua",
 }
 local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
-local filePath = "/ChunksWare/"
+local filePath = "/ChunksWare/turtle/"
 
 Lt = require(filePath.."luatools")
 if Lt.tableContainsValue(arg, "-u") then
