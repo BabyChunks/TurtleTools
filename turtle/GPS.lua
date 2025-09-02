@@ -1,0 +1,275 @@
+Heading = Heading or GetHeading()
+local function noGPS(dim) --manually enter xz or xyz coords
+    local format, ans = "", ""
+    local keys, coords = {}, {}
+    local err = false
+
+    if dim == "xyz" then
+        format = "x, y, z"
+        keys = {"x", "y", "z"}
+    elseif dim == "xz" then
+        format = "x, z"
+        keys = {"x", "z"}
+    end
+
+    print("Could not locate turtle using gps. Input coordinates (" .. format .. ") manually or press Enter to terminate")
+    local incomplete = true
+
+    while incomplete do
+        ans = io.read()
+        if ans == "" then
+            os.reboot()
+        end
+
+        err, coords = pcall(Lt.argparse, ans, keys)
+        if err then
+            incomplete = false
+            for _, coord in pairs(coords) do
+                if type(coord) ~= "number" then
+                    print("Input must be numbers")
+                    incomplete = true
+                    break
+                end
+            end
+        else
+            io.write(coords .. "\n")
+        end
+    end
+    return coords
+end
+
+function GetHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
+    if not Heading then
+        local coords1, coords2 = {}, {}
+
+        Tt.checkFuel(2)
+
+        coords1.x, coords1.z = Coords.x, Coords.z
+
+        if turtle.detect() then
+            turtle.dig()
+            turtle.suck()
+        end
+        assert(turtle.forward())
+
+        coords2.x, _, coords2.z = gps.locate()
+        if not coords2.x then
+            coords2 = noGPS("xz")
+        end
+        assert(turtle.back())
+
+        if coords2.x - coords1.x > 0 then
+            Heading =  "x"
+
+        elseif coords2.x - coords1.x < 0 then
+            Heading = "-x"
+
+        elseif coords2.z - coords1.z > 0 then
+            Heading = "z"
+
+        elseif coords2.z - coords1.z < 0 then
+            Heading = "-z"
+
+        end
+    end
+    if turn then
+        local i = 0
+        local compass = {
+            [0] = "x",
+            [1] = "z",
+            [2] = "-x",
+            [3] = "-z"
+        }
+
+        if turn == "right" then
+            i = Lt.getKeyForValue(compass, Heading) + 1
+
+        elseif turn == "left" then
+            i = Lt.getKeyForValue(compass, Heading) - 1
+
+        end
+
+        if i == 4 then i = 0 end
+        if i == -1 then i = 4 end
+
+        Heading = compass[i]
+    end
+end
+
+function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
+    strip = strip or false
+    local rel = {}
+    local xblocks, yblocks, zblocks = 0, 0, 0
+
+    rel = {
+        x = (x - Coords.x),
+        y = (y - Coords.y),
+        z = (z - Coords.z)
+    }
+
+    Tt.checkFuel(rel.x + rel.y + rel.z)
+
+    xblocks = math.abs(rel.x)
+
+    if rel.x < 0 then
+        if Heading == "x" then
+            turtle.turnRight()
+            turtle.turnRight()
+
+        elseif Heading == "z" then
+            turtle.turnRight()
+
+        elseif Heading == "-z" then
+            turtle.turnLeft()
+        end
+
+        Heading = "-x"
+
+    elseif rel.x > 0 then
+        if Heading == "-x" then
+            turtle.turnRight()
+            turtle.turnRight()
+
+        elseif Heading == "z" then
+            turtle.turnLeft()
+
+        elseif Heading == "-z" then
+            turtle.turnRight()
+        end
+
+        Heading = "x"
+    end
+
+    Tt.mine(xblocks, strip)
+
+    zblocks = math.abs(rel.z)
+
+    if rel.z < 0 then
+        if Heading == "z" then
+            turtle.turnRight()
+            turtle.turnRight()
+
+        elseif Heading == "x" then
+            turtle.turnLeft()
+
+        elseif Heading == "-x" then
+            turtle.turnRight()
+
+        end
+
+        Heading = "-z"
+
+    elseif rel.z > 0 then
+        if Heading == "-z" then
+            turtle.turnRight()
+            turtle.turnRight()
+
+        elseif Heading == "x" then
+            turtle.turnRight()
+
+        elseif Heading == "-x" then
+            turtle.turnLeft()
+
+        end
+
+        Heading = "z"
+    end
+
+    Tt.mine(zblocks, strip)
+
+    yblocks = math.abs(rel.y)
+
+    if rel.y < 0 then
+        local move = 0
+
+        while move < yblocks do
+            while turtle.detectDown() do
+                turtle.digDown()
+                turtle.suckDown()
+            end
+
+            assert(turtle.down())
+            move = move + 1
+        end
+    elseif rel.y > 0 then
+        local move = 0
+
+        while move < yblocks do
+            while turtle.detectUp() do
+                turtle.digUp()
+                turtle.suckUp()
+            end
+
+            assert(turtle.up())
+            move = move + 1
+        end
+    end
+    Coords = {
+        x = x,
+        y = y,
+        z = z
+    }
+end
+
+local function buildArray()
+    local base = {}
+    local err = false
+
+    io.write("Setting up a GPS array. Please input base coordinates.\n")
+    local incomplete = true
+    while incomplete do
+        err, base = pcall(Lt.argparse, io.read(), {"x", "y", "z"})
+        if err then
+            incomplete = false
+            for _, coord in pairs(base) do
+                if type(coord) ~= "number" then
+                    io.write("Input must be numbers\n")
+                    incomplete = true
+                    break
+                end
+            end
+        else
+            io.write(base .. "\n")
+        end
+    end
+
+    GoThere(base.x, base.y, base.z)
+
+    local partsNeeded = {
+        [1] = {names = {"computercraft:computer_normal", "computercraft:computer_advanced"}, n = 4, check = false},
+        [2] = {names = {"computercraft:wireless_modem_normal", "computercraft:wireless_modem_advanced"}, n = 4, check = false},
+        [3] = {names = {"computercraft:wired_modem"}, n = 6, check = false},
+        [4] = {names = {"computercraft:cable"}, n = 9, check = false}
+    }
+
+    while incomplete do
+        incomplete = false
+        for _, part in pairs(partsNeeded) do
+            for slot = 1, 16 do
+                local item = turtle.getItemDetail(slot)
+                if item then
+                    if Lt.tableContainsValue(part.names, item.name) then
+                        if item.count >= part.n then
+                            part.check = true
+                        end
+                    end
+                end
+            end
+            if not part.check then
+                incomplete = true
+            end
+        end
+        if incomplete then
+            io.write("List of objects to put in inventory:\n")
+            textutils.tabulate({4, 4, 6, 9},{"Computers", "Wireless Modems", "Wired Modems", "Wires"})
+            os.pullEvent("turtle_inventory")
+        end
+    end
+
+    io.write("Clear a space of 6 blocks in the positive x and z direction, as well as a clearance of 6 blocks above the square delimited thus. Press Enter when this is done.\n")
+    _ = io.read()
+end
+
+return {
+    buildArray = buildArray
+}

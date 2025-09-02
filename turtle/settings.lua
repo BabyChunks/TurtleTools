@@ -19,7 +19,6 @@ Settings = {
         ["sophisticatedbackpacks:backpack"] = true
     },
     emptySlots = 3
-
 }
 
 return Settings

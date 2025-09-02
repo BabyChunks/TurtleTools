@@ -1,0 +1,3 @@
+take out GUITools calls from turtle init, terminal operations should be made directly in program
+make server ping on computer side, make server pong on turtle side
+make a request for settings on turtle side, make computer side able to upload files

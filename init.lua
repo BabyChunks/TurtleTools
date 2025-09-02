@@ -27,10 +27,7 @@ if Lt.tableContainsValue(arg, "-u") then
     whisper = term.redirect(whisper)
 end
 
-Tt = require(filePath.."quarry")
-St = require(filePath.."settings")
 Gt = require(filePath.."GUItools")
-GPS = require(filePath.."GPS")
 
 local termWidth, termHeight = term.getSize()
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
@@ -40,9 +37,9 @@ local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 local logo = "CHUNKSWARE TECH"
 local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
 local filler2 = ("#"):rep(termWidth)
-Gt.drawText(filler2, corpBanner, 1, 1, nil, true, colours.yellow)
-Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, colours.yellow)
-Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, colours.yellow)
+Gt.drawText(filler2, corpBanner, 1, 1, nil, true, colours.cyan)
+Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, colours.cyan)
+Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, colours.cyan)
 
 term.redirect(console)
 
