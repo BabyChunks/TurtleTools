@@ -1,22 +1,26 @@
-local results = {}
-local files = {
-    "settings.lua",
-    "GUItools.lua",
-}
-local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 local filePath = "/ChunksWare/"
 
-Lt = require(filePath.."luatools")
-if Lt.tableContainsValue(arg, "-u") then
+
+if arg[1] == "-u" then
+    local results = {}
+    local files = {
+        "luatools.lua",
+        "GUItools.lua",
+    }
+
+    if not fs.find(filePath.."settings.lua") then
+        table.insert(files, "settings.lua")
+    end
+
+    local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
+    print("Updating files...")
     --whipser On
     local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
         for _, file in pairs(files) do
             results = fs.find(filePath..file)
             if #results ~= 0 then
                 for _, result in pairs(results) do
-                    if fs.getName(result) ~= "settings.lua" or Lt.tableContainsValue(arg, "-r") then
                         fs.delete(result)
-                    end
                 end
             end
             shell.execute("wget", gitPath..file, filePath..file)
@@ -25,9 +29,13 @@ if Lt.tableContainsValue(arg, "-u") then
 
     --whisper Off
     whisper = term.redirect(whisper)
+    print("Done!")
+    os.sleep(0.8)
+    term.clear()
 end
 
 Gt = require(filePath.."GUItools")
+Lt = require(filePath.."luatools")
 
 local termWidth, termHeight = term.getSize()
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)

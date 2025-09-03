@@ -10,7 +10,7 @@ if turtle then
         "quarry.lua",
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
-    filePath = "/ChunksWare/turtle"
+    filePath = "/ChunksWare/turtle/"
 else
     files = {
         "init.lua",
@@ -36,7 +36,7 @@ whisper = term.redirect(whisper)
 
 print("Setup complete")
 os.sleep(0.8)
-term.clear()
+os.reboot()
 
 for _, v in ipairs(arg) do
     if v == "-d" then

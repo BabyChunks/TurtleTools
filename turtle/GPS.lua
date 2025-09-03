@@ -1,4 +1,3 @@
-Heading = Heading or GetHeading()
 local function noGPS(dim) --manually enter xz or xyz coords
     local format, ans = "", ""
     local keys, coords = {}, {}

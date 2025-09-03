@@ -1,28 +1,34 @@
 local termWidth, termHeight = term.getSize()
 
-local filePath = "/ChunksWare/turtle/"
+local filePath = "/ChunksWare/"
 
 --initial screen--
-term.setCursorPos((termWidth + 16) / 2, termHeight / 2 -2)
+term.clear()
+term.setCursorPos((termWidth - 16) / 2, termHeight / 2 - 2)
 textutils.slowWrite("Mine Turtle (tm)", 10)
-term.setCursorPos((termWidth + 0) / 2, termHeight / 2)
-textutils.slowWrite("a", 10)
-term.setCursorPos((termWidth + 10) / 2, termHeight / 2 + 1) term.setTextColour(colours.cyan)
-textutils.slowWrite("ChunksWare", 10)
-term.setCursorPos((termWidth + 10) / 2, termHeight / 2 + 2) term.setTextColour(colours.white)
-textutils.slowWrite("product", 10)
+term.setCursorPos((termWidth - 0) / 2, termHeight / 2)
+textutils.slowWrite("a", 15)
+term.setCursorPos((termWidth - 10) / 2, termHeight / 2 + 1) term.setTextColour(colours.cyan)
+textutils.slowWrite("CHUNKSWARE", 15)
+term.setCursorPos((termWidth - 7) / 2, termHeight / 2 + 2) term.setTextColour(colours.white)
+textutils.slowWrite("product", 15)
 os.sleep(2)
 term.clear()
+term.setCursorPos(1,1)
 
-Lt = require(filePath.."luatools")
-if Lt.tableContainsValue(arg, "-u") then
+if arg[1] == "-u" then
     local results = {}
     local files = {
-        "settings.lua",
         "quarry.lua",
         "GPS.lua",
+        "luatools.lua"
     }
-    local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
+
+    if not fs.find(filePath.."settings.lua") then
+        table.insert(files, "settings.lua")
+    end
+
+    local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
 
     print("Updating files...")
     --whipser On
@@ -31,9 +37,7 @@ if Lt.tableContainsValue(arg, "-u") then
             results = fs.find(filePath..file)
             if #results ~= 0 then
                 for _, result in pairs(results) do
-                    if fs.getName(result) ~= "settings.lua" or Lt.tableContainsValue(arg, "-r") then
-                        fs.delete(result)
-                    end
+                    fs.delete(result)
                 end
             end
             shell.execute("wget", gitPath..file, filePath..file)
@@ -48,23 +52,26 @@ if Lt.tableContainsValue(arg, "-u") then
 end
 
 Tt = require(filePath.."quarry")
-Gt = require(filePath.."GUItools")
 GPS = require(filePath.."GPS")
+Lt = require(filePath.."luatools")
 
-local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
-local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
+term.setCursorPos((termWidth - 27) / 2, termHeight / 2)
+term.write("Awaiting server commands...")
+
+-- local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
+-- local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 
 --Corporation Banner--
-local logo = "CHUNKSWARE TECH"
-local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
-local filler2 = ("#"):rep(termWidth)
-Gt.drawText(filler2, corpBanner, 1, 1, nil, true, colours.cyan)
-Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, colours.cyan)
-Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, colours.cyan)
+-- local logo = "CHUNKSWARE TECH"
+-- local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
+-- local filler2 = ("#"):rep(termWidth)
+-- Gt.drawText(filler2, corpBanner, 1, 1, nil, true, colours.cyan)
+-- Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, colours.cyan)
+-- Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, colours.cyan)
 
-term.redirect(console)
+-- term.redirect(console)
 
-Gt.drawText("Awaiting server commands...", nil, "center")
+-- Gt.drawText("Awaiting server commands...", nil, "center")
 
 -- local function navMenu(options, actions)
 --     local selected = 1
