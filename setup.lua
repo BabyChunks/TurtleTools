@@ -1,5 +1,6 @@
-local filePath, gitPath = "", ""
+local gitPath = ""
 local files = {}
+local filePath = "/ChunksWare/"
 
 print("Setting up files...")
 if turtle then
@@ -10,14 +11,13 @@ if turtle then
         "quarry.lua",
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
-    filePath = "/ChunksWare/"
 else
     files = {
         "init.lua",
         "luatools.lua",
+        "GUItools.lua"
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
-    filePath = "/ChunksWare/"
 end
 -- whipser On
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
