@@ -37,11 +37,36 @@ local function noGPS(dim) --manually enter xz or xyz coords
     return coords
 end
 
-function GetHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
+local function checkFuel(fuelNeeded)
+    local item = {}
+    local currFuel = turtle.getFuelLevel()
+
+    while currFuel < fuelNeeded do
+        for slot = 1, NSLOTS do
+            item = turtle.getItemDetail(slot)
+            if item then
+                if Lt.tableContainsValue(St.FUELS, item.name) then
+                    turtle.select(slot)
+                    turtle.refuel()
+                    os.queueEvent("buffer")
+                    currFuel = turtle.getFuelLevel()
+                end
+            end
+        end
+        if  currFuel < fuelNeeded then
+            print("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory")
+            os.pullEvent("turtle_inventory")
+        end
+    end
+    term.clear()
+    term.setCursorPos(1,1)
+end
+
+local function getHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
     if not Heading then
         local coords1, coords2 = {}, {}
 
-        Tt.checkFuel(2)
+        checkFuel(2)
 
         coords1.x, coords1.z = Coords.x, Coords.z
 
@@ -95,7 +120,7 @@ function GetHeading(turn) --set or get Heading to turtle's current heading on th
     end
 end
 
-function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
+local function goThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
     strip = strip or false
     local rel = {}
     local xblocks, yblocks, zblocks = 0, 0, 0
@@ -106,7 +131,7 @@ function GoThere(x, y, z, strip) -- main function for navigation. Uses absolute 
         z = (z - Coords.z)
     }
 
-    Tt.checkFuel(rel.x + rel.y + rel.z)
+    checkFuel(rel.x + rel.y + rel.z)
 
     xblocks = math.abs(rel.x)
 
@@ -270,5 +295,9 @@ local function buildArray()
 end
 
 return {
+    noGPS =  noGPS,
+    checkFuel = checkFuel,
+    getHeading = getHeading,
+    goThere = goThere,
     buildArray = buildArray
 }

@@ -1,0 +1,22 @@
+{
+  emptySlots = 3,
+  FUELS = {
+    "minecraft:coal",
+    "minecraft:coal_block",
+    "minecraft:charcoal",
+    "quark:charcoal_block",
+    "minecraft:lava_bucket",
+    "immersiveengineering:coal_coke",
+    "immersiveengineering:coke",
+  },
+  INVS = {
+    "immersiveengineering:crate",
+    "immersiveengineering:reinforced_crate",
+    [ "forge:boxes/shulker" ] = true,
+    [ "sophisticatedbackpacks:backpack" ] = true,
+    [ "forge:barrels" ] = true,
+    [ "farmersdelight:cabinets" ] = true,
+    [ "computercraft:turtle" ] = true,
+    [ "forge:chests" ] = true,
+  },
+}

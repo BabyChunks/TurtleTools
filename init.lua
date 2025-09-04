@@ -8,8 +8,8 @@ if arg[1] == "-u" then
         "GUItools.lua",
     }
 
-    if not fs.find(filePath.."settings.lua") then
-        table.insert(files, "settings.lua")
+    if not fs.find(filePath.."settings.txt") then
+        table.insert(files, "settings.txt")
     end
 
     local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
@@ -36,6 +36,7 @@ end
 
 Gt = require(filePath.."GUItools")
 Lt = require(filePath.."luatools")
+St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
 local termWidth, termHeight = term.getSize()
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)

@@ -10,7 +10,7 @@ if turtle then
         "quarry.lua",
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
-    filePath = "/ChunksWare/turtle/"
+    filePath = "/ChunksWare/"
 else
     files = {
         "init.lua",

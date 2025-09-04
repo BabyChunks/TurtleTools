@@ -1,17 +1,21 @@
 local termWidth, termHeight = term.getSize()
-
+Coords = {}
+Heading  = nil
 local filePath = "/ChunksWare/"
 
 --initial screen--
+local initScreen = {
+    [1] = {"Mine Turtle (tm)", -2, 10, colours.white},
+    [2] = {"a", 0, 15, colours.white},
+    [3] = {"CHUNKSWARE", 1, 15, colours.cyan},
+    [4] = {"product", 2, 15, colours.white}
+}
 term.clear()
-term.setCursorPos((termWidth - 16) / 2, termHeight / 2 - 2)
-textutils.slowWrite("Mine Turtle (tm)", 10)
-term.setCursorPos((termWidth - 0) / 2, termHeight / 2)
-textutils.slowWrite("a", 15)
-term.setCursorPos((termWidth - 10) / 2, termHeight / 2 + 1) term.setTextColour(colours.cyan)
-textutils.slowWrite("CHUNKSWARE", 15)
-term.setCursorPos((termWidth - 7) / 2, termHeight / 2 + 2) term.setTextColour(colours.white)
-textutils.slowWrite("product", 15)
+for _, line in ipairs(initScreen) do
+    term.setCursorPos((termWidth - #line[1]) / 2, termHeight / 2 + line[2])
+    term.setTextColour(line[4])
+    textutils.slowWrite(line[1], line[3])
+end
 os.sleep(2)
 term.clear()
 term.setCursorPos(1,1)
@@ -24,8 +28,8 @@ if arg[1] == "-u" then
         "luatools.lua"
     }
 
-    if not fs.find(filePath.."settings.lua") then
-        table.insert(files, "settings.lua")
+    if #fs.find(filePath.."settings.txt") == 0 then
+        table.insert(files, "settings.txt")
     end
 
     local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
@@ -54,9 +58,29 @@ end
 Tt = require(filePath.."quarry")
 GPS = require(filePath.."GPS")
 Lt = require(filePath.."luatools")
+St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
-term.setCursorPos((termWidth - 27) / 2, termHeight / 2)
-term.write("Awaiting server commands...")
+Coords.x, Coords.y, Coords.z = gps.locate()
+    if not Coords.x then
+        Coords = GPS.noGPS("xyz")
+    end
+GPS.getHeading()
+
+while true do
+    term.setCursorPos((termWidth - 27) / 2, termHeight / 2)
+    term.write("Awaiting server commands...")
+    
+    local serverID = 0
+    while true do
+        peripheral.find("modem", rednet.open)
+        local id, msg, prot = rednet.receive()
+        if prot == "ping" and msg == "ping" then
+            serverID = id
+            rednet.send(serverID, {"pong", Coords}, "ping")
+        end
+    end
+
+end
 
 -- local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
 -- local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
