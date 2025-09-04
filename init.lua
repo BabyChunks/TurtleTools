@@ -46,9 +46,9 @@ local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
 local logo = "CHUNKSWARE TECH"
 local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
 local filler2 = ("#"):rep(termWidth)
-Gt.drawText(filler2, corpBanner, 1, 1, nil, true, colours.cyan)
-Gt.drawText(filler1..logo..filler1, corpBanner, nil, nil, "left", true, colours.cyan)
-Gt.drawText(filler2, corpBanner, nil, nil, "left", nil, colours.cyan)
+Gt.drawText(filler2, corpBanner, {1, 1}, true, colours.cyan)
+Gt.drawText(filler1..logo..filler1, corpBanner, "left", true, colours.cyan)
+Gt.drawText(filler2, corpBanner, "left", nil, colours.cyan)
 
 term.redirect(console)
 
