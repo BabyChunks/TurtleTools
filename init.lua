@@ -8,7 +8,7 @@ if arg[1] == "-u" then
         "GUItools.lua",
     }
 
-    if not fs.find(filePath.."settings.txt") then
+    if #fs.find(filePath.."settings.txt") == 0 then
         table.insert(files, "settings.txt")
     end
 
@@ -59,12 +59,8 @@ local function navMenu(options, actions)
         term.clear()
 
         for i, option in pairs(options) do
-            --if i == selected then
                 Gt.drawText((i == selected) and " > " or "   ", nil, {1, i})
                 Gt.drawText(option, nil, nil, false, (i == selected) and colours.yellow or colours.white)
-            --else
-                --Gt.drawText("   "..option, nil, 1, i, nil, false)
-            --end
         end
 
         local _, key = os.pullEvent("key")
