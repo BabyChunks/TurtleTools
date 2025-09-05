@@ -9,6 +9,7 @@ if turtle then
         "luatools.lua",
         "GPS.lua",
         "quarry.lua",
+        "comms.lua"
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
 else
@@ -21,6 +22,11 @@ else
 end
 -- whipser On
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
+
+if #fs.find(filePath.."settings.txt") == 0 then
+    table.insert(files, "settings.txt")
+end
+
 for _, file in pairs(files) do
     local results = {}
     results = fs.find(filePath..file)

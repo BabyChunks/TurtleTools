@@ -16,6 +16,8 @@ local function noGPS(dim) --manually enter xz or xyz coords
 
     while incomplete do
         ans = io.read()
+        term.clear()
+        setCursorPos(1,1)
         if ans == "" then
             os.reboot()
         end

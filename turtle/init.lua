@@ -25,7 +25,8 @@ if arg[1] == "-u" then
     local files = {
         "quarry.lua",
         "GPS.lua",
-        "luatools.lua"
+        "luatools.lua",
+        "comms.lua"
     }
 
     if #fs.find(filePath.."settings.txt") == 0 then
@@ -58,6 +59,7 @@ end
 Tt = require(filePath.."quarry")
 GPS = require(filePath.."GPS")
 Lt = require(filePath.."luatools")
+Comms = require(filePath.."comms.lua")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
 Coords.x, Coords.y, Coords.z = gps.locate()
@@ -69,17 +71,17 @@ GPS.getHeading()
 while true do
     term.setCursorPos((termWidth - 27) / 2, termHeight / 2)
     term.write("Awaiting server commands...")
-    
-    local serverID = 0
-    while true do
-        peripheral.find("modem", rednet.open)
-        local id, msg, prot = rednet.receive()
-        if prot == "ping" and msg == "ping" then
-            serverID = id
-            rednet.send(serverID, {"pong", Coords}, "ping")
-        end
-    end
 
+    Comms.connectServer()
+
+    local cmd = Comms.getCmd()
+
+    if cmd.name == "mine" then
+
+    elseif cmd.name == "move" then
+    elseif cmd.name == "courrier" then
+    elseif cmd.name == "disconnect" then
+    end
 end
 
 -- local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)

@@ -1,5 +1,6 @@
 {
   emptySlots = 3,
+  pingTimeOut = 10,
   FUELS = {
     "minecraft:coal",
     "minecraft:coal_block",
