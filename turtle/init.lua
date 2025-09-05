@@ -77,7 +77,7 @@ while true do
     local cmd = Comms.getCmd()
 
     if cmd.name == "mine" then
-
+        Tt.startup(cmd)
     elseif cmd.name == "move" then
     elseif cmd.name == "courrier" then
     elseif cmd.name == "disconnect" then

@@ -20,11 +20,12 @@ local function getCmd()
     end
 end
 
-local function sendStatus()
+local function sendStatus(status)
 
 end
 
 return {
     connectServer = connectServer,
-    getCmd = getCmd
+    getCmd = getCmd,
+    sendStatus = sendStatus
 }

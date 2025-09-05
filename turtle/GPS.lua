@@ -19,7 +19,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
         term.clear()
         setCursorPos(1,1)
         if ans == "" then
-            os.reboot()
+            os.queueEvent("terminate")
         end
 
         err, coords = pcall(Lt.argparse, ans, keys)
@@ -166,7 +166,7 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
         Heading = "x"
     end
 
-    Tt.mine(xblocks, strip)
+    Tt.tunnel(xblocks, strip)
 
     zblocks = math.abs(rel.z)
 
@@ -201,7 +201,7 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
         Heading = "z"
     end
 
-    Tt.mine(zblocks, strip)
+    Tt.tunnel(zblocks, strip)
 
     yblocks = math.abs(rel.y)
 
