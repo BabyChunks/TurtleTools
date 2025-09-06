@@ -16,7 +16,9 @@ else
     files = {
         "init.lua",
         "luatools.lua",
-        "GUItools.lua"
+        "GUItools.lua",
+        "GPS.lua",
+        "comms.lua"
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
 end
