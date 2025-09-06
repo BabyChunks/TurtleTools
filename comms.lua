@@ -1,11 +1,11 @@
-local turtleID = 0
+local turtleID = nil
 peripheral.find("modem", rednet.open)
 local emptyCoords = vector.new(0, 0, 0)
 local serverCoords = vector.new(gps.locate())
 
 if serverCoords:equals(emptyCoords) then
     serverCoords = vector.new(GPS.noGPS("xyz"))
-end
+end 
 
 local function pingTurtles()
     local dist = {}
@@ -13,9 +13,9 @@ local function pingTurtles()
     rednet.broadcast("ping","ping")
     while true do
         local id, msg = rednet.receive("ping", St.pingTimeOut)
-        if id then
-            local coords = vector.new(table.unpack(textutils.unserialize(msg)))
-            dist[id] = serverCoords:sub(coords)
+        if type(msg) == "table" then
+            local turtleCoords = vector.new(table.unpack(textutils.unserialize(msg)))
+            dist[id] = serverCoords:sub(turtleCoords)
         else
             break
         end
@@ -24,14 +24,13 @@ local function pingTurtles()
 end
 
 local function sendCmd(cmd)
-    local id, msg = rednet.send("cmd")
-    if id == serverID then
-        return textutils.serialize(msg)
+    if not turtleID then
+        --Gt.drawText(text, monitor, pos, nL, txtColour, bkgColour)
     end
 end
 
 local function getStatus(status)
-
+    --two types of status: "task" and "console"
 end
 
 return {

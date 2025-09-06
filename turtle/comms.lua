@@ -1,4 +1,4 @@
-local serverID = 0
+local serverID = nil
 peripheral.find("modem", rednet.open)
 
 local function connectServer()

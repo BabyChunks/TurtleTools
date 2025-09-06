@@ -40,7 +40,9 @@ St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
 local termWidth, termHeight = term.getSize()
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
-local console = window.create(term.current(), 1, 4, termWidth, termHeight - 3)
+local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
+local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
+local turtleStatus = window.create(term.current(), termWidth - 20, termHeight - 1, termWidth - 20, 1)
 
 --Corporation Banner--
 local logo = "CHUNKSWARE TECH"
@@ -49,6 +51,9 @@ local filler2 = ("#"):rep(termWidth)
 Gt.drawText(filler2, corpBanner, {1, 1}, true, colours.cyan)
 Gt.drawText(filler1..logo..filler1, corpBanner, "left", true, colours.cyan)
 Gt.drawText(filler2, corpBanner, "left", nil, colours.cyan)
+
+Gt.drawText("No current task.", taskStatus, "left")
+Gt.drawText("Current turtle: [  ]", turtleStatus, nil, colours.grey)
 
 term.redirect(console)
 
