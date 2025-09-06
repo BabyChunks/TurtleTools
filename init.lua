@@ -41,10 +41,11 @@ Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
 local termWidth, termHeight = term.getSize()
+
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
 local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
 local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
-local turtleStatus = window.create(term.current(), termWidth - 20, termHeight - 1, termWidth - 20, 1)
+local turtleStatus = window.create(term.current(), termWidth - 29, termHeight - 1, termWidth - 29, 1)
 
 --Corporation Banner--
 local logo = "CHUNKSWARE TECH"
