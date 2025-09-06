@@ -1,6 +1,4 @@
 local termWidth, termHeight = term.getSize()
-Coords = {}
-Heading  = nil
 local filePath = "/ChunksWare/"
 
 --initial screen--

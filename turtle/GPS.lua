@@ -1,3 +1,6 @@
+Coords = {}
+Heading  = nil
+
 local function noGPS(dim) --manually enter xz or xyz coords
     local format, ans = "", ""
     local keys, coords = {}, {}
@@ -17,7 +20,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
     while incomplete do
         ans = io.read()
         term.clear()
-        setCursorPos(1,1)
+        term.setCursorPos(1,1)
         if ans == "" then
             os.queueEvent("terminate")
         end
