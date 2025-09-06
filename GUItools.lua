@@ -1,9 +1,16 @@
+local termWidth, termHeight = term.getSize()
+
+local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
+local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
+local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
+local turtleStatus = window.create(term.current(), 1, termHeight - 1, termWidth, 1)
+
 local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     monitor = monitor or term
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
 
-    local w,h = monitor.getSize()
+    local w, h = monitor.getSize()
     local x, y = monitor.getCursorPos()
 
     if type(txtColour) == "number" then
@@ -20,7 +27,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
             monitor.setCursorPos(w / 2 - #text / 2, y)
             monitor.clearLine()
         elseif pos == "right" then
-            monitor.setCursorPos(w - #text, y)
+            monitor.setCursorPos(w - #text + 1, y)
         elseif pos == "centerscreen" then
             monitor.setCursorPos(w / 2 - #text / 2, h / 2)
             monitor.clearLine()
@@ -41,13 +48,42 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     end
 end
 
-local function drawScreen()
+local function drawCorpBanner()
+    local logo = "CHUNKSWARE TECH"
+    local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
+    local filler2 = ("#"):rep(termWidth)
+
+    corpBanner.clear()
+    Gt.drawText(filler2, corpBanner, {1, 1}, true, colours.yellow)
+    Gt.drawText(filler1..logo..filler1, corpBanner, "left", true, colours.yellow)
+    Gt.drawText(filler2, corpBanner, "left", nil, colours.yellow)
+end
+
+local function drawMenu(options, selected)
     console.clear()
 
+    for i, option in pairs(options) do
+            Gt.drawText((i == selected) and " > " or "   ", nil, {1, i})
+            Gt.drawText(option, nil, nil, false, (i == selected) and colours.yellow or colours.white)
+    end
+end
 
+local function drawConsole()
+
+end
+local function drawTurtleStatus()
+    turtleStatus.clear()
+
+end
+local function drawTaskStatus()
+    taskStatus.clear()
 end
 
 return {
     drawText = drawText,
-    drawScreen = drawScreen
+    drawCorpBanner = drawCorpBanner,
+    drawMenu = drawMenu,
+    drawConsole = drawConsole,
+    drawTurtleStatus = drawTurtleStatus,
+    drawTaskStatus = drawTaskStatus
 }

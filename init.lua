@@ -38,22 +38,8 @@ end
 
 Gt = require(filePath.."GUItools")
 Lt = require(filePath.."luatools")
+Comms = require(filepath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
-
-local termWidth, termHeight = term.getSize()
-
-local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
-local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
-local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
-local turtleStatus = window.create(term.current(), termWidth - 29, termHeight - 1, termWidth - 29, 1)
-
---Corporation Banner--
-local logo = "CHUNKSWARE TECH"
-local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
-local filler2 = ("#"):rep(termWidth)
-Gt.drawText(filler2, corpBanner, {1, 1}, true, colours.cyan)
-Gt.drawText(filler1..logo..filler1, corpBanner, "left", true, colours.cyan)
-Gt.drawText(filler2, corpBanner, "left", nil, colours.cyan)
 
 term.redirect(console)
 
@@ -64,12 +50,7 @@ local function navMenu(options, actions)
     local selected = 1
 
     while true do
-        term.clear()
-
-        for i, option in pairs(options) do
-                Gt.drawText((i == selected) and " > " or "   ", nil, {1, i})
-                Gt.drawText(option, nil, nil, false, (i == selected) and colours.yellow or colours.white)
-        end
+        Gt.drawMenu(options, selected)
 
         local _, key = os.pullEvent("key")
         if key == keys.w or key == keys.up then
@@ -105,7 +86,7 @@ local function menu()
             Tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function()
-            return true
+            os.queueEvent("terminate")
         end
     }
 
