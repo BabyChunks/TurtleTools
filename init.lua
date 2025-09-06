@@ -52,10 +52,10 @@ Gt.drawText(filler2, corpBanner, {1, 1}, true, colours.cyan)
 Gt.drawText(filler1..logo..filler1, corpBanner, "left", true, colours.cyan)
 Gt.drawText(filler2, corpBanner, "left", nil, colours.cyan)
 
-Gt.drawText("No current task.", taskStatus, "left")
-Gt.drawText("Current turtle: [  ]", turtleStatus, nil, colours.grey)
-
 term.redirect(console)
+
+Gt.drawText("No current task.", taskStatus, "left")
+Gt.drawText("Current turtle: [  ]", turtleStatus, "right", nil, colours.grey)
 
 local function navMenu(options, actions)
     local selected = 1

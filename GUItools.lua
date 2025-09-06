@@ -41,6 +41,13 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     end
 end
 
+local function drawScreen()
+    console.clear()
+
+    
+end
+
 return {
-    drawText = drawText
+    drawText = drawText,
+    drawScreen = drawScreen
 }
