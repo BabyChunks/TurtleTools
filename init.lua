@@ -6,6 +6,8 @@ if arg[1] == "-u" then
     local files = {
         "luatools.lua",
         "GUItools.lua",
+        "GPS.lua",
+        "comms.lua"
     }
 
     if #fs.find(filePath.."settings.txt") == 0 then
