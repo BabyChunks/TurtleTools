@@ -20,7 +20,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
             monitor.setCursorPos(w / 2 - #text / 2, y)
             monitor.clearLine()
         elseif pos == "right" then
-            monitor.setCursorPos(w - #text)
+            monitor.setCursorPos(w - #text, y)
         elseif pos == "centerscreen" then
             monitor.setCursorPos(w / 2 - #text / 2, h / 2)
             monitor.clearLine()
@@ -44,7 +44,7 @@ end
 local function drawScreen()
     console.clear()
 
-    
+
 end
 
 return {
