@@ -1,17 +1,9 @@
 local function noGPS(dim) --manually enter xyz coords
-    local format, ans = "", ""
-    local keys, coords = {}, {}
+    local ans = ""
+    local coords = {}
     local err = false
 
-    if dim == "xyz" then
-        format = "x, y, z"
-        keys = {"x", "y", "z"}
-    elseif dim == "xz" then
-        format = "x, z"
-        keys = {"x", "z"}
-    end
-
-    print("Could not locate turtle using gps. Input coordinates (" .. format .. ") manually or press Enter to terminate")
+    print("Could not locate computer using gps. Input coordinates (x, y, z) manually or press Enter to terminate")
     local incomplete = true
 
     while incomplete do
@@ -22,7 +14,7 @@ local function noGPS(dim) --manually enter xyz coords
             os.queueEvent("terminate")
         end
 
-        err, coords = pcall(Lt.argparse, ans, keys)
+        err, coords = pcall(Lt.argparse, ans)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
@@ -36,7 +28,7 @@ local function noGPS(dim) --manually enter xyz coords
             io.write(coords .. "\n")
         end
     end
-    return coords
+    return table.unpack(coords)
 end
 
 return {
