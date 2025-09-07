@@ -76,6 +76,7 @@ local function drawTurtleStatus(id, statusColour)
 
     drawText("Current turtle: ["..id or "  ".."]", turtleStatus, "right", nil, statusColour)
 end
+
 local function drawTaskStatus(task, taskCompletion, statusColour)
     taskStatus.clear()
 
@@ -83,7 +84,9 @@ local function drawTaskStatus(task, taskCompletion, statusColour)
     local barLength = termWidth - #task
     local completionBar = "["..("▮"):rep(barLength / taskCompletion)..(" "):rep(barLength / (1 - taskCompletion)).."]"
 
-    drawText(task..": "..completionBar or "No current task.")
+    drawText(task..": [", taskStatus, "left")
+    drawText(completionBar, taskStatus, nil, nil, statusColour)
+    drawText("]", taskStatus, "right")
 end
 
 local function drawConsole(status, requestInput)
@@ -98,7 +101,7 @@ return {
     drawText = drawText,
     drawCorpBanner = drawCorpBanner,
     drawMenu = drawMenu,
-    drawConsole = drawConsole,
     drawTurtleStatus = drawTurtleStatus,
-    drawTaskStatus = drawTaskStatus
+    drawTaskStatus = drawTaskStatus,
+    drawConsole = drawConsole
 }
