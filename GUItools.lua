@@ -1,5 +1,6 @@
 local termWidth, termHeight = term.getSize()
 
+--Setup main screen--
 local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
 local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
 local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
@@ -63,20 +64,33 @@ local function drawMenu(options, selected)
     console.clear()
 
     for i, option in pairs(options) do
-            Gt.drawText((i == selected) and " > " or "   ", nil, {1, i})
-            Gt.drawText(option, nil, nil, false, (i == selected) and colours.yellow or colours.white)
+            drawText((i == selected) and " > " or "   ", console, {1, i + 1})
+            drawText(option, console, nil, false, (i == selected) and colours.yellow or colours.white)
     end
 end
 
-local function drawConsole()
-
-end
-local function drawTurtleStatus()
+local function drawTurtleStatus(id, statusColour)
     turtleStatus.clear()
 
+    if not id then statusColour = colours.grey end
+
+    drawText("Current turtle: ["..id or "  ".."]", turtleStatus, "right", nil, statusColour)
 end
-local function drawTaskStatus()
+local function drawTaskStatus(task, statusColour)
     taskStatus.clear()
+
+    if not task then statusColour = colours.white end
+    completionBar = nil
+
+    drawText(task or "No current task.")
+end
+
+local function drawConsole(status, requestInput)
+    drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
+
+    if requestInput then
+        return io.read()
+    end
 end
 
 return {

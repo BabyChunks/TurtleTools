@@ -39,12 +39,12 @@ end
 Gt = require(filePath.."GUItools")
 Lt = require(filePath.."luatools")
 Comms = require(filepath.."comms")
+GPS = require(filePath.."GPS")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
-term.redirect(console)
+Gt.drawCorpBanner()
 
-Gt.drawText("No current task.", taskStatus, "left")
-Gt.drawText("Current turtle: [  ]", turtleStatus, "right", nil, colours.grey)
+
 
 local function navMenu(options, actions)
     local selected = 1
@@ -86,6 +86,7 @@ local function menu()
             Tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function()
+            print()
             os.queueEvent("terminate")
         end
     }

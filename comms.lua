@@ -30,7 +30,7 @@ local function sendCmd(cmd)
 end
 
 local function getStatus(status)
-    --two types of status: "task" and "console"
+    --three types of status: "turtle", "task" and "console"
 end
 
 return {
