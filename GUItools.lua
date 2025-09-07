@@ -81,8 +81,8 @@ local function drawTaskStatus(task, taskCompletion, statusColour)
     taskStatus.clear()
 
     if not task then statusColour = colours.white end
-    local barLength = termWidth - #task
-    local completionBar = "["..("▮"):rep(barLength / taskCompletion)..(" "):rep(barLength / (1 - taskCompletion)).."]"
+    local barLength = termWidth - #task - 4
+    local completionBar = ("▮"):rep(barLength / taskCompletion)..(" "):rep(barLength / (1 - taskCompletion))
 
     drawText(task..": [", taskStatus, "left")
     drawText(completionBar, taskStatus, nil, nil, statusColour)
