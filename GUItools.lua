@@ -76,13 +76,14 @@ local function drawTurtleStatus(id, statusColour)
 
     drawText("Current turtle: ["..id or "  ".."]", turtleStatus, "right", nil, statusColour)
 end
-local function drawTaskStatus(task, statusColour)
+local function drawTaskStatus(task, taskCompletion, statusColour)
     taskStatus.clear()
 
     if not task then statusColour = colours.white end
-    completionBar = nil
+    local barLength = termWidth - #task
+    local completionBar = "["..("▮"):rep(barLength / taskCompletion)..(" "):rep(barLength / (1 - taskCompletion)).."]"
 
-    drawText(task or "No current task.")
+    drawText(task..": "..completionBar or "No current task.")
 end
 
 local function drawConsole(status, requestInput)
