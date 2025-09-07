@@ -38,7 +38,7 @@ end
 
 Gt = require(filePath.."GUItools")
 Lt = require(filePath.."luatools")
-Comms = require(filepath.."comms")
+Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
