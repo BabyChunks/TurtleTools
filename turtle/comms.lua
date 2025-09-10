@@ -4,11 +4,12 @@ peripheral.find("modem", rednet.open)
 local function connectServer()
     while true do
         local id, msg = rednet.receive("ping", St.pingTimeOut)
-        if msg == "ping" then
+        if msg[1] == "ping" then
+            rednet.send(id, {"pong", textutils.serialize(Coords)}, "ping")
+        elseif msg[1] == "ack" then
+            print("Server connected at ID "..serverID)
             serverID = id
-            rednet.send(serverID, textutils.serialize(Coords), "ping")
-        elseif msg == "pong" then
-            return true
+            return
         end
     end
 end

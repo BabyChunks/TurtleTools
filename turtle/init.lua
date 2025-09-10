@@ -54,11 +54,15 @@ if arg[1] == "-u" then
     term.clear()
 end
 
+print("Loading environment...")
 Tt = require(filePath.."quarry")
 GPS = require(filePath.."GPS")
 Lt = require(filePath.."luatools")
 Comms = require(filePath.."comms.lua")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
+print("Done!")
+os.sleep(0.8)
+term.clear()
 
 Coords.x, Coords.y, Coords.z = gps.locate()
     if not Coords.x then
@@ -67,10 +71,11 @@ Coords.x, Coords.y, Coords.z = gps.locate()
 GPS.getHeading()
 
 while true do
-    term.setCursorPos((termWidth - 27) / 2, termHeight / 2)
-    term.write("Awaiting server commands...")
+    print("Awaiting server pings...")
 
     Comms.connectServer()
+
+    print("Awaiting server commands...")
 
     local cmd = Comms.getCmd()
 

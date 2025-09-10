@@ -69,22 +69,31 @@ local function navMenu(options, actions)
     end
 end
 
-local function menu()
-    local options = {"Mine", "Move", "Quit"}
+local function mainMenu()
+    local options = {Comms.getTurtleID() and "Disconnect Turtle" or "Connect turtle", "Inventory", "Mine", "Move", "Quit"}
 
     local actions = {
-        function()
-            Tt.startup()
+        function() --(Dis)connect turtle
+            if Comms.getTurtleID() then
+                Comms.setTurtleID(nil)
+            else
+                Gt.drawConsole("Pinging nearby turtles...")
+                Comms.pingTurtles()
+                Gt.drawConsole("Connected with turtle #"..Comms.getTurtleID())
+            end
         end,
-        function()
+        function() --Inventory
+        end,
+        function() --Mine
+        end,
+        function() --Move
             print("Input destination coordinates [xyz]")
             local ans = Lt.argparse(io.read(), {"x", "y", "z"})
             term.clear()
             term.setCursorPos(1,1)
             Tt.GoThere(ans.x, ans.y, ans.z)
         end,
-        function()
-            print()
+        function() --Quit
             os.queueEvent("terminate")
         end
     }
@@ -92,4 +101,4 @@ local function menu()
     navMenu(options, actions)
 end
 
-menu()
+mainMenu()

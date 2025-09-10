@@ -1,4 +1,4 @@
-local function noGPS(dim) --manually enter xyz coords
+local function noGPS() --manually enter xyz coords
     local ans = ""
     local coords = {}
     local err = false

@@ -70,6 +70,9 @@ local function drawMenu(options, selected)
 end
 
 local function drawTurtleStatus(id, statusColour)
+    -- if no turtles: grey;
+    -- if turtle is idle: white;
+    -- if turtle is active: yellow
     turtleStatus.clear()
 
     if not id then statusColour = colours.grey end
@@ -78,10 +81,13 @@ local function drawTurtleStatus(id, statusColour)
 end
 
 local function drawTaskStatus(task, taskCompletion, statusColour)
+    -- if no task: white;
+    -- if task is ongoing: white;
+    -- if task is stopped: red
     taskCompletion = taskCompletion or 0
     taskStatus.clear()
 
-    if not task then 
+    if not task then
         statusColour = colours.white
         task = "No current task"
     end
