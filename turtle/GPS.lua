@@ -39,7 +39,7 @@ local function noGPS(dim) --manually enter xz or xyz coords
             io.write(coords .. "\n")
         end
     end
-    return coords
+    return vector.new(table.unpack(coords))
 end
 
 local function checkFuel(fuelNeeded)
@@ -69,11 +69,9 @@ end
 
 local function getHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
     if not Heading then
-        local coords1, coords2 = {}, {}
+        local delta = {}
 
         checkFuel(2)
-
-        coords1.x, coords1.z = Coords.x, Coords.z
 
         if turtle.detect() then
             turtle.dig()
@@ -81,9 +79,9 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         end
         assert(turtle.forward())
 
-        coords2.x, _, coords2.z = gps.locate()
-        if not coords2.x then
-            coords2 = noGPS("xz")
+        delta = vector.new(gps.locate())
+        if not delta.x then
+            delta = noGPS("xz")
         end
         assert(turtle.back())
 
@@ -262,7 +260,7 @@ local function buildArray()
         end
     end
 
-    GoThere(base.x, base.y, base.z)
+    goThere(base.x, base.y, base.z)
 
     local partsNeeded = {
         [1] = {names = {"computercraft:computer_normal", "computercraft:computer_advanced"}, n = 4, check = false},

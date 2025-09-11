@@ -64,7 +64,7 @@ print("Done!")
 os.sleep(0.8)
 term.clear()
 
-Coords.x, Coords.y, Coords.z = gps.locate()
+Coords = vector.new(gps.locate())
     if not Coords.x then
         Coords = GPS.noGPS("xyz")
     end

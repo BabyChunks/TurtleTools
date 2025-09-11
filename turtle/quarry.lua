@@ -45,7 +45,7 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
         end
 
         turtle.turnRight()
-        GetHeading("right")
+        GPS.getHeading("right")
         turn = turn + 1
     end
 end
@@ -244,5 +244,6 @@ local function startup(cmd)
 end
 
 return {
+    tunnel = tunnel,
     startup = startup
 }
