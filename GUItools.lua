@@ -79,7 +79,7 @@ local function drawTurtleStatus(id)
     drawText("Current turtle: ["..id or "  ".."]", turtleStatus, "right", nil, statusColour)
 end
 
-local function drawTaskStatus(taskCompletion, task, statusColour)
+local function drawTaskStatus(taskCompletion, statusColour, task)
     -- if no task: white;
     -- if task is ongoing: white;
     -- if task is stopped: red
