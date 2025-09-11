@@ -69,28 +69,26 @@ local function drawMenu(options, selected)
     end
 end
 
-local function drawTurtleStatus(id, statusColour)
+local function drawTurtleStatus(id)
     -- if no turtles: grey;
-    -- if turtle is idle: white;
-    -- if turtle is active: yellow
-    turtleStatus.clear()
+    -- if turtle: white
 
-    if not id then statusColour = colours.grey end
+    turtleStatus.clear()
+    local statusColour = not id and colours.grey or colours.white
 
     drawText("Current turtle: ["..id or "  ".."]", turtleStatus, "right", nil, statusColour)
 end
 
-local function drawTaskStatus(task, taskCompletion, statusColour)
+local function drawTaskStatus(taskCompletion, task, statusColour)
     -- if no task: white;
     -- if task is ongoing: white;
     -- if task is stopped: red
     taskCompletion = taskCompletion or 0
     taskStatus.clear()
 
-    if not task then
-        statusColour = colours.white
-        task = "No current task"
-    end
+    task = task or "No current task"
+    statusColour = statusColour or colours.white
+
     local barLength = termWidth - #task - 4
     local completionBar = ("▮"):rep(barLength * taskCompletion)..(" "):rep(barLength * (1 - taskCompletion))
 
@@ -101,10 +99,6 @@ end
 
 local function drawConsole(status, requestInput)
     drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
-
-    if requestInput then
-        return io.read()
-    end
 end
 
 return {

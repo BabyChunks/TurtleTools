@@ -75,12 +75,14 @@ local function mainMenu()
     local actions = {
         function() --(Dis)connect turtle
             if Comms.getTurtleID() then
+                Gt.drawConsole("Turtle #"..Comms.getTurtleID().." disconnected successfully")
                 Comms.setTurtleID(nil)
             else
                 Gt.drawConsole("Pinging nearby turtles...")
                 Comms.pingTurtles()
                 Gt.drawConsole("Connected with turtle #"..Comms.getTurtleID())
             end
+            os.sleep(0.8)
         end,
         function() --Inventory
         end,

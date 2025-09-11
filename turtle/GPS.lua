@@ -1,20 +1,12 @@
 Coords = {}
 Heading  = nil
 
-local function noGPS(dim) --manually enter xz or xyz coords
+local function noGPS() --manually enter xz or xyz coords
     local format, ans = "", ""
     local keys, coords = {}, {}
     local err = false
 
-    if dim == "xyz" then
-        format = "x, y, z"
-        keys = {"x", "y", "z"}
-    elseif dim == "xz" then
-        format = "x, z"
-        keys = {"x", "z"}
-    end
-
-    print("Could not locate turtle using gps. Input coordinates (" .. format .. ") manually or press Enter to terminate")
+    ans = Comms.sendStatus("Could not locate turtle using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
     local incomplete = true
 
     while incomplete do

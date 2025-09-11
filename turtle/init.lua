@@ -66,7 +66,7 @@ term.clear()
 
 Coords = vector.new(gps.locate())
     if not Coords.x then
-        Coords = GPS.noGPS("xyz")
+        Coords = GPS.noGPS()
     end
 GPS.getHeading()
 
@@ -84,6 +84,7 @@ while true do
     elseif cmd.name == "move" then
     elseif cmd.name == "courrier" then
     elseif cmd.name == "disconnect" then
+        Comms.setServerID(nil)
     end
 end
 
