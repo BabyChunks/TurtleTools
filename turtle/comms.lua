@@ -25,7 +25,7 @@ end
 local function getCmd()
     local id, msg = rednet.receive("cmd")
     if id == serverID then
-        return textutils.serialize(msg)
+        return textutils.unserialize(msg)
     end
 end
 

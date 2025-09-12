@@ -37,7 +37,7 @@ end
 
 local function sendCmd(cmd)
     if turtleID then
-        --Gt.drawText(text, monitor, pos, nL, txtColour, bkgColour)
+        rednet.send(turtleID, textutils.serialize(cmd))
     end
 end
 

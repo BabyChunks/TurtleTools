@@ -80,8 +80,9 @@ while true do
     local cmd = Comms.getCmd()
 
     if cmd.name == "mine" then
-        Tt.startup(cmd)
+        Tt.startup(cmd.body)
     elseif cmd.name == "move" then
+        GPS.goThere(table.unpack(cmd.body))
     elseif cmd.name == "courrier" then
     elseif cmd.name == "disconnect" then
         Comms.setServerID(nil)

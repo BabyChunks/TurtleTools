@@ -61,7 +61,7 @@ end
 
 local function getHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
     if not Heading then
-        local delta = {}
+        local coords2 = {}
 
         checkFuel(2)
 
@@ -71,25 +71,22 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         end
         assert(turtle.forward())
 
-        delta = vector.new(gps.locate())
+        coords2 = vector.new(gps.locate())
         if not delta.x then
             delta = noGPS("xz")
         end
         assert(turtle.back())
 
-        if coords2.x - coords1.x > 0 then
-            Heading =  "x"
+        local delta = coords2:sub(Coords)
 
-        elseif coords2.x - coords1.x < 0 then
-            Heading = "-x"
+        local headingMatrix = {
+            ["x"] = delta.x > 0,
+            ["-x"] = delta.x < 0,
+            ["z"] = delta.z > 0,
+            ["-z"] = delta.z < 0
+        }
 
-        elseif coords2.z - coords1.z > 0 then
-            Heading = "z"
-
-        elseif coords2.z - coords1.z < 0 then
-            Heading = "-z"
-
-        end
+        Heading = Lt.getKeyforValue(headingMatrix, true)
     end
     if turn then
         local i = 0
@@ -108,8 +105,8 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
 
         end
 
-        if i == 4 then i = 0 end
-        if i == -1 then i = 4 end
+        if i == 4 then i = 0
+        elseif i == -1 then i = 4 end
 
         Heading = compass[i]
     end
@@ -117,16 +114,14 @@ end
 
 local function goThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
     strip = strip or false
-    local rel = {}
+    local delta = {}
     local xblocks, yblocks, zblocks = 0, 0, 0
 
-    rel = {
-        x = (x - Coords.x),
-        y = (y - Coords.y),
-        z = (z - Coords.z)
-    }
+    dest = vector.new(x, y, z)
 
-    checkFuel(rel.x + rel.y + rel.z)
+    delta = dest:sub(Coords)
+
+    checkFuel(delta.x + delta.y + delta.z)
 
     xblocks = math.abs(rel.x)
 
