@@ -1,23 +1,25 @@
 Coords = {}
 Heading  = nil
 
-local function noGPS() --manually enter xz or xyz coords
-    local format, ans = "", ""
-    local keys, coords = {}, {}
-    local err = false
+local function handleCoordsInput(forceCoords)
 
-    ans = Comms.sendStatus("Could not locate turtle using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
+    local keys = {"x", "y", "z"}
     local incomplete = true
 
     while incomplete do
-        ans = io.read()
+        local ans = io.read()
         term.clear()
         term.setCursorPos(1,1)
         if ans == "" then
             os.queueEvent("terminate")
         end
 
-        err, coords = pcall(Lt.argparse, ans, keys)
+        for i, key in ipairs(keys) do
+            if forceCoords[i] then
+                table.remove(keys, i)
+            end
+        end
+        local err, coords = pcall(Lt.argparse, ans, keys)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
@@ -31,7 +33,21 @@ local function noGPS() --manually enter xz or xyz coords
             io.write(coords .. "\n")
         end
     end
+
+    for i, coord in ipairs(forceCoords) do
+        coords[i] = coord
+    end
     return vector.new(table.unpack(coords))
+end
+
+local function noGPS() --manually enter xz or xyz coords
+    local format, ans = "", ""
+    local keys, coords = {}, {}
+    local err = false
+
+    ans = Comms.sendStatus("Could not locate turtle using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
+
+    return handleCoordsInput()
 end
 
 local function checkFuel(fuelNeeded)
@@ -72,8 +88,8 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         assert(turtle.forward())
 
         coords2 = vector.new(gps.locate())
-        if not delta.x then
-            delta = noGPS("xz")
+        if not coords2.x then
+            coords2 = noGPS({nil, Coords.y, nil})
         end
         assert(turtle.back())
 
@@ -112,20 +128,53 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
     end
 end
 
-local function goThere(x, y, z, strip) -- main function for navigation. Uses absolute coords to navigate
+local function goThere(destVector, strip) -- main function for navigation. Uses absolute coords to navigate
     strip = strip or false
     local delta = {}
     local xblocks, yblocks, zblocks = 0, 0, 0
 
-    dest = vector.new(x, y, z)
+    delta.rel = destVector:sub(Coords)
+    delta.abs = {
+        x = math.abs(delta.rel.x),
+        y = math.abs(delta.rel.y),
+        z = math.abs(delta.rel.z)
+    }
 
-    delta = dest:sub(Coords)
+    checkFuel(Lt.tableSum(delta.abs))
 
-    checkFuel(delta.x + delta.y + delta.z)
+-- PAS FINI
+    local orientationMatrix = {
+        x = {
+        [1] = {
+            ["x"] = {turtle.turnRight(), turtle.turnRight()},
+            ["-x"] = {},
+            ["z"] = {turtle.turnRight()},
+            ["-z"] = {turtle.turnLeft()}
+        },
+        [-1] = {
+            ["x"] = {},
+            ["-x"] = {turtle.turnRight(), turtle.turnRight()},
+            ["z"] = {turtle.turnLeft()},
+            ["-z"] = {turtle.turnRight()}
+        }
+        },
+        z = {
+        [1] = {
+            ["x"] = {turtle.turnLeft()},
+            ["-x"] = {turtle.turnRight()},
+            ["z"] = {turtle.turnRight(), turtle.turnRight()},
+            ["-z"] = {}
+        },
+        [-1] = {
+            ["x"] = {},
+            ["-x"] = {turtle.turnRight(), turtle.turnRight()},
+            ["z"] = {turtle.turnLeft()},
+            ["-z"] = {turtle.turnRight()}
+        }
+        }
+    }
 
-    xblocks = math.abs(rel.x)
-
-    if rel.x < 0 then
+    if delta.rel.x < 0 then
         if Heading == "x" then
             turtle.turnRight()
             turtle.turnRight()
@@ -139,7 +188,7 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
 
         Heading = "-x"
 
-    elseif rel.x > 0 then
+    elseif delta.rel.x > 0 then
         if Heading == "-x" then
             turtle.turnRight()
             turtle.turnRight()
@@ -154,11 +203,9 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
         Heading = "x"
     end
 
-    Tt.tunnel(xblocks, strip)
+    Tt.tunnel(delta.abs.x, strip)
 
-    zblocks = math.abs(rel.z)
-
-    if rel.z < 0 then
+    if delta.rel.z < 0 then
         if Heading == "z" then
             turtle.turnRight()
             turtle.turnRight()
@@ -173,7 +220,7 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
 
         Heading = "-z"
 
-    elseif rel.z > 0 then
+    elseif delta.rel.z > 0 then
         if Heading == "-z" then
             turtle.turnRight()
             turtle.turnRight()
@@ -189,14 +236,12 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
         Heading = "z"
     end
 
-    Tt.tunnel(zblocks, strip)
+    Tt.tunnel(delta.abs.z, strip)
 
-    yblocks = math.abs(rel.y)
-
-    if rel.y < 0 then
+    if delta.res.y < 0 then
         local move = 0
 
-        while move < yblocks do
+        while move < delta.abs.y do
             while turtle.detectDown() do
                 turtle.digDown()
                 turtle.suckDown()
@@ -205,10 +250,10 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
             assert(turtle.down())
             move = move + 1
         end
-    elseif rel.y > 0 then
+    elseif delta.res.y > 0 then
         local move = 0
 
-        while move < yblocks do
+        while move < delta.abs.y do
             while turtle.detectUp() do
                 turtle.digUp()
                 turtle.suckUp()
@@ -218,11 +263,7 @@ local function goThere(x, y, z, strip) -- main function for navigation. Uses abs
             move = move + 1
         end
     end
-    Coords = {
-        x = x,
-        y = y,
-        z = z
-    }
+    Coords = destVector
 end
 
 local function buildArray()

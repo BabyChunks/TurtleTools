@@ -1,19 +1,19 @@
 local function tableContainsValue(t, element)
     for _, value in ipairs(t) do
         if value == element then
-            return true
+            return value
         end
     end
-    return false
+    return nil
 end
 
 local function tableContainsKey(t, element)
     for key, _ in pairs(t) do
         if key == element then
-            return true
+            return key
         end
     end
-    return false
+    return nil
 end
 
 local function getKeyForValue(t, value)

@@ -77,7 +77,7 @@ local function startup(cmd)
     local i, nCycle, layer, nLayer = 0, 0, 0, 0
     local err = false
 
-    print("Use current coordinates as recall point? (y/[xyz])")
+    Comms.sendStatus("Use current coordinates as recall point? (y/[xyz])", true)
     incomplete = true
     while incomplete do
         local ans = io.read()
@@ -85,7 +85,7 @@ local function startup(cmd)
             Recall = Coords
             incomplete = false
         else
-            err, Recall = pcall(Lt.argparse, ans, {"x", "y", "z"})
+            err, Recall = pcall(Lt.argparse, ans)
             if err then
                 incomplete = false
                 for _, coord in pairs(Recall) do
@@ -101,11 +101,13 @@ local function startup(cmd)
         end
     end
 
+    
+
     print("first coordinates:")
 
     incomplete = true
     while incomplete do
-        err, coords1 = pcall(Lt.argparse, io.read(), { "x", "y", "z" })
+        err, coords1 = pcall(Lt.argparse, io.read())
         if err then
             incomplete = false
             for _, coord in pairs(coords1) do
