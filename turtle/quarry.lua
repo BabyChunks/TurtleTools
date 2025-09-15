@@ -185,8 +185,8 @@ local function startup(cmd)
     nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
     fuelNeeded = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap) + Lt.tableSum(quarrySize.abs)
 
-    GoThere(coords1.x, coords1.y, coords1.z)
-    checkFuel(fuelNeeded)
+    GPS.goThere(coords1.x, coords1.y, coords1.z)
+    GPS.checkFuel(fuelNeeded)
 
     term.clear()
     term.setCursorPos(1, 1)
@@ -215,7 +215,7 @@ local function startup(cmd)
                 local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
                 local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
 
-                if (pattern.cycleLn * cycle + pattern.zOffset[t]) < quarrySize.abs.z then
+                if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.abs.z then
                     local emptySlot = 0
                     GPS.goThere(x, y, z, true)
 

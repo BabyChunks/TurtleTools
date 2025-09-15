@@ -4,7 +4,8 @@ Heading  = nil
 local function handleCoordsInput(forceCoords)
 
     local keys = {"x", "y", "z"}
-    local incomplete = true
+    local incomplete, err = true, false
+    local coords = {}
 
     while incomplete do
         local ans = io.read()
@@ -19,7 +20,7 @@ local function handleCoordsInput(forceCoords)
                 table.remove(keys, i)
             end
         end
-        local err, coords = pcall(Lt.argparse, ans, keys)
+        err, coords = pcall(Lt.argparse, ans, keys)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
@@ -40,14 +41,11 @@ local function handleCoordsInput(forceCoords)
     return vector.new(table.unpack(coords))
 end
 
-local function noGPS() --manually enter xz or xyz coords
-    local format, ans = "", ""
-    local keys, coords = {}, {}
-    local err = false
+local function noGPS(forceCoords) --manually enter xz or xyz coords
 
     ans = Comms.sendStatus("Could not locate turtle using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
 
-    return handleCoordsInput()
+    return handleCoordsInput(forceCoords)
 end
 
 local function checkFuel(fuelNeeded)
@@ -128,12 +126,12 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
     end
 end
 
-local function goThere(destVector, strip) -- main function for navigation. Uses absolute coords to navigate
+local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
     strip = strip or false
     local delta = {}
     local xblocks, yblocks, zblocks = 0, 0, 0
 
-    delta.rel = destVector:sub(Coords)
+    delta.rel = dest:sub(Coords)
     delta.abs = {
         x = math.abs(delta.rel.x),
         y = math.abs(delta.rel.y),
@@ -142,101 +140,112 @@ local function goThere(destVector, strip) -- main function for navigation. Uses 
 
     checkFuel(Lt.tableSum(delta.abs))
 
--- PAS FINI
     local orientationMatrix = {
         x = {
         [1] = {
+            ["x"] = {},
+            ["-x"] = {turtle.turnRight(), turtle.turnRight()},
+            ["z"] = {turtle.turnLeft()},
+            ["-z"] = {turtle.turnRight()}
+        },
+        [-1] = {
             ["x"] = {turtle.turnRight(), turtle.turnRight()},
             ["-x"] = {},
             ["z"] = {turtle.turnRight()},
             ["-z"] = {turtle.turnLeft()}
-        },
-        [-1] = {
-            ["x"] = {},
-            ["-x"] = {turtle.turnRight(), turtle.turnRight()},
-            ["z"] = {turtle.turnLeft()},
-            ["-z"] = {turtle.turnRight()}
         }
         },
         z = {
         [1] = {
+            ["x"] = {turtle.turnRight()},
+            ["-x"] = {turtle.turnLeft()},
+            ["z"] = {},
+            ["-z"] = {turtle.turnRight(), turtle.turnRight()}
+        },
+        [-1] = {
             ["x"] = {turtle.turnLeft()},
             ["-x"] = {turtle.turnRight()},
             ["z"] = {turtle.turnRight(), turtle.turnRight()},
             ["-z"] = {}
-        },
-        [-1] = {
-            ["x"] = {},
-            ["-x"] = {turtle.turnRight(), turtle.turnRight()},
-            ["z"] = {turtle.turnLeft()},
-            ["-z"] = {turtle.turnRight()}
         }
         }
     }
-
-    if delta.rel.x < 0 then
-        if Heading == "x" then
-            turtle.turnRight()
-            turtle.turnRight()
-
-        elseif Heading == "z" then
-            turtle.turnRight()
-
-        elseif Heading == "-z" then
-            turtle.turnLeft()
-        end
-
-        Heading = "-x"
-
-    elseif delta.rel.x > 0 then
-        if Heading == "-x" then
-            turtle.turnRight()
-            turtle.turnRight()
-
-        elseif Heading == "z" then
-            turtle.turnLeft()
-
-        elseif Heading == "-z" then
-            turtle.turnRight()
-        end
-
-        Heading = "x"
+    
+    for action in _, ipairs(orientationMatrix.x[delta.rel.x / delta.abs.x][Heading]) do
+        action = action
     end
 
     Tt.tunnel(delta.abs.x, strip)
 
-    if delta.rel.z < 0 then
-        if Heading == "z" then
-            turtle.turnRight()
-            turtle.turnRight()
-
-        elseif Heading == "x" then
-            turtle.turnLeft()
-
-        elseif Heading == "-x" then
-            turtle.turnRight()
-
-        end
-
-        Heading = "-z"
-
-    elseif delta.rel.z > 0 then
-        if Heading == "-z" then
-            turtle.turnRight()
-            turtle.turnRight()
-
-        elseif Heading == "x" then
-            turtle.turnRight()
-
-        elseif Heading == "-x" then
-            turtle.turnLeft()
-
-        end
-
-        Heading = "z"
+    for action in _, ipairs(orientationMatrix.z[delta.rel.z / delta.abs.z][Heading]) do
+        action = action
     end
 
     Tt.tunnel(delta.abs.z, strip)
+
+    -- if delta.rel.x < 0 then
+    --     if Heading == "x" then
+    --         turtle.turnRight()
+    --         turtle.turnRight()
+
+    --     elseif Heading == "z" then
+    --         turtle.turnRight()
+
+    --     elseif Heading == "-z" then
+    --         turtle.turnLeft()
+    --     end
+
+    --     Heading = "-x"
+
+    -- elseif delta.rel.x > 0 then
+    --     if Heading == "-x" then
+    --         turtle.turnRight()
+    --         turtle.turnRight()
+
+    --     elseif Heading == "z" then
+    --         turtle.turnLeft()
+
+    --     elseif Heading == "-z" then
+    --         turtle.turnRight()
+    --     end
+
+    --     Heading = "x"
+    -- end
+
+    -- Tt.tunnel(delta.abs.x, strip)
+
+    -- if delta.rel.z < 0 then
+    --     if Heading == "z" then
+    --         turtle.turnRight()
+    --         turtle.turnRight()
+
+    --     elseif Heading == "x" then
+    --         turtle.turnLeft()
+
+    --     elseif Heading == "-x" then
+    --         turtle.turnRight()
+
+    --     end
+
+    --     Heading = "-z"
+
+    -- elseif delta.rel.z > 0 then
+    --     if Heading == "-z" then
+    --         turtle.turnRight()
+    --         turtle.turnRight()
+
+    --     elseif Heading == "x" then
+    --         turtle.turnRight()
+
+    --     elseif Heading == "-x" then
+    --         turtle.turnLeft()
+
+    --     end
+
+    --     Heading = "z"
+    -- end
+
+    --Tt.tunnel(delta.abs.z, strip)
 
     if delta.res.y < 0 then
         local move = 0
@@ -263,7 +272,7 @@ local function goThere(destVector, strip) -- main function for navigation. Uses 
             move = move + 1
         end
     end
-    Coords = destVector
+    Coords = dest
 end
 
 local function buildArray()
