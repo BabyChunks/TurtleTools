@@ -15,6 +15,10 @@ local function setTurtleID(id)
     turtleID = id
 end
 
+local function getServerCoords()
+    return serverCoords
+end
+
 local function pingTurtles()
     local dist = {}
 
@@ -59,6 +63,7 @@ end
 return {
     getTurtleID = getTurtleID,
     setTurtleID = setTurtleID,
+    getServerCoords = getServerCoords,
     pingTurtles = pingTurtles,
     sendCmd = sendCmd,
     getStatus = getStatus

@@ -69,14 +69,21 @@ local function navMenu(options, actions)
     end
 end
 
+local function setupQuarry()
+    Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
+    Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
+    ans = Comms.getStatus()
+end
+
 local function mainMenu()
     local options = {Comms.getTurtleID() and "Disconnect Turtle" or "Connect turtle", "Inventory", "Mine", "Move", "Quit"}
 
     local actions = {
         function() --(Dis)connect turtle
             if Comms.getTurtleID() then
-                Gt.drawConsole("Turtle #"..Comms.getTurtleID().." disconnected successfully")
+                local id = Comms.getTurtleID()
                 Comms.setTurtleID(nil)
+                Gt.drawConsole("Turtle #"..id.." disconnected successfully")
             else
                 Gt.drawConsole("Pinging nearby turtles...")
                 Comms.pingTurtles()
@@ -87,6 +94,7 @@ local function mainMenu()
         function() --Inventory
         end,
         function() --Mine
+            setupQuarry()
         end,
         function() --Move
             print("Input destination coordinates [xyz]")
