@@ -2,13 +2,14 @@ Coords = {}
 Heading  = nil
 
 local function handleCoordsInput(forceCoords)
+    forceCoords = forceCoords or {}
 
     local keys = {"x", "y", "z"}
     local incomplete, err = true, false
     local coords = {}
 
     while incomplete do
-        local ans = io.read()
+        local ans = Comms.sendStatus("console", {"", true})
         term.clear()
         term.setCursorPos(1,1)
         if ans == "" then
@@ -25,7 +26,7 @@ local function handleCoordsInput(forceCoords)
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    print("Input must be numbers")
+                    Comms.sendStatus("console",{"Input must be numbers"})
                     incomplete = true
                     break
                 end
@@ -43,7 +44,12 @@ end
 
 local function noGPS(forceCoords) --manually enter xz or xyz coords
 
-    ans = Comms.sendStatus("Could not locate turtle using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
+    Comms.sendStatus("console", {
+    "Could not locate turtle using gps. Input coordinates ("..
+    "x" and not forceCoords[1]..
+    ", y" and not forceCoords[2]..
+    ", z" and not forceCoords[3]..
+    ") manually or press Enter to terminate"})
 
     return handleCoordsInput(forceCoords)
 end
@@ -53,7 +59,7 @@ local function checkFuel(fuelNeeded)
     local currFuel = turtle.getFuelLevel()
 
     while currFuel < fuelNeeded do
-        for slot = 1, NSLOTS do
+        for slot = 1, 16 do
             item = turtle.getItemDetail(slot)
             if item then
                 if Lt.tableContainsValue(St.FUELS, item.name) then
@@ -65,7 +71,7 @@ local function checkFuel(fuelNeeded)
             end
         end
         if  currFuel < fuelNeeded then
-            print("Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory")
+            Comms.sendStatus("console",{"Unsufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory"})
             os.pullEvent("turtle_inventory")
         end
     end
@@ -129,7 +135,6 @@ end
 local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
     strip = strip or false
     local delta = {}
-    local xblocks, yblocks, zblocks = 0, 0, 0
 
     delta.rel = dest:sub(Coords)
     delta.abs = {

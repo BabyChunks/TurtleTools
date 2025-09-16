@@ -1,5 +1,3 @@
-NSLOTS = 16
-
 local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
     local block, blockdata = turtle.inspectUp()
 
@@ -220,7 +218,7 @@ local function startup(cmd)
                     GPS.goThere(x, y, z, true)
 
                     if t % 2 == 0 then
-                        for slot = 1, NSLOTS do
+                        for slot = 1, 16 do
                             if turtle.getItemCount(slot) == 0 then
                                 emptySlot = emptySlot + 1
                             end
