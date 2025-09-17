@@ -69,73 +69,75 @@ end
 local function startup(cmd)
     local incomplete = true
 
-    Comms.sendStatus("Startup sequence for Mine Turtle (tm)")
+    --Comms.sendStatus("Startup sequence for Mine Turtle (tm)")
 
-    local coords1, coords2, pattern, signs, fuelNeeded = {}, {}, {}, {}, {}
+    local pattern, signs, fuelNeeded = {}, {}, {}
     local i, nCycle, layer, nLayer = 0, 0, 0, 0
-    local err = false
 
-    Comms.sendStatus("Use current coordinates as recall point? (y/[xyz])", true)
-    incomplete = true
-    while incomplete do
-        local ans = io.read()
-        if ans == "y" or ans == "Y" then
-            Recall = Coords
-            incomplete = false
-        else
-            err, Recall = pcall(Lt.argparse, ans)
-            if err then
-                incomplete = false
-                for _, coord in pairs(Recall) do
-                    if type(coord) ~= "number" then
-                        io.write("Input must be numbers\n")
-                        incomplete = true
-                        break
-                    end
-                end
-            else
-                io.write(Recall .. "\n")
-            end
-        end
-    end
+    -- Comms.sendStatus("Use current coordinates as recall point? (y/[xyz])", true)
+    -- incomplete = true
+    -- while incomplete do
+    --     local ans = io.read()
+    --     if ans == "y" or ans == "Y" then
+    --         Recall = Coords
+    --         incomplete = false
+    --     else
+    --         err, Recall = pcall(Lt.argparse, ans)
+    --         if err then
+    --             incomplete = false
+    --             for _, coord in pairs(Recall) do
+    --                 if type(coord) ~= "number" then
+    --                     io.write("Input must be numbers\n")
+    --                     incomplete = true
+    --                     break
+    --                 end
+    --             end
+    --         else
+    --             io.write(Recall .. "\n")
+    --         end
+    --     end
+    -- end
 
     
 
-    print("first coordinates:")
+    -- print("first coordinates:")
 
-    incomplete = true
-    while incomplete do
-        err, coords1 = pcall(Lt.argparse, io.read())
-        if err then
-            incomplete = false
-            for _, coord in pairs(coords1) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
-                end
-            end
-        else
-            io.write(coords1 .. "\n")
-        end
-    end
+    -- incomplete = true
+    -- while incomplete do
+    --     err, coords1 = pcall(Lt.argparse, io.read())
+    --     if err then
+    --         incomplete = false
+    --         for _, coord in pairs(coords1) do
+    --             if type(coord) ~= "number" then
+    --                 io.write("Input must be numbers\n")
+    --                 incomplete = true
+    --             end
+    --         end
+    --     else
+    --         io.write(coords1 .. "\n")
+    --     end
+    -- end
 
-    incomplete = true
-    print("second coordinates:")
+    -- incomplete = true
+    -- print("second coordinates:")
 
-    while incomplete do
-        err, coords2 = pcall(Lt.argparse, io.read(), { "x", "y", "z" })
-        if err then
-            incomplete = false
-            for _, coord in pairs(coords2) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
-                end
-            end
-        else
-            io.write(coords2 .. "\n")
-        end
-    end
+    -- while incomplete do
+    --     err, coords2 = pcall(Lt.argparse, io.read(), { "x", "y", "z" })
+    --     if err then
+    --         incomplete = false
+    --         for _, coord in pairs(coords2) do
+    --             if type(coord) ~= "number" then
+    --                 io.write("Input must be numbers\n")
+    --                 incomplete = true
+    --             end
+    --         end
+    --     else
+    --         io.write(coords2 .. "\n")
+    --     end
+    -- end
+
+    local Recall = cmd[1]
+    local coords1, coords2 = cmd[2], cmd[3]
 
     Patterns = {
         [1] = {
@@ -155,20 +157,16 @@ local function startup(cmd)
         },
     }
 
-    local quarrySize = {
-        abs = {
-            x = math.abs(coords2.x - coords1.x) + 1,
-            y = math.abs(coords2.y - coords1.y) + 1,
-            z = math.abs(coords2.z - coords1.z) + 1
-        },
-        rel = {
-            x = coords2.x - coords1.x,
-            y = coords2.y - coords1.y,
-            z = coords2.z - coords1.z
-        }
-    }
 
-    i = math.min(quarrySize.abs.y, 5)
+    local quarrySize = {}
+        quarrySize.rel = coords2:sub(coords1)
+        quarrySize.abs = {
+            x = math.abs(quarrySize.rel.x) + 1,
+            y = math.abs(quarrySize.rel.y) + 1,
+            z = math.abs(quarrySize.rel.z) + 1,
+        }
+
+    i = math.min(quarrySize.abs.y, #Patterns)
     pattern = Patterns[i]
 
     for dim, size in pairs(quarrySize.rel) do
@@ -181,9 +179,13 @@ local function startup(cmd)
 
     nLayer = math.ceil(quarrySize.abs.y / i)
     nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
-    fuelNeeded = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap) + Lt.tableSum(quarrySize.abs)
+    fuelNeeded = {
+        arrival = 0,
+        quarry = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap),
+        departure = 0
+    }
 
-    GPS.goThere(coords1.x, coords1.y, coords1.z)
+    --GPS.goThere(coords1.x, coords1.y, coords1.z)
     GPS.checkFuel(fuelNeeded)
 
     term.clear()

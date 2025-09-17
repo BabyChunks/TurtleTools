@@ -45,7 +45,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     monitor.blit(text, txtColour, bkgColour)
 
     if nL then
-        monitor.setCursorPos(x, y + 1)
+        monitor.setCursorPos(1, y + 1)
     end
 end
 

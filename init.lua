@@ -70,9 +70,17 @@ local function navMenu(options, actions)
 end
 
 local function setupQuarry()
+    local args = {head = "mine", body = {}}
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
     Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-    ans = Comms.getStatus()
+    table.insert(args.body, GPS.handleCoordsInput(io.read()))
+    Gt.drawConsole("Input first coorindates:")
+    table.insert(args.body, GPS.handleCoordsInput(io.read()))
+    Gt.drawConsole("Input second coodinates:")
+    table.insert(args.body, GPS.handleCoordsInput(io.read()))
+
+    Comms.sendCmd(args)
+
 end
 
 local function mainMenu()

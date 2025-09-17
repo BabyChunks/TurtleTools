@@ -47,8 +47,8 @@ local function noGPS(forceCoords) --manually enter xz or xyz coords
     Comms.sendStatus("console", {
     "Could not locate turtle using gps. Input coordinates ("..
     "x" and not forceCoords[1]..
-    ", y" and not forceCoords[2]..
-    ", z" and not forceCoords[3]..
+    "y" and not forceCoords[2]..
+    "z" and not forceCoords[3]..
     ") manually or press Enter to terminate"})
 
     return handleCoordsInput(forceCoords)

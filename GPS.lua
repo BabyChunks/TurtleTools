@@ -1,25 +1,29 @@
-local function noGPS() --manually enter xyz coords
-    local ans = ""
-    local coords = {}
-    local err = false
+local function handleCoordsInput(forceCoords)
+    forceCoords = forceCoords or {}
 
-    print("Could not locate computer using gps. Input coordinates (x, y, z) manually or press Enter to terminate")
-    local incomplete = true
+    local keys = {"x", "y", "z"}
+    local incomplete, err = true, false
+    local coords = {}
 
     while incomplete do
-        ans = io.read()
+        local ans = io.read()
         term.clear()
         term.setCursorPos(1,1)
         if ans == "" then
             os.queueEvent("terminate")
         end
 
-        err, coords = pcall(Lt.argparse, ans)
+        for i, key in ipairs(keys) do
+            if forceCoords[i] then
+                table.remove(keys, i)
+            end
+        end
+        err, coords = pcall(Lt.argparse, ans, keys)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    print("Input must be numbers")
+                    Comms.sendStatus("console",{"Input must be numbers"})
                     incomplete = true
                     break
                 end
@@ -28,9 +32,25 @@ local function noGPS() --manually enter xyz coords
             io.write(coords .. "\n")
         end
     end
-    return table.unpack(coords)
+
+    for i, coord in ipairs(forceCoords) do
+        coords[i] = coord
+    end
+    return vector.new(table.unpack(coords))
+end
+
+local function noGPS(forceCoords) --manually enter xyz coords
+    Gt.drawConsole(
+    "Could not locate computer using gps. Input coordinates ("..
+    "x" and not forceCoords[1]..
+    "y" and not forceCoords[2]..
+    "z" and not forceCoords[3]..
+    ") manually or press Enter to terminate", true)
+
+    return handleCoordsInput(forceCoords)
 end
 
 return {
+    handlecoordsInput = handleCoordsInput,
     noGPS =  noGPS
 }
