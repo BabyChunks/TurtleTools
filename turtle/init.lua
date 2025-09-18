@@ -70,6 +70,12 @@ Coords = vector.new(gps.locate())
     end
 GPS.getHeading()
 
+local currentTask = nil
+
+function GetCurrentTask()
+    return currentTask
+end
+
 while true do
     print("Awaiting server pings...")
 
@@ -80,10 +86,13 @@ while true do
     local cmd = Comms.getCmd()
 
     if cmd.name == "mine" then
+        currentTask = "Mining"
         Tt.startup(cmd.body)
     elseif cmd.name == "move" then
+        currentTask = "Moving"
         GPS.goThere(table.unpack(cmd.body))
     elseif cmd.name == "courrier" then
+        currentTask = "Fetching"
     elseif cmd.name == "disconnect" then
         Comms.setServerID(nil)
     end

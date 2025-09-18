@@ -70,16 +70,16 @@ local function navMenu(options, actions)
 end
 
 local function setupQuarry()
-    local args = {head = "mine", body = {}}
+    local cmd = {head = "mine", body = {}}
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
     Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-    table.insert(args.body, GPS.handleCoordsInput(io.read()))
+    table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
     Gt.drawConsole("Input first coorindates:", true)
-    table.insert(args.body, GPS.handleCoordsInput(io.read()))
+    table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
     Gt.drawConsole("Input second coodinates:", true)
-    table.insert(args.body, GPS.handleCoordsInput(io.read()))
+    table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
 
-    Comms.sendCmd(args)
+    Comms.sendCmd(cmd)
 
     while true do
         if Comms.getStatus() then break end
@@ -108,6 +108,10 @@ local function mainMenu()
         function() --Inventory
         end,
         function() --Mine
+            if not Comms.getTurtleID() then
+                Gt.drawConsole("No turtle connected")
+                os.sleep(0.8)
+            end
             setupQuarry()
         end,
         function() --Move

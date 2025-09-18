@@ -1,3 +1,9 @@
+QuarryCompletion = 0
+
+local function getCompletion()
+    return QuarryCompletion
+end
+
 local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
     local block, blockdata = turtle.inspectUp()
 
@@ -67,7 +73,6 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
 end
 
 local function startup(cmd)
-    local incomplete = true
 
     --Comms.sendStatus("Startup sequence for Mine Turtle (tm)")
 
@@ -186,11 +191,11 @@ local function startup(cmd)
     }
 
     --GPS.goThere(coords1.x, coords1.y, coords1.z)
+    Comms.sendStatus("task", {QuarryCompletion, colours.red, "Mining"})
     GPS.checkFuel(Lt.tableSum(fuelNeeded))
+    Comms.sendStatus("task", {QuarryCompletion, nil, "Mining"})
 
-    term.clear()
-    term.setCursorPos(1, 1)
-    print("Beginning mining...")
+    Comms.sendStatus("console", {"Begin mining sequence..."})
 
     while layer < nLayer do
         local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
@@ -215,6 +220,9 @@ local function startup(cmd)
                 local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
                 local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
 
+                QuarryCompletion = ((layer / nLayer) * 0.99 + (cycle / nCycle) * 0.01)
+                Comms.sendStatus("task", {QuarryCompletion, colours.yellow, "Mining"})
+
                 if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.abs.z then
                     local emptySlot = 0
                     GPS.goThere(x, y, z, true)
@@ -225,12 +233,13 @@ local function startup(cmd)
                                 emptySlot = emptySlot + 1
                             end
                         end
-                        if emptySlot <= St.EmptySlots then
+                        if emptySlot <= St.emptySlots then
                             GPS.goThere(Recall.x, Recall.y, Recall.z)
-                            io.write("Inventory is nearly full. Unload turtle to continue, then press Enter.\n")
-                            _ = io.read()
-                            checkFuel(fuelNeeded / (1 - (0.1 * (layer / nLayer) + 0.01 * (cycle / nCycle))))
-                            io.write("Resume mining...\n")
+                            Comms.sendStatus("task", {QuarryCompletion, colours.red, "Mining"})
+                            _ = Comms.sendStatus("console",{"Inventory is nearly full. Unload turtle to continue, then press Enter.", true})
+                            GPS.checkFuel(fuelNeeded / (1 - QuarryCompletion))
+                            Comms.sendStatus("console",{"Resume mining..."})
+                            Comms.sendStatus("task", {QuarryCompletion, nil, "Mining"})
                             GPS.goThere(x, y, z)
                         end
                     end
@@ -241,11 +250,11 @@ local function startup(cmd)
         layer = layer + 1
     end
     GPS.goThere(Recall.x, Recall.y, Recall.z)
-    io.write("Mining sequence done!\n")
-    os.sleep(2)
+    Comms.sendStatus("console", {"Mining sequence done!"})
 end
 
 return {
+    getCompletion = getCompletion,
     tunnel = tunnel,
     startup = startup
 }
