@@ -12,12 +12,14 @@ end
 local function connectServer()
     while true do
         local id, msg = rednet.receive("ping", St.pingTimeOut)
-        if msg[1] == "ping" then
-            rednet.send(id, {"pong", Coords}, "ping")
-        elseif msg[1] == "ack" then
-            print("Server connected at ID "..serverID)
-            serverID = id
-            return
+        if msg then
+            if msg[1] == "ping" then
+                rednet.send(id, {"pong", Coords}, "ping")
+            elseif msg[1] == "ack" then
+                print("Server connected at ID "..serverID)
+                serverID = id
+                return
+            end
         end
     end
 end
