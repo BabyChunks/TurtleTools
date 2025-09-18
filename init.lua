@@ -38,8 +38,8 @@ end
 
 Gt = require(filePath.."GUItools")
 Lt = require(filePath.."luatools")
-Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
+Comms = require(filePath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
 Gt.drawCorpBanner()
