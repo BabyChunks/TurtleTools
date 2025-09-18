@@ -42,9 +42,9 @@ end
 local function noGPS(forceCoords) --manually enter xyz coords
     Gt.drawConsole(
     "Could not locate computer using gps. Input coordinates ("..
-    "x" and not forceCoords[1]..
-    "y" and not forceCoords[2]..
-    "z" and not forceCoords[3]..
+    (not forceCoords[1]) and "x"..
+    (not forceCoords[2]) and "y"..
+    (not forceCoords[3]) and "z"..
     ") manually or press Enter to terminate", true)
 
     return handleCoordsInput(forceCoords)
