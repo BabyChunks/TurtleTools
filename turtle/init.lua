@@ -50,8 +50,6 @@ if arg[1] == "-u" then
     --whisper Off
     whisper = term.redirect(whisper)
     print("Done!")
-    os.sleep(0.8)
-    term.clear()
 end
 
 print("Loading environment...")
@@ -61,8 +59,6 @@ Lt = require(filePath.."luatools")
 Comms = require(filePath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 print("Done!")
-os.sleep(0.8)
-term.clear()
 
 Coords = vector.new(gps.locate())
     if not Coords.x then

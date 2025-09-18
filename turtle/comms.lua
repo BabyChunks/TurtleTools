@@ -35,6 +35,8 @@ local function sendStatus(head, body)
         if body[2] then
             return getCmd()
         end
+    else
+        print(head..": "..body[1])
     end
 end
 

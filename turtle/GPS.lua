@@ -114,7 +114,7 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
             ["-z"] = delta.z < 0
         }
 
-        Heading = Lt.getKeyforValue(headingMatrix, true)
+        Heading = Lt.getKeyForValue(headingMatrix, true)
     end
     if turn then
         local i = 0
