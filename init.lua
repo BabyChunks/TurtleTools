@@ -82,7 +82,7 @@ local function setupQuarry()
     Comms.sendCmd(args)
 
     while true do
-        Comms.getStatus()
+        if Comms.getStatus() then break end
     end
 
 end

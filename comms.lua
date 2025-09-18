@@ -45,7 +45,7 @@ local function sendCmd(cmd)
     end
 end
 
-local function getStatus(status)
+local function getStatus()
     --three types of status: "turtle", "task" and "console"
     local id, msg = rednet.receive("status")
     if id == turtleID then
@@ -55,9 +55,14 @@ local function getStatus(status)
                 sendCmd(io.read())
             end
         elseif msg.head == "turtle" then
-            Gt.drawTurtleStatus(turtleID, msg.body[1])
+            Gt.drawTurtleStatus(turtleID)
         elseif msg.head == "task" then
-            
+            Gt.drawTaskStatus(msg.body[1], msg.body[2])
+            if msg.body == 1 then
+                Gt.drawConsole("Task complete! Press Enter to continue", true)
+                _ = io.read()
+                return true
+            end
         end
     end
 end
