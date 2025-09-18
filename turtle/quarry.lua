@@ -180,13 +180,13 @@ local function startup(cmd)
     nLayer = math.ceil(quarrySize.abs.y / i)
     nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
     fuelNeeded = {
-        arrival = 0,
+        arrival = GPS.sumVectorComponents(coords1:sub(Coords)),
         quarry = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap),
-        departure = 0
+        departure = GPS.sumVectorComponents(coords2:sub(Coords))
     }
 
     --GPS.goThere(coords1.x, coords1.y, coords1.z)
-    GPS.checkFuel(fuelNeeded)
+    GPS.checkFuel(Lt.tableSum(fuelNeeded))
 
     term.clear()
     term.setCursorPos(1, 1)

@@ -56,6 +56,8 @@ local function getStatus(status)
             end
         elseif msg.head == "turtle" then
             Gt.drawTurtleStatus(turtleID, msg.body[1])
+        elseif msg.head == "task" then
+            
         end
     end
 end

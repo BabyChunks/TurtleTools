@@ -74,12 +74,16 @@ local function setupQuarry()
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
     Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
     table.insert(args.body, GPS.handleCoordsInput(io.read()))
-    Gt.drawConsole("Input first coorindates:")
+    Gt.drawConsole("Input first coorindates:", true)
     table.insert(args.body, GPS.handleCoordsInput(io.read()))
-    Gt.drawConsole("Input second coodinates:")
+    Gt.drawConsole("Input second coodinates:", true)
     table.insert(args.body, GPS.handleCoordsInput(io.read()))
 
     Comms.sendCmd(args)
+
+    while true do
+        Comms.getStatus()
+    end
 
 end
 
@@ -91,10 +95,12 @@ local function mainMenu()
             if Comms.getTurtleID() then
                 local id = Comms.getTurtleID()
                 Comms.setTurtleID(nil)
+                Gt.drawTurtleStatus(nil)
                 Gt.drawConsole("Turtle #"..id.." disconnected successfully")
             else
                 Gt.drawConsole("Pinging nearby turtles...")
                 Comms.pingTurtles()
+                Gt.drawTurtleStatus(Comms.getTurtleID())
                 Gt.drawConsole("Connected with turtle #"..Comms.getTurtleID())
             end
             os.sleep(0.8)

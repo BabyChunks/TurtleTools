@@ -79,9 +79,12 @@ local function checkFuel(fuelNeeded)
     term.setCursorPos(1,1)
 end
 
+local function getVectorComponents(v)
+    return v.x, v.y, v.z
+end
+
 local function sumVectorComponents(v)
-    local u = vector.new(1, 1, 1)
-    return v:length() * u:length() * ((v:dot(u)) / (v:length() * u:length()))
+    return v.x + v.y + v.z
 end
 
 local function getHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
@@ -347,6 +350,7 @@ end
 return {
     noGPS =  noGPS,
     checkFuel = checkFuel,
+    getVectorComponents = getVectorComponents,
     sumVectorComponents = sumVectorComponents,
     getHeading = getHeading,
     goThere = goThere,
