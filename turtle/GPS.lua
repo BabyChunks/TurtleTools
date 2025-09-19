@@ -310,7 +310,7 @@ local function buildArray()
         end
     end
 
-    goThere(base.x, base.y, base.z)
+    goThere(base) -- make base a vector --
 
     local partsNeeded = {
         [1] = {names = {"computercraft:computer_normal", "computercraft:computer_advanced"}, n = 4, check = false},

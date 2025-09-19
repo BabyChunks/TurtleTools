@@ -190,12 +190,13 @@ local function startup(cmd)
         departure = GPS.sumVectorComponents(coords2:sub(Coords))
     }
 
-    --GPS.goThere(coords1.x, coords1.y, coords1.z)
     Comms.sendStatus("task", {QuarryCompletion, colours.red, "Mining"})
     GPS.checkFuel(Lt.tableSum(fuelNeeded))
     Comms.sendStatus("task", {QuarryCompletion, nil, "Mining"})
 
     Comms.sendStatus("console", {"Begin mining sequence..."})
+
+    GPS.goThere(coords1)
 
     while layer < nLayer do
         local tunnelStart, tunnelStop, cycleStart, cycleStop, step = 0, 0, 0, 0, 0
@@ -216,16 +217,20 @@ local function startup(cmd)
 
         for cycle = cycleStart, cycleStop, step do
             for t = tunnelStart, tunnelStop, step do
-                local x = coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1)
-                local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
-                local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
+                local v = vector.new(
+                    coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1),
+                    coords1.y + signs.y * (i * layer + pattern.yOffset[t]),
+                    coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t]))
+                -- local x = coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1)
+                -- local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
+                -- local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
 
                 QuarryCompletion = ((layer / nLayer) * 0.99 + (cycle / nCycle) * 0.01)
                 Comms.sendStatus("task", {QuarryCompletion, colours.yellow, "Mining"})
 
                 if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.abs.z then
                     local emptySlot = 0
-                    GPS.goThere(x, y, z, true)
+                    GPS.goThere(v, true)
 
                     if t % 2 == 0 then
                         for slot = 1, 16 do
@@ -234,13 +239,13 @@ local function startup(cmd)
                             end
                         end
                         if emptySlot <= St.emptySlots then
-                            GPS.goThere(Recall.x, Recall.y, Recall.z)
+                            GPS.goThere(Recall)
                             Comms.sendStatus("task", {QuarryCompletion, colours.red, "Mining"})
                             _ = Comms.sendStatus("console",{"Inventory is nearly full. Unload turtle to continue, then press Enter.", true})
                             GPS.checkFuel(fuelNeeded / (1 - QuarryCompletion))
                             Comms.sendStatus("console",{"Resume mining..."})
                             Comms.sendStatus("task", {QuarryCompletion, nil, "Mining"})
-                            GPS.goThere(x, y, z)
+                            GPS.goThere(v)
                         end
                     end
                 end
@@ -249,7 +254,7 @@ local function startup(cmd)
         end
         layer = layer + 1
     end
-    GPS.goThere(Recall.x, Recall.y, Recall.z)
+    GPS.goThere(Recall)
     Comms.sendStatus("console", {"Mining sequence done!"})
 end
 
