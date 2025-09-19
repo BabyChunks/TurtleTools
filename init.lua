@@ -1,39 +1,43 @@
 local filePath = "/ChunksWare/"
 
 
-if arg[1] == "-u" then
-    local results = {}
-    local files = {
-        "luatools.lua",
-        "GUItools.lua",
-        "GPS.lua",
-        "comms.lua"
-    }
+for _, v in ipairs(arg) do
+    if v == "-u" then
+        local results = {}
+        local files = {
+            "luatools.lua",
+            "GUItools.lua",
+            "GPS.lua",
+            "comms.lua"
+        }
 
-    if #fs.find(filePath.."settings.txt") == 0 then
-        table.insert(files, "settings.txt")
-    end
-
-    local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
-    print("Updating files...")
-    --whipser On
-    local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
-        for _, file in pairs(files) do
-            results = fs.find(filePath..file)
-            if #results ~= 0 then
-                for _, result in pairs(results) do
-                        fs.delete(result)
-                end
-            end
-            shell.execute("wget", gitPath..file, filePath..file)
-
+        if #fs.find(filePath.."settings.txt") == 0 then
+            table.insert(files, "settings.txt")
         end
 
-    --whisper Off
-    whisper = term.redirect(whisper)
-    print("Done!")
-    os.sleep(0.8)
-    term.clear()
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
+        print("Updating files...")
+        --whipser On
+        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
+            for _, file in pairs(files) do
+                results = fs.find(filePath..file)
+                if #results ~= 0 then
+                    for _, result in pairs(results) do
+                            fs.delete(result)
+                    end
+                end
+                shell.execute("wget", gitPath..file, filePath..file)
+
+            end
+
+        --whisper Off
+        whisper = term.redirect(whisper)
+        print("Done!")
+        os.sleep(0.8)
+        term.clear()
+    elseif v == "-s" then
+        
+    end
 end
 
 Gt = require(filePath.."GUItools")

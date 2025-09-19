@@ -1,3 +1,7 @@
 {
-  pingTimeOut = 8
+  pingTimeOut = {
+    caption = "Ping Timeout",
+    value = 8,
+    desc = "Pinging turtles will timeout after not receiving pings for this amount of time (sec)."
+    }
 }
