@@ -1,5 +1,4 @@
 local function handleCoordsInput(forceCoords)
-    forceCoords = forceCoords or {}
 
     local keys = {"x", "y", "z"}
     local incomplete, err = true, false
@@ -40,12 +39,13 @@ local function handleCoordsInput(forceCoords)
 end
 
 local function noGPS(forceCoords) --manually enter xyz coords
+    forceCoords = forceCoords or {}
+    
     Gt.drawConsole(
-    "Could not locate computer using gps. Input coordinates ("..
-    (not forceCoords[1]) and "x"..
-    (not forceCoords[2]) and "y"..
-    (not forceCoords[3]) and "z"..
-    ") manually or press Enter to terminate", true)
+    string.format("Could not locate computer using gps. Input coordinates (%s%s%s) manually or press Enter to terminate", 
+    "x" and not forceCoords[1],
+    "y" and not forceCoords[2],
+    "z" and not forceCoords[3]), true)
 
     return handleCoordsInput(forceCoords)
 end

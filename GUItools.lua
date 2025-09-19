@@ -76,16 +76,16 @@ local function drawTurtleStatus(id)
     turtleStatus.clear()
     local statusColour = not id and colours.grey or colours.white
 
-    drawText("Current turtle: ["..id or "  ".."]", turtleStatus, "right", nil, statusColour)
+    drawText(string.format("Current turtle: [%s]", id or "  "), turtleStatus, "right", nil, statusColour)
 end
 
 local function drawTaskStatus(taskCompletion, statusColour, task)
     -- if no task: white;
     -- if task is ongoing: white;
     -- if task is stopped: red
-    taskCompletion = taskCompletion or 0
     taskStatus.clear()
 
+    taskCompletion = taskCompletion or 0
     task = task or "No current task"
     statusColour = statusColour or colours.white
 

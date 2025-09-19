@@ -47,6 +47,8 @@ Comms = require(filePath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
 Gt.drawCorpBanner()
+Gt.drawTurtleStatus()
+Gt.drawTaskStatus()
 
 local function navMenu(options, actions)
     local selected = 1

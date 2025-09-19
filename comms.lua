@@ -4,7 +4,7 @@ local emptyCoords = vector.new(0, 0, 0)
 local serverCoords = vector.new(gps.locate())
 
 if serverCoords:equals(emptyCoords) then
-    serverCoords = vector.new(GPS.noGPS("xyz"))
+    serverCoords = vector.new(GPS.noGPS())
 end
 
 local function getTurtleID()
@@ -24,7 +24,7 @@ local function pingTurtles()
 
     rednet.broadcast({"ping"},"ping")
     while true do
-        local id, msg = rednet.receive("ping", St.pingTimeOut)
+        local id, msg = rednet.receive("ping", St.pingTimeOut.value)
         if id then
             if msg[1] == "pong" then
                 local turtleCoords = vector.new(table.unpack(textutils.unserialize(msg)))
@@ -34,9 +34,11 @@ local function pingTurtles()
             break
         end
     end
-    turtleID = Lt.getKeyForValue(math.max(table.unpack(dist)))
-    Gt.drawConsole("Connected to turtle with ID "..turtleID)
-    rednet.send(turtleID, {"ack"}, "ping")
+    if #dist ~= 0  then
+        turtleID = Lt.getKeyForValue(math.max(table.unpack(dist)))
+        Gt.drawConsole("Connected to turtle with ID "..turtleID)
+        rednet.send(turtleID, {"ack"}, "ping")
+    end
 end
 
 local function sendCmd(cmd)
