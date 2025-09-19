@@ -1,1 +1,2 @@
-make a request for settings on turtle side, make computer side able to upload files
+de-index caller args for turtle init
+make a settings menu on turtle (-s flag) and server side (menu option)

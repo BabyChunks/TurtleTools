@@ -22,7 +22,7 @@ local function handleCoordsInput(forceCoords)
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    Comms.sendStatus("console",{"Input must be numbers"})
+                    Gt.drawConsole("Input must be numbers")
                     incomplete = true
                     break
                 end
