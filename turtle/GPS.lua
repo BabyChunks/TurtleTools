@@ -1,7 +1,7 @@
 Coords = {}
 Heading  = nil
 
-local function handleCoordsInput(forceCoords)
+local function handleCoordsInput(ans, forceCoords)
     forceCoords = forceCoords or {}
 
     local keys = {"x", "y", "z"}
@@ -9,7 +9,6 @@ local function handleCoordsInput(forceCoords)
     local coords = {}
 
     while incomplete do
-        local ans = Comms.sendStatus("console", {"", true})
         term.clear()
         term.setCursorPos(1,1)
         if ans == "" then
@@ -43,15 +42,12 @@ local function handleCoordsInput(forceCoords)
 end
 
 local function noGPS(forceCoords) --manually enter xz or xyz coords
+    forceCoords = forceCoords or {}
 
-    Comms.sendStatus("console", {
-    string.format("Could not locate computer using gps. Input coordinates (%s%s%s) manually or press Enter to terminate", 
-    "x" and not forceCoords[1],
-    "y" and not forceCoords[2],
-    "z" and not forceCoords[3]), true
-    })
 
-    return handleCoordsInput(forceCoords)
+    local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
+
+    return handleCoordsInput(ans, forceCoords)
 end
 
 local function checkFuel(fuelNeeded)
@@ -288,7 +284,7 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
     Coords = dest
 end
 
-local function buildArray()
+local function buildArray() -- WIP
     local base = {}
     local err = false
 

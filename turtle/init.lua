@@ -60,8 +60,10 @@ Comms = require(filePath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 print("Done!")
 
+local emptyCoords = vector.new(0, 0, 0)
+
 Coords = vector.new(gps.locate())
-    if not Coords.x then
+    if Coords:equals(emptyCoords) then
         Coords = GPS.noGPS()
     end
 GPS.getHeading()

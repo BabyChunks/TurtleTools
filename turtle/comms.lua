@@ -14,7 +14,7 @@ local function connectServer()
         local id, msg = rednet.receive("ping", St.pingTimeOut)
         if msg then
             if msg[1] == "ping" then
-                rednet.send(id, {"pong", Coords}, "ping")
+                rednet.send(id, {"pong", textutils.serialize(Coords)}, "ping")
             elseif msg[1] == "ack" then
                 print("Server connected at ID "..serverID)
                 serverID = id
@@ -39,6 +39,9 @@ local function sendStatus(head, body)
         end
     else
         print(head..": "..body[1])
+        if body[2] then
+            return io.read()
+        end
     end
 end
 

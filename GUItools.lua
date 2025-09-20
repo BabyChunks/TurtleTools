@@ -6,6 +6,8 @@ local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
 local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
 local turtleStatus = window.create(term.current(), 1, termHeight - 1, termWidth, 1)
 
+term.redirect(console)
+
 local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     monitor = monitor or term
     txtColour = txtColour or colours.white
