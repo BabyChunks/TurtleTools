@@ -40,7 +40,7 @@ end
 
 local function noGPS(forceCoords) --manually enter xyz coords
     forceCoords = forceCoords or {}
-    
+
     Gt.drawConsole(
     string.format("Could not locate computer using gps. Input coordinates (%s%s%s) manually or press Enter to terminate", 
     "x" and not forceCoords[1],
@@ -50,7 +50,18 @@ local function noGPS(forceCoords) --manually enter xyz coords
     return handleCoordsInput(forceCoords)
 end
 
+local function locate()
+    local coords = gps.locate()
+
+    if not coords then
+        return noGPS()
+    end
+
+    return vector.new(table.unpack(coords))
+end
+
 return {
     handlecoordsInput = handleCoordsInput,
-    noGPS =  noGPS
+    noGPS =  noGPS,
+    locate = locate
 }

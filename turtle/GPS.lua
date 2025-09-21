@@ -1,8 +1,7 @@
 Coords = {}
 Heading  = nil
 
-local function handleCoordsInput(ans, forceCoords)
-    forceCoords = forceCoords or {}
+local function handleCoordsInput(ans)
 
     local keys = {"x", "y", "z"}
     local incomplete, err = true, false
@@ -15,12 +14,7 @@ local function handleCoordsInput(ans, forceCoords)
             os.queueEvent("terminate")
         end
 
-        for i, key in ipairs(keys) do
-            if forceCoords[i] then
-                table.remove(keys, i)
-            end
-        end
-        err, coords = pcall(Lt.argparse, ans, keys)
+        err, coords = pcall(Lt.argparse, ans)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
@@ -34,25 +28,23 @@ local function handleCoordsInput(ans, forceCoords)
             io.write(coords .. "\n")
         end
     end
-
-    for i, coord in ipairs(forceCoords) do
-        coords[i] = coord
-    end
+    print(textutils.serialize(coords))
+    os.sleep(2)
     return vector.new(table.unpack(coords))
 end
 
-local function noGPS(forceCoords) --manually enter xz or xyz coords
-    forceCoords = forceCoords or {}
-
+local function noGPS() --manually enter xz or xyz coords
 
     local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
-
-    return handleCoordsInput(ans, forceCoords)
+    print("'"..ans.."'")
+    os.sleep(2)
+    return handleCoordsInput(ans)
 end
 
 local function locate()
     local coords = gps.locate()
-    if coords == {nil, nil, nil} then
+
+    if not coords then
         return noGPS()
     end
 
@@ -85,6 +77,7 @@ local function checkFuel(fuelNeeded)
 end
 
 local function getVectorComponents(v)
+    print(textutils.serialize(v))
     return v.x, v.y, v.z
 end
 

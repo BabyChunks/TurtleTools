@@ -4,7 +4,7 @@ local emptyCoords = vector.new(0, 0, 0)
 local serverCoords = vector.new(gps.locate())
 
 if serverCoords:equals(emptyCoords) then
-    serverCoords = vector.new(GPS.noGPS())
+    serverCoords = GPS.noGPS()
 end
 
 local function getTurtleID()
@@ -29,14 +29,19 @@ local function pingTurtles()
         if id then
             print("ping received with ID "..id)
             if msg[1] == "pong" then
-                local turtleCoords = vector.new(textutils.unserialize(msg[2]))
+                print(textutils.serialize(msg[2]))
+                os.sleep(2)
+                local turtleCoords = textutils.unserialize(msg[2])
+                print(textutils.serialize(turtleCoords))
+                print(textutils.serialize(serverCoords))
                 dist[id] = (serverCoords:sub(turtleCoords)):length()
-                print("new distanec added: "..dist[id])
+                print("new distance added: "..dist[id])
             end
         else
             break
         end
     end
+    print("dist length:"..#dist)
     if #dist > 0  then
         
         turtleID = Lt.getKeyForValue(math.max(table.unpack(dist)))

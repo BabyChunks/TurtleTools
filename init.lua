@@ -35,8 +35,6 @@ for _, v in ipairs(arg) do
         print("Done!")
         os.sleep(0.8)
         term.clear()
-    elseif v == "-s" then
-        
     end
 end
 

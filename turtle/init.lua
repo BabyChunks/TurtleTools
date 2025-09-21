@@ -61,6 +61,8 @@ St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 print("Done!")
 
 Coords = GPS.locate()
+print("Coords: "..textutils.serialize(Coords))
+os.sleep(0.8)
 GPS.getHeading()
 
 CurrentTask = nil
