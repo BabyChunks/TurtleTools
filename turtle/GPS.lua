@@ -50,6 +50,15 @@ local function noGPS(forceCoords) --manually enter xz or xyz coords
     return handleCoordsInput(ans, forceCoords)
 end
 
+local function locate()
+    local coords = gps.locate()
+    if coords == {nil, nil, nil} then
+        return noGPS()
+    end
+
+    return vector.new(table.unpack(coords))
+end
+
 local function checkFuel(fuelNeeded)
     local item = {}
     local currFuel = turtle.getFuelLevel()
@@ -95,9 +104,9 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         end
         assert(turtle.forward())
 
-        coords2 = vector.new(gps.locate())
+        coords2 = vector.new(gps.locate()) -- a changer
         if not coords2.x then
-            coords2 = noGPS({nil, Coords.y, nil})
+            coords2 = noGPS()
         end
         assert(turtle.back())
 
@@ -344,6 +353,7 @@ local function buildArray() -- WIP
 end
 
 return {
+    locate = locate,
     noGPS =  noGPS,
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,

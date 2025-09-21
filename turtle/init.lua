@@ -60,19 +60,10 @@ Comms = require(filePath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 print("Done!")
 
-local emptyCoords = vector.new(0, 0, 0)
-
-Coords = vector.new(gps.locate())
-    if Coords:equals(emptyCoords) then
-        Coords = GPS.noGPS()
-    end
+Coords = GPS.locate()
 GPS.getHeading()
 
-local currentTask = nil
-
-function GetCurrentTask()
-    return currentTask
-end
+CurrentTask = nil
 
 while true do
     print("Awaiting server pings...")
@@ -84,13 +75,13 @@ while true do
     local cmd = Comms.getCmd()
 
     if cmd.name == "mine" then
-        currentTask = "Mining"
+        CurrentTask = "Mining"
         Tt.startup(cmd.body)
     elseif cmd.name == "move" then
-        currentTask = "Moving"
+        CurrentTask = "Moving"
         GPS.goThere(table.unpack(cmd.body))
     elseif cmd.name == "courrier" then
-        currentTask = "Fetching"
+        CurrentTask = "Fetching"
     elseif cmd.name == "disconnect" then
         Comms.setServerID(nil)
     end

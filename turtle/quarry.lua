@@ -1,5 +1,3 @@
-QuarryCompletion = 0
-
 local function getCompletion()
     return QuarryCompletion
 end
@@ -73,8 +71,7 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
 end
 
 local function startup(cmd)
-
-    --Comms.sendStatus("Startup sequence for Mine Turtle (tm)")
+    QuarryCompletion = 0
 
     local pattern, signs, fuelNeeded = {}, {}, {}
     local i, nCycle, layer, nLayer = 0, 0, 0, 0
@@ -190,9 +187,9 @@ local function startup(cmd)
         departure = GPS.sumVectorComponents(coords2:sub(Coords))
     }
 
-    Comms.sendStatus("task", {QuarryCompletion, colours.red, "Mining"})
+    Comms.sendStatus("task", {QuarryCompletion, colours.red, CurrentTask})
     GPS.checkFuel(Lt.tableSum(fuelNeeded))
-    Comms.sendStatus("task", {QuarryCompletion, nil, "Mining"})
+    Comms.sendStatus("task", {QuarryCompletion, nil, CurrentTask})
 
     Comms.sendStatus("console", {"Begin mining sequence..."})
 
