@@ -61,7 +61,7 @@ local function locate()
 end
 
 return {
-    handlecoordsInput = handleCoordsInput,
+    handleCoordsInput = handleCoordsInput,
     noGPS =  noGPS,
     locate = locate
 }
