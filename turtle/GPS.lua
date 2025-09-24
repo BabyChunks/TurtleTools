@@ -19,36 +19,27 @@ local function handleCoordsInput(ans)
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    Comms.sendStatus("console",{"Input must be numbers"})
+                    ans = Comms.sendStatus("console",{"Input must be numbers", true})
                     incomplete = true
                     break
                 end
             end
         else
-            io.write(coords .. "\n")
+            ans = Comms.sendStatus("console", {coords, true})
         end
     end
-    print(textutils.serialize(coords))
-    os.sleep(2)
     return vector.new(table.unpack(coords))
-end
-
-local function noGPS() --manually enter xz or xyz coords
-
-    local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
-    print("'"..ans.."'")
-    os.sleep(2)
-    return handleCoordsInput(ans)
 end
 
 local function locate()
-    local coords = gps.locate()
+    local x, y, z = gps.locate()
 
-    if not coords then
-        return noGPS()
+    if not x then
+        local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
+        return handleCoordsInput(ans)
     end
 
-    return vector.new(table.unpack(coords))
+    return vector.new(x, y, z)
 end
 
 local function checkFuel(fuelNeeded)
@@ -99,7 +90,8 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
 
         coords2 = vector.new(gps.locate()) -- a changer
         if not coords2.x then
-            coords2 = noGPS()
+            local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
+            coords2 = handleCoordsInput(ans)
         end
         assert(turtle.back())
 
@@ -347,7 +339,6 @@ end
 
 return {
     locate = locate,
-    noGPS =  noGPS,
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,
     sumVectorComponents = sumVectorComponents,
