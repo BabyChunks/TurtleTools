@@ -82,13 +82,13 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
 
         checkFuel(2)
 
-        if turtle.detect() then
+        while turtle.detect() do
             turtle.dig()
             turtle.suck()
         end
         assert(turtle.forward())
 
-        coords2 = vector.new(gps.locate()) -- a changer
+        coords2 = vector.new(gps.locate())
         if not coords2.x then
             local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
             coords2 = handleCoordsInput(ans)
