@@ -24,14 +24,12 @@ local function pingTurtles()
 
     while true do
         rednet.broadcast({"ping"},"ping")
-        print("ping sent")
         local id, msg = rednet.receive("ping", St.pingTimeOut.value)
         if id then
-            print("ping received with ID "..id)
             if msg[1] == "pong" then
                 print(textutils.serialize(msg[2]))
                 os.sleep(2)
-                local turtleCoords = textutils.unserialize(msg[2])
+                local turtleCoords = vector.new(table.unpack(msg[2]))
                 print(textutils.serialize(turtleCoords))
                 print(textutils.serialize(serverCoords))
                 dist[id] = (serverCoords:sub(turtleCoords)):length()
