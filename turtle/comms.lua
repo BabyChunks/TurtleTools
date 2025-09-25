@@ -33,7 +33,7 @@ end
 
 local function sendStatus(head, body)
     if serverID then
-        rednet.send({head = head, body = body})
+        rednet.send("status", {head = head, body = body})
         if body[2] then
             return getCmd()
         end

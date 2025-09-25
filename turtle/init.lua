@@ -18,6 +18,8 @@ os.sleep(2)
 term.clear()
 term.setCursorPos(1,1)
 
+
+-- "update" options
 if arg[1] == "-u" then
     local results = {}
     local files = {
@@ -63,14 +65,13 @@ print("Done!")
 Coords = GPS.locate()
 GPS.getHeading()
 
-CurrentTask = nil
+print("Awaiting server pings...")
+Comms.connectServer()
 
 while true do
-    print("Awaiting server pings...")
-
-    Comms.connectServer()
-
     print("Awaiting server commands...")
+    CurrentTask = nil
+    Comms.SendStatus("task", {nil, nil, CurrentTask})
 
     local cmd = Comms.getCmd()
 

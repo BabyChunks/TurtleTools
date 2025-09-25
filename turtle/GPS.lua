@@ -3,7 +3,6 @@ Heading  = nil
 
 local function handleCoordsInput(ans)
 
-    local keys = {"x", "y", "z"}
     local incomplete, err = true, false
     local coords = {}
 
@@ -173,7 +172,7 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         }
         }
     }
-    
+
     for action in _, ipairs(orientationMatrix.x[delta.rel.x / delta.abs.x][Heading]) do
         action = action
     end

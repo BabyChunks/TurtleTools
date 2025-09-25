@@ -69,7 +69,7 @@ local function getStatus()
         elseif msg.head == "turtle" then
             Gt.drawTurtleStatus(turtleID)
         elseif msg.head == "task" then
-            Gt.drawTaskStatus(msg.body[1], msg.body[2])
+            Gt.drawTaskStatus(msg.body[1], msg.body[2], msg.body[3])
             if msg.body[1] == 1 then
                 Gt.drawConsole("Task complete! Press Enter to continue", true)
                 _ = io.read()

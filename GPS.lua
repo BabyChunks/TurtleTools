@@ -1,67 +1,45 @@
-local function handleCoordsInput(forceCoords)
+local function handleCoordsInput(ans)
 
-    local keys = {"x", "y", "z"}
     local incomplete, err = true, false
     local coords = {}
 
     while incomplete do
-        local ans = io.read()
         term.clear()
         term.setCursorPos(1,1)
         if ans == "" then
             os.queueEvent("terminate")
         end
 
-        for i, key in ipairs(keys) do
-            if forceCoords[i] then
-                table.remove(keys, i)
-            end
-        end
-        err, coords = pcall(Lt.argparse, ans, keys)
+        err, coords = pcall(Lt.argparse, ans)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    Gt.drawConsole("Input must be numbers")
+                    Gt.drawConsole("Input must be numbers", true)
+                    ans = io.read()
                     incomplete = true
                     break
                 end
             end
         else
-            io.write(coords .. "\n")
+            Gt.drawConsole(coords, true)
+            ans = io.read()
         end
     end
-
-    for i, coord in ipairs(forceCoords) do
-        coords[i] = coord
-    end
     return vector.new(table.unpack(coords))
-end
-
-local function noGPS(forceCoords) --manually enter xyz coords
-    forceCoords = forceCoords or {}
-
-    Gt.drawConsole(
-    string.format("Could not locate computer using gps. Input coordinates (%s%s%s) manually or press Enter to terminate", 
-    "x" and not forceCoords[1],
-    "y" and not forceCoords[2],
-    "z" and not forceCoords[3]), true)
-
-    return handleCoordsInput(forceCoords)
 end
 
 local function locate()
-    local coords = gps.locate()
+    local x, y, z = gps.locate()
 
-    if not coords then
-        return noGPS()
+    if not x then
+        Gt.drawConsole("Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
+        return handleCoordsInput(io.read())
     end
-
-    return vector.new(table.unpack(coords))
+    return vector.new(x, y, z)
 end
 
 return {
     handlecoordsInput = handleCoordsInput,
-    noGPS =  noGPS,
     locate = locate
 }
