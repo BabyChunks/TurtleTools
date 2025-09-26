@@ -67,7 +67,6 @@ local function checkFuel(fuelNeeded)
 end
 
 local function getVectorComponents(v)
-    print(textutils.serialize(v))
     return v.x, v.y, v.z
 end
 
