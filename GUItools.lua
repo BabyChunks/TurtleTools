@@ -15,6 +15,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
 
     local w, h = monitor.getSize()
     local x, y = monitor.getCursorPos()
+    local lines = {}
 
     if type(txtColour) == "number" then
         txtColour = tostring(colours.toBlit(txtColour)):rep(#text)
@@ -26,9 +27,17 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
         if pos == "left" then
             monitor.setCursorPos(1, y)
             monitor.clearLine()
+            if #text > w then
+                local s = text
+                local i = 1
+                repeat
+                    table.insert(lines, string.sub(s, ((i - 1) * w) + 1, (i) * w))
+                until i < (#text / w)
+            end
         elseif pos == "center" then
             monitor.setCursorPos(w / 2 - #text / 2, y)
             monitor.clearLine()
+
         elseif pos == "right" then
             monitor.setCursorPos(w - #text + 1, y)
         elseif pos == "centerscreen" then
