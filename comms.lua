@@ -22,31 +22,23 @@ end
 local function pingTurtles()
     local dist = {}
 
+    rednet.broadcast({"ping"},"ping")
     while true do
-        rednet.broadcast({"ping"},"ping")
         local id, msg = rednet.receive("ping", St.pingTimeOut.value)
         if id then
             if msg[1] == "pong" then
-                print(textutils.serialize(msg[2]))
-                os.sleep(2)
                 local turtleCoords = vector.new(table.unpack(msg[2]))
-                print(textutils.serialize(turtleCoords))
-                print(textutils.serialize(serverCoords))
                 dist[id] = (serverCoords:sub(turtleCoords)):length()
-                print("new distance added: "..dist[id])
             end
         else
             break
         end
     end
-    print("dist length:"..#dist)
     if #dist > 0  then
-        
         turtleID = Lt.getKeyForValue(math.max(table.unpack(dist)))
         Gt.drawConsole("Connected to turtle with ID "..turtleID)
         rednet.send(turtleID, {"ack"}, "ping")
     else
-        print("list is empty")
         pingTurtles()
     end
 end
