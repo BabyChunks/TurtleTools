@@ -1,0 +1,15 @@
+{
+    ["ping"] = {
+        {"ping"},
+        {"pong", {Coords}}
+        {"ack"}
+        },
+    ["cmd"] = {
+        name = {"mine"|"move"|"courier"|"disconnect"},
+        body = {...}
+        },
+    ["status"] = {
+        name = {"turtle"|"task"|"console"},
+        body = {...}
+    }
+}
