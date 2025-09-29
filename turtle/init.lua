@@ -55,9 +55,9 @@ if arg[1] == "-u" then
 end
 
 print("Loading environment...")
+Lt = require(filePath.."luatools")
 Tt = require(filePath.."quarry")
 GPS = require(filePath.."GPS")
-Lt = require(filePath.."luatools")
 Comms = require(filePath.."comms")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 print("Done!")
