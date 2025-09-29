@@ -44,7 +44,6 @@ Gt = require(filePath.."GUItools")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
 
-
 Gt.drawCorpBanner()
 Gt.drawTurtleStatus()
 Gt.drawTaskStatus()
