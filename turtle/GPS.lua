@@ -21,7 +21,7 @@ while incomplete do
                 end
             end
         end
-        Comms.sendStatus("console", {"Could not find modem on turtle. Equip modem to continue."})
+        Comms.sendStatus("console", {"Could not find modem on turtle. Place modem in inventory to continue."})
         os.pullEvent("turtle_inventory")
     end
 end
