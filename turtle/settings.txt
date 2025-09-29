@@ -20,4 +20,8 @@
     [ "computercraft:turtle" ] = true,
     [ "forge:chests" ] = true,
   },
+  MODEMS = {
+    "computercraft:wireless_modem",
+    "computercraft:ender_modem"
+  }
 }

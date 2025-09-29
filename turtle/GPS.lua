@@ -1,6 +1,31 @@
 Coords = {}
 Heading  = nil
 
+local incomplete = true
+while incomplete do
+    local equipped = {}
+    table.insert(equipped, turtle.GetEquippedRight().name)
+    table.insert(equipped, turtle.getEquippedLeft().name)
+    if Lt.tablesOverlap(equipped, St.MODEMS) then
+        incomplete = false
+    else
+        for slot = 1, 16 do
+            local item = turtle.getItemDetail(slot)
+            if item then
+                if Lt.tableContainsValue(St.MODEMS, item.name) then
+                    turtle.select(slot)
+                    turtle.equipRight()
+                    os.queueEvent("buffer")
+                    incomplete = false
+                    break
+                end
+            end
+        end
+        Comms.sendStatus("console", {"Could not find modem on turtle. Equip modem to continue."})
+        os.pullEvent("turtle_inventory")
+    end
+end
+
 local function handleCoordsInput(ans)
 
     local incomplete, err = true, false
@@ -62,8 +87,6 @@ local function checkFuel(fuelNeeded)
             os.pullEvent("turtle_inventory")
         end
     end
-    term.clear()
-    term.setCursorPos(1,1)
 end
 
 local function getVectorComponents(v)

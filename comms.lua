@@ -1,11 +1,6 @@
 local turtleID = nil
 peripheral.find("modem", rednet.open)
-local emptyCoords = vector.new(0, 0, 0)
-local serverCoords = vector.new(gps.locate())
-
-if serverCoords:equals(emptyCoords) then
-    serverCoords = GPS.noGPS()
-end
+local serverCoords = GPS.locate()
 
 local function getTurtleID()
     return turtleID
