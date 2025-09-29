@@ -56,10 +56,10 @@ end
 
 print("Loading environment...")
 Lt = require(filePath.."luatools")
+St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Tt = require(filePath.."quarry")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
-St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 print("Done!")
 
 Coords = GPS.locate()
