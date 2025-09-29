@@ -3,26 +3,11 @@ Heading  = nil
 
 local incomplete = true
 while incomplete do
-    local equipped = {}
-    if turtle.getEquippedRight() then table.insert(equipped, turtle.getEquippedRight().name) end
-    if turtle.getEquippedLeft() then table.insert(equipped, turtle.getEquippedLeft().name) end
-    if Lt.tablesOverlap(equipped, St.MODEMS) then
-        incomplete = false
-    else
-        for slot = 1, 16 do
-            local item = turtle.getItemDetail(slot)
-            if item then
-                if Lt.tableContainsValue(St.MODEMS, item.name) then
-                    turtle.select(slot)
-                    turtle.equipRight()
-                    os.queueEvent("buffer")
-                    incomplete = false
-                    break
-                end
-            end
-        end
-        Comms.sendStatus("console", {"Could not find modem on turtle. Place modem in inventory to continue."})
-        os.pullEvent("turtle_inventory")
+    local modems = { peripheral.find("modem", function(name, modem)
+    return modem.isWireless()
+    end) }
+    if #modems == 0 then
+        Comms.sendStatus("console", {"Could not find modem equipped. Equip modem on turtle and press Enter to continue.",true})
     end
 end
 

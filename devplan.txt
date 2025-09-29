@@ -1,4 +1,5 @@
 make drawText wrap text when too long
 de-index caller args for turtle init
 make a settings menu on turtle (-s flag) and server side (menu option)
+make turtle pathfind around inventory blocks
 (make it so user doesn't have to input coordinates if they haven't changed)
