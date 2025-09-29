@@ -4,8 +4,8 @@ Heading  = nil
 local incomplete = true
 while incomplete do
     local equipped = {}
-    table.insert(equipped, turtle.getEquippedRight().name)
-    table.insert(equipped, turtle.getEquippedLeft().name)
+    if turtle.getEquippedRight() then table.insert(equipped, turtle.getEquippedRight().name) end
+    if turtle.getEquippedLeft() then table.insert(equipped, turtle.getEquippedLeft().name) end
     if Lt.tablesOverlap(equipped, St.MODEMS) then
         incomplete = false
     else
