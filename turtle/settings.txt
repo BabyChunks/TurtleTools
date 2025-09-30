@@ -22,6 +22,6 @@
   },
   MODEMS = {
     "computercraft:wireless_modem",
-    "computercraft:ender_modem"
+    "computercraft:wireless_modem_advanced"
   }
 }

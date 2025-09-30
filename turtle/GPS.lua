@@ -1,16 +1,6 @@
 Coords = {}
 Heading  = nil
 
-local incomplete = true
-while incomplete do
-    local modems = { peripheral.find("modem", function(name, modem)
-    return modem.isWireless()
-    end) }
-    if #modems == 0 then
-        Comms.sendStatus("console", {"Could not find modem equipped. Equip modem on turtle and press Enter to continue.",true})
-    end
-end
-
 local function handleCoordsInput(ans)
 
     local incomplete, err = true, false

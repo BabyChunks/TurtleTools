@@ -57,8 +57,6 @@ end
 print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
-print(textutils.serialize(St.MODEMS))
-_ = io.read()
 Tt = require(filePath.."quarry")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
