@@ -15,7 +15,7 @@ for _, v in ipairs(arg) do
             table.insert(files, "settings.txt")
         end
 
-        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
         print("Updating files...")
         --whipser On
         local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))

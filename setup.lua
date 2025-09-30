@@ -20,7 +20,7 @@ else
         "GPS.lua",
         "comms.lua"
     }
-    gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/"
+    gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
 end
 -- whipser On
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
