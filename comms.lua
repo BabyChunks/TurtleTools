@@ -30,7 +30,7 @@ local function pingTurtles()
         end
     end
     if #dist > 0  then
-        turtleID = Lt.getKeyForValue(math.max(table.unpack(dist)))
+        turtleID = Lt.getKeyForValue(math.min(table.unpack(dist)))
         Gt.drawConsole("Connected to turtle with ID "..turtleID)
         rednet.send(turtleID, {"ack"}, "ping")
     else
