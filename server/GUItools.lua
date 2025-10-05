@@ -23,40 +23,41 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     if type(bkgColour) == "number" then
         bkgColour = tostring(colours.toBlit(bkgColour)):rep(#text)
     end
-    if type(pos) == "string" then
-        if pos == "left" then
-            monitor.setCursorPos(1, y)
-            monitor.clearLine()
-            if #text > w then
-                local s = text
-                local i = 1
-                repeat
-                    table.insert(lines, string.sub(s, ((i - 1) * w) + 1, (i) * w))
-                until i < (#text / w)
-            end
-        elseif pos == "center" then
-            monitor.setCursorPos(w / 2 - #text / 2, y)
-            monitor.clearLine()
 
-        elseif pos == "right" then
-            monitor.setCursorPos(w - #text + 1, y)
-        elseif pos == "centerscreen" then
-            monitor.setCursorPos(w / 2 - #text / 2, h / 2)
+    local i = 1
+    repeat
+        table.insert(lines, string.sub(text, ((i - 1) * w) + 1, (i) * w))
+    until i > (#text / w)
+
+    for n, line in ipairs(lines) do
+        if type(pos) == "string" then
+            if pos == "left" then
+                monitor.setCursorPos(1, y)
+                monitor.clearLine()
+            elseif pos == "center" then
+                monitor.setCursorPos(w / 2 - #line / 2, y)
+                monitor.clearLine()
+            elseif pos == "right" then
+                monitor.setCursorPos(w - #line + 1, y)
+            elseif pos == "centerscreen" then
+                monitor.setCursorPos(w / 2 - #line / 2, ((h - #lines) / 2) + (n - 1) )
+                monitor.clearLine()
+            else error("pos should take string arguments -> {left|right|center|centerscreen}")
+            end
+        elseif type(pos) == "table" then
+            if #pos ~= 2 then error("pos should take two arguments-> {x, y}") end
+            monitor.setCursorPos(pos[1], pos[2])
             monitor.clearLine()
-        else error("pos should take string arguments -> {left|right|center|centerscreen}")
+        else
+            monitor.setCursorPos(x, y)
         end
-    elseif type(pos) == "table" then
-        if #pos ~= 2 then error("pos should take two arguments-> {x, y}") end
-        monitor.setCursorPos(pos[1], pos[2])
-        monitor.clearLine()
-    else
-        monitor.setCursorPos(x, y)
+            monitor.blit(line, txtColour, bkgColour)
+            y = y + 1
+            x = 1
     end
 
-    monitor.blit(text, txtColour, bkgColour)
-
-    if nL then
-        monitor.setCursorPos(1, y + 1)
+    if not nL then
+        monitor.setCursorPos(#lines[#lines], y - 1)
     end
 end
 
@@ -81,7 +82,7 @@ local function drawMenu(options, selected)
 end
 
 local function drawTurtleStatus(id)
-    -- if no turtles: grey;
+    -- if no turtle: grey;
     -- if turtle: white
 
     turtleStatus.clear()
