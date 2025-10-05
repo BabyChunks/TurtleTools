@@ -38,11 +38,13 @@ for _, v in ipairs(arg) do
     end
 end
 
+print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Gt = require(filePath.."GUItools")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
+print("Done!")
 
 Gt.drawCorpBanner()
 Gt.drawTurtleStatus()
@@ -77,7 +79,8 @@ local function setupQuarry()
     local cmd = {head = "mine", body = {}}
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
     Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-    table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
+    -- make recall point check
+    table.insert(cmd.body, io.read())
     Gt.drawConsole("Input first coordinates:", true)
     table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
     Gt.drawConsole("Input second coodinates:", true)
