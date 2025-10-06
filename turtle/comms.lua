@@ -1,21 +1,5 @@
 local serverID = nil
 
--- Check for equipped modem and open it if found, else prompt user for modem --
-while true do
-    if #peripheral.find("modem", rednet.open) == 0 then
-        for slot = 1, 16 do
-            local item = turtle.getItemDetails(slot)
-            if Lt.tableContainsValue(St.MODEMS, item.name) then
-                turtle.select(slot)
-                turtle.equipRight()
-                break
-            end
-        end
-        Comms.sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to conitnue", true})
-    else break
-    end
-end
-
 local function getServerID()
     return serverID
 end
@@ -57,6 +41,24 @@ local function sendStatus(head, body)
         if body[2] then
             return io.read()
         end
+    end
+end
+
+-- Check for equipped modem and open it if found, else prompt user for modem --
+while true do
+    if #peripheral.find("modem") == 0 then
+        for slot = 1, 16 do
+            local item = turtle.getItemDetail(slot)
+            if item then
+                if Lt.tableContainsValue(St.MODEMS, item.name) then
+                    turtle.select(slot)
+                    turtle.equipRight()
+                    break
+                end
+            end
+        end
+        sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to conitnue", true})
+    else break
     end
 end
 
