@@ -24,9 +24,10 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
         bkgColour = tostring(colours.toBlit(bkgColour)):rep(#text)
     end
 
-    local i = 1
+    local i = 0
     repeat
-        table.insert(lines, string.sub(text, ((i - 1) * w) + 1, (i) * w))
+        table.insert(lines, string.sub(text, (i * w) + 1, ((i + 1) * w)))
+        i = i + 1
     until i > (#text / w)
 
     for n, line in ipairs(lines) do
