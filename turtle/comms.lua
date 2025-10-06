@@ -46,7 +46,8 @@ end
 
 -- Check for equipped modem and open it if found, else prompt user for modem --
 while true do
-    if #peripheral.find("modem") == 0 then
+    peripheral.find("modem", rednet.open)
+    if not rednet.isOpen() then
         for slot = 1, 16 do
             local item = turtle.getItemDetail(slot)
             if item then
