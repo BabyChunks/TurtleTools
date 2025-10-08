@@ -1,5 +1,12 @@
-make drawText wrap text when too long
-de-index caller args for turtle init
-make a settings menu on turtle (-s flag) and server side (menu option)
-make turtle pathfind around inventory blocks
-(make it so user doesn't have to input coordinates if they haven't changed)
+[x] make drawText wrap text when too long
+[ ] make functions return ints, not vectors to declutter functions calls when sending messages
+    - turtle/GPS/handleCoordsInput
+    - turtle/GPS/locate
+    - server/GPS/handleCoordsInput
+    - server/GPS/locate
+[ ] send recall point or "y" to turtle for first mining arg
+[ ] de-index caller args for turtle init
+[ ] make a settings menu on turtle (-s flag) and server side (menu option)
+[ ] make turtle pathfind around inventory blocks
+[ ] (make it so user doesn't have to input coordinates if they haven't changed)
+[ ] Implement inventory sorting and retrieval

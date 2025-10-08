@@ -82,9 +82,9 @@ local function setupQuarry()
     -- make recall point check
     table.insert(cmd.body, io.read())
     Gt.drawConsole("Input first coordinates:", true)
-    table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
+    table.insert(cmd.body, GPS.handleCoordsInput(io.read())) -- wont work; sends a vector
     Gt.drawConsole("Input second coodinates:", true)
-    table.insert(cmd.body, GPS.handleCoordsInput(io.read()))
+    table.insert(cmd.body, GPS.handleCoordsInput(io.read())) -- wont work; sends a vector
 
     Comms.sendCmd(cmd)
 
