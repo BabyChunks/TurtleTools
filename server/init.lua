@@ -78,13 +78,19 @@ end
 local function setupQuarry()
     local cmd = {head = "mine", body = {}}
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
+
     Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-    -- make recall point check
-    table.insert(cmd.body, io.read())
+    local ans = io.read()
+    if ans ~= "y" or ans ~= "Y" then
+        ans = {GPS.handleCoordsInput(ans)}
+    end
+    table.insert(cmd.body, ans)
+
     Gt.drawConsole("Input first coordinates:", true)
-    table.insert(cmd.body, GPS.handleCoordsInput(io.read())) -- wont work; sends a vector
+    table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+
     Gt.drawConsole("Input second coodinates:", true)
-    table.insert(cmd.body, GPS.handleCoordsInput(io.read())) -- wont work; sends a vector
+    table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
 
     Comms.sendCmd(cmd)
 
@@ -122,11 +128,11 @@ local function mainMenu()
             setupQuarry()
         end,
         function() --Move
-            print("Input destination coordinates [xyz]")
-            local ans = Lt.argparse(io.read(), {"x", "y", "z"})
-            term.clear()
-            term.setCursorPos(1,1)
-            Tt.GoThere(ans.x, ans.y, ans.z)
+            -- print("Input destination coordinates [xyz]")
+            -- local ans = Lt.argparse(io.read(), {"x", "y", "z"})
+            -- term.clear()
+            -- term.setCursorPos(1,1)
+            -- Tt.GoThere(ans.x, ans.y, ans.z)
         end,
         function() --Quit
             os.queueEvent("terminate")

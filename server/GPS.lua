@@ -26,7 +26,7 @@ local function handleCoordsInput(ans)
             ans = io.read()
         end
     end
-    return vector.new(table.unpack(coords))
+    return table.unpack(coords)
 end
 
 local function locate()
@@ -36,7 +36,7 @@ local function locate()
         Gt.drawConsole("Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true)
         return handleCoordsInput(io.read())
     end
-    return vector.new(x, y, z)
+    return x, y, z
 end
 
 return {

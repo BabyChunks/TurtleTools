@@ -18,40 +18,41 @@ os.sleep(2)
 term.clear()
 term.setCursorPos(1,1)
 
+for _, v in pairs(arg) do
+    -- "update" options
+    if v == "-u" then
+        local results = {}
+        local files = {
+            "quarry.lua",
+            "GPS.lua",
+            "luatools.lua",
+            "comms.lua"
+        }
 
--- "update" options
-if arg[1] == "-u" then
-    local results = {}
-    local files = {
-        "quarry.lua",
-        "GPS.lua",
-        "luatools.lua",
-        "comms.lua"
-    }
-
-    if #fs.find(filePath.."settings.txt") == 0 then
-        table.insert(files, "settings.txt")
-    end
-
-    local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
-
-    print("Updating files...")
-    --whipser On
-    local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
-        for _, file in pairs(files) do
-            results = fs.find(filePath..file)
-            if #results ~= 0 then
-                for _, result in pairs(results) do
-                    fs.delete(result)
-                end
-            end
-            shell.execute("wget", gitPath..file, filePath..file)
-
+        if #fs.find(filePath.."settings.txt") == 0 then
+            table.insert(files, "settings.txt")
         end
 
-    --whisper Off
-    whisper = term.redirect(whisper)
-    print("Done!")
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
+
+        print("Updating files...")
+        --whipser On
+        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
+            for _, file in pairs(files) do
+                results = fs.find(filePath..file)
+                if #results ~= 0 then
+                    for _, result in pairs(results) do
+                        fs.delete(result)
+                    end
+                end
+                shell.execute("wget", gitPath..file, filePath..file)
+
+            end
+
+        --whisper Off
+        whisper = term.redirect(whisper)
+        print("Done!")
+    end
 end
 
 print("Loading environment...")
