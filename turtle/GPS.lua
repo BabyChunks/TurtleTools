@@ -38,7 +38,7 @@ local function locate()
         return handleCoordsInput(ans)
     end
 
-    return vector.new(x, y, z)
+    return x, y, z
 end
 
 local function checkFuel(fuelNeeded)
@@ -84,11 +84,7 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         end
         assert(turtle.forward())
 
-        coords2 = vector.new(gps.locate())
-        if not coords2.x then
-            local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
-            coords2 = handleCoordsInput(ans)
-        end
+        coords2 = vector.new(GPS.locate())
         assert(turtle.back())
 
         local delta = coords2:sub(Coords)
