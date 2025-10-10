@@ -1,8 +1,13 @@
+-- Library for positionning of server and handling coordinates --
+
+-- utility function to receive a string containing coords in format: "x*y*z"
+-- (where '*' is any non-alphanumerical character) and return single coords in order
 local function handleCoordsInput(ans)
 
     local incomplete, err = true, false
     local coords = {}
 
+    --loop while answer string doesn't fit "x*y*z" format + terminate script if ans is empty
     while incomplete do
         term.clear()
         term.setCursorPos(1,1)
@@ -29,6 +34,7 @@ local function handleCoordsInput(ans)
     return table.unpack(coords)
 end
 
+-- make a call for gps coordinates, or prompt user for manual input of coords if no gps is found
 local function locate()
     local x, y, z = gps.locate()
 

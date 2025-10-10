@@ -1,8 +1,11 @@
+-- Main script for server. Libs are loaded at this level. when called, can specify
+-- "-u" flag to update libs through wget program, pulling from raw github files.
+
 local filePath = "/ChunksWare/"
-print("program start")
+
 
 for _, v in ipairs(arg) do
-    print("arg: "..v)
+    -- update sequence if flag -u is specified
     if v == "-u" then
         local results = {}
         local files = {
@@ -39,12 +42,15 @@ for _, v in ipairs(arg) do
     end
 end
 
+-- loading libs, setting global variables
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Gt = require(filePath.."GUItools")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
 
+-- navigation function for all menus. options is a table with menu option names, 
+-- actions is a table of functions executing these options
 local function navMenu(options, actions)
     local selected = 1
 
@@ -70,6 +76,7 @@ local function navMenu(options, actions)
     end
 end
 
+-- function to start quarry just cause it's longer than other functions
 local function setupQuarry()
     local cmd = {head = "mine", body = {}}
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
@@ -89,6 +96,7 @@ local function setupQuarry()
 
     Comms.sendCmd(cmd)
 
+    -- loop through all status messages until mining is completed, then return to main menu
     while true do
         if Comms.getStatus() then break end
     end
@@ -119,8 +127,9 @@ local function mainMenu()
             if not Comms.getTurtleID() then
                 Gt.drawConsole("No turtle connected")
                 os.sleep(0.8)
-            end
+            else
             setupQuarry()
+            end
         end,
         function() --Move
             -- print("Input destination coordinates [xyz]")

@@ -275,24 +275,9 @@ local function buildArray() -- WIP
     local err = false
 
     io.write("Setting up a GPS array. Please input base coordinates.\n")
-    local incomplete = true
-    while incomplete do
-        err, base = pcall(Lt.argparse, io.read(), {"x", "y", "z"})
-        if err then
-            incomplete = false
-            for _, coord in pairs(base) do
-                if type(coord) ~= "number" then
-                    io.write("Input must be numbers\n")
-                    incomplete = true
-                    break
-                end
-            end
-        else
-            io.write(base .. "\n")
-        end
-    end
+    base = vector.new(handleCoordsInput(io.read()))
 
-    goThere(base) -- make base a vector --
+    goThere(base)
 
     local partsNeeded = {
         [1] = {names = {"computercraft:computer_normal", "computercraft:computer_advanced"}, n = 4, check = false},
@@ -301,6 +286,7 @@ local function buildArray() -- WIP
         [4] = {names = {"computercraft:cable"}, n = 9, check = false}
     }
 
+    local incomplete = true
     while incomplete do
         incomplete = false
         for _, part in pairs(partsNeeded) do
@@ -331,8 +317,6 @@ end
 
 Coords = vector.new(locate())
 getHeading()
-
-print("Coords: "..textutils.serialize(Coords))
 
 return {
     locate = locate,
