@@ -63,9 +63,6 @@ Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
 print("Done!")
 
-Coords = {GPS.locate()}
-GPS.getHeading()
-
 print("Awaiting server pings...")
 Comms.connectServer()
 

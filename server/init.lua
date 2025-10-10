@@ -1,7 +1,8 @@
 local filePath = "/ChunksWare/"
-
+print("program start")
 
 for _, v in ipairs(arg) do
+    print("arg: "..v)
     if v == "-u" then
         local results = {}
         local files = {
@@ -38,17 +39,11 @@ for _, v in ipairs(arg) do
     end
 end
 
-print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Gt = require(filePath.."GUItools")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
-print("Done!")
-
-Gt.drawCorpBanner()
-Gt.drawTurtleStatus()
-Gt.drawTaskStatus()
 
 local function navMenu(options, actions)
     local selected = 1

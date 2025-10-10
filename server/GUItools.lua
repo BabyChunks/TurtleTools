@@ -9,7 +9,7 @@ local turtleStatus = window.create(term.current(), 1, termHeight - 1, termWidth,
 term.redirect(console)
 
 local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
-    monitor = monitor or term
+    monitor = monitor or term.current()
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
 
@@ -17,18 +17,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     local x, y = monitor.getCursorPos()
     local lines = {}
 
-    if type(txtColour) == "number" then
-        txtColour = tostring(colours.toBlit(txtColour)):rep(#text)
-    end
-    if type(bkgColour) == "number" then
-        bkgColour = tostring(colours.toBlit(bkgColour)):rep(#text)
-    end
-
-    local i = 0
-    repeat
-        table.insert(lines, string.sub(text, (i * w) + 1, ((i + 1) * w)))
-        i = i + 1
-    until i > (#text / w)
+    lines = Lt.breakUpString(text, #text / w)
 
     for n, line in ipairs(lines) do
         if type(pos) == "string" then
@@ -52,13 +41,21 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
         else
             monitor.setCursorPos(x, y)
         end
-            monitor.blit(line, txtColour, bkgColour)
-            y = y + 1
-            x = 1
+
+        --if type(txtColour) == "number" then
+            local txtBlit = tostring(colours.toBlit(txtColour)):rep(#line)
+        --end
+        --if type(bkgColour) == "number" then
+            local bkgBlit = tostring(colours.toBlit(bkgColour)):rep(#line)
+        --end
+
+        monitor.blit(line, txtBlit, bkgBlit)
+        y = y + 1
+        x = 1
     end
 
-    if not nL then
-        monitor.setCursorPos(#lines[#lines], y - 1)
+    if nL then
+        monitor.setCursorPos(1, y)
     end
 end
 
@@ -68,9 +65,9 @@ local function drawCorpBanner()
     local filler2 = ("#"):rep(termWidth)
 
     corpBanner.clear()
-    Gt.drawText(filler2, corpBanner, {1, 1}, true, colours.yellow)
-    Gt.drawText(filler1..logo..filler1, corpBanner, "left", true, colours.yellow)
-    Gt.drawText(filler2, corpBanner, "left", nil, colours.yellow)
+    drawText(filler2, corpBanner, {1, 1}, true, colours.yellow)
+    drawText(filler1..logo..filler1, corpBanner, "left", true, colours.yellow)
+    drawText(filler2, corpBanner, "left", nil, colours.yellow)
 end
 
 local function drawMenu(options, selected)
@@ -114,6 +111,10 @@ end
 local function drawConsole(status, requestInput)
     drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
 end
+
+drawCorpBanner()
+drawTurtleStatus()
+drawTaskStatus()
 
 return {
     drawText = drawText,

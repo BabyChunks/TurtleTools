@@ -1,5 +1,14 @@
 local turtleID = nil
-peripheral.find("modem", rednet.open)
+
+while true do
+    peripheral.find("modem", rednet.open)
+    if not rednet.isOpen() then
+        Gt.drawConsole("Could not find modem on computer. Place a wireless modem on the computer and press Enter to conitnue", true)
+        _ = io.read()
+    else break
+    end
+end
+
 local serverCoords = vector.new(GPS.locate())
 
 local function getTurtleID()
@@ -23,17 +32,32 @@ local function pingTurtles()
         if id then
             if msg[1] == "pong" then
                 local turtleCoords = vector.new(table.unpack(msg[2]))
-                dist[id] = (serverCoords:sub(turtleCoords)):length()
+                print("msg received: "..textutils.serialize(msg))
+                _ = io.read()
+                print("msg[2]: "..textutils.serialize(msg[2]))
+                _ = io.read()
+                print("turtleCoords: "..textutils.serialize(turtleCoords))
+                _ = io.read()
+                print("serverCoords: "..textutils.serialize(serverCoords))
+                _ = io.read()
+                dist[id] = serverCoords:sub(turtleCoords):length()
+                print("new distance added for #"..id..": "..dist[id])
+                print("dist: "..textutils.serialize(dist))
+                _ = io.read()
             end
         else
             break
         end
     end
-    if #dist > 0  then
+   
+    local n = Lt.len(dist)
+
+    if n > 0  then
         turtleID = Lt.getKeyForValue(math.min(table.unpack(dist)))
         Gt.drawConsole("Connected to turtle with ID "..turtleID)
         rednet.send(turtleID, {"ack"}, "ping")
     else
+        Gt.drawConsole("repinging...")
         pingTurtles()
     end
 end

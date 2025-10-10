@@ -138,8 +138,8 @@ local function startup(cmd)
     --     end
     -- end
 
-    local Recall = cmd[1]
-    local coords1, coords2 = cmd[2], cmd[3]
+    local Recall = vector.new(table.unpack(cmd[1]))
+    local coords1, coords2 = vector.new(table.unpack(cmd[2])), vector.new(table.unpack(cmd[3]))
 
     Patterns = {
         [1] = {

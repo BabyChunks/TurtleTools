@@ -27,7 +27,7 @@ local function handleCoordsInput(ans)
             ans = Comms.sendStatus("console", {coords, true})
         end
     end
-    return vector.new(table.unpack(coords))
+    return table.unpack(coords)
 end
 
 local function locate()
@@ -84,7 +84,7 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         end
         assert(turtle.forward())
 
-        coords2 = vector.new(GPS.locate())
+        coords2 = vector.new(locate())
         assert(turtle.back())
 
         local delta = coords2:sub(Coords)
@@ -328,6 +328,11 @@ local function buildArray() -- WIP
     io.write("Clear a space of 6 blocks in the positive x and z direction, as well as a clearance of 6 blocks above the square delimited thus. Press Enter when this is done.\n")
     _ = io.read()
 end
+
+Coords = vector.new(locate())
+getHeading()
+
+print("Coords: "..textutils.serialize(Coords))
 
 return {
     locate = locate,
