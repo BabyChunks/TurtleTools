@@ -2,7 +2,6 @@
 
 local turtleID = nil
 
--- Initialize: find modem on computer and open; or prompt user for modem
 while true do
     peripheral.find("modem", rednet.open)
     if not rednet.isOpen() then
@@ -12,7 +11,6 @@ while true do
     end
 end
 
--- Initialize: locate server with gps or prompt user for manual coords
 local serverCoords = vector.new(GPS.locate())
 
 -- return current turtle's ID
