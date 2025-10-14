@@ -39,32 +39,20 @@ local function pingTurtles()
             if msg[1] == "pong" then
                 local turtleCoords = vector.new(table.unpack(msg[2]))
 
-                print("msg received: "..textutils.serialize(msg))
-                _ = io.read()
-                print("msg[2]: "..textutils.serialize(msg[2]))
-                _ = io.read()
-                print("turtleCoords: "..textutils.serialize(turtleCoords))
-                _ = io.read()
-                print("serverCoords: "..textutils.serialize(serverCoords))
-                _ = io.read()
-
                 --put turtle distance from server in a list
                 dist[id] = serverCoords:sub(turtleCoords):length()
-                print("new distance added for #"..id..": "..dist[id])
-                print("dist: "..textutils.serialize(dist))
-                _ = io.read()
             end
         else
             break
         end
     end
-   
+
     -- get length of list to check if at least one turtle pinged back
     local n = Lt.len(dist)
 
     if n > 0  then
         --find ID for turtle closest to server and send a "get linked" message
-        turtleID = Lt.getKeyForValue(math.min(table.unpack(dist)))
+        turtleID = Lt.getKeyForValue(math.min(table.unpack(dist))) -- doesnt work; table.unpack requires a keyless table
         Gt.drawConsole("Connected to turtle with ID "..turtleID)
         rednet.send(turtleID, {"ack"}, "ping")
     else
