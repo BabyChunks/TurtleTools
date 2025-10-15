@@ -30,17 +30,19 @@ end
 
 -- ping nearby turtles and link with closest one
 local function pingTurtles()
-    local dist = {}
     -- send ping and listen for incoming pongs
     rednet.broadcast({"ping"},"ping")
+    local closest = math.huge
     while true do
         local id, msg = rednet.receive("ping", St.pingTimeOut.value)
         if id then
             if msg[1] == "pong" then
-                local turtleCoords = vector.new(table.unpack(msg[2]))
+                local dist = serverCoords:sub(vector.new(table.unpack(msg[2]))):length()
 
-                --put turtle distance from server in a list
-                dist[id] = serverCoords:sub(turtleCoords):length()
+                if dist < closest then
+                    closest = dist
+                    turtleID = id
+                end
             end
         else
             break
@@ -48,11 +50,10 @@ local function pingTurtles()
     end
 
     -- get length of list to check if at least one turtle pinged back
-    local n = Lt.len(dist)
 
-    if n > 0  then
+    if closest ~= math.huge  then
         --find ID for turtle closest to server and send a "get linked" message
-        turtleID = Lt.getKeyForValue(math.min(table.unpack(dist))) -- doesnt work; table.unpack requires a keyless table
+
         Gt.drawConsole("Connected to turtle with ID "..turtleID)
         rednet.send(turtleID, {"ack"}, "ping")
     else
@@ -73,7 +74,7 @@ end
 --send command to turtle following "cmd" protocol standards
 local function sendCmd(cmd)
     if turtleID then
-        rednet.send(turtleID, textutils.serialize(cmd))
+        rednet.send(turtleID, textutils.serialize(cmd), "cmd")
     end
 end
 

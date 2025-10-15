@@ -83,6 +83,8 @@ local function setupQuarry()
 
     Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
     local ans = io.read()
+
+    print("\'"..ans.."\'") _ = io.read()
     if ans ~= "y" or ans ~= "Y" then
         ans = {GPS.handleCoordsInput(ans)}
     end

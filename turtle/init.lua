@@ -69,19 +69,18 @@ Comms.connectServer()
 while true do
     print("Awaiting server commands...")
     CurrentTask = nil
-    Comms.SendStatus("task", {nil, nil, CurrentTask})
 
     local cmd = Comms.getCmd()
 
-    if cmd.name == "mine" then
+    if cmd.head == "mine" then
         CurrentTask = "Mining"
         Tt.startup(cmd.body)
-    elseif cmd.name == "move" then
+    elseif cmd.head == "move" then
         CurrentTask = "Moving"
         GPS.goThere(table.unpack(cmd.body))
-    elseif cmd.name == "courrier" then
+    elseif cmd.head == "courrier" then
         CurrentTask = "Fetching"
-    elseif cmd.name == "disconnect" then
+    elseif cmd.head == "disconnect" then
         Comms.setServerID(nil)
     end
 end

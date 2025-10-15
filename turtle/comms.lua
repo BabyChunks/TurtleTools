@@ -14,10 +14,9 @@ local function connectServer()
         --if msg then
             if msg[1] == "ping" then
                 rednet.send(id, {"pong", {Coords.x, Coords.y, Coords.z}}, "ping")
-                print("sent pong at #"..id)
             elseif msg[1] == "ack" then
-                print("Server connected at ID "..serverID)
                 serverID = id
+                print("Server connected at ID "..serverID)
                 return
             end
         --end
@@ -33,7 +32,7 @@ end
 
 local function sendStatus(head, body)
     if serverID then
-        rednet.send("status", {head = head, body = body})
+        rednet.send(serverID, {head = head, body = body}, "status")
         if body[2] then
             return getCmd()
         end

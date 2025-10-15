@@ -188,7 +188,7 @@ local function startup(cmd)
     }
 
     Comms.sendStatus("task", {QuarryCompletion, colours.red, CurrentTask})
-    GPS.checkFuel(Lt.tableSum(fuelNeeded))
+    GPS.checkFuel(Lt.tableSum(fuelNeeded)) -- stopped working here
     Comms.sendStatus("task", {QuarryCompletion, nil, CurrentTask})
 
     Comms.sendStatus("console", {"Begin mining sequence..."})
