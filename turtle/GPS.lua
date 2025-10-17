@@ -42,6 +42,7 @@ local function locate()
 end
 
 local function checkFuel(fuelNeeded)
+    print("accessed checkFuel("..fuelNeeded..")")
     local item = {}
     local currFuel = turtle.getFuelLevel()
 
@@ -68,8 +69,8 @@ local function getVectorComponents(v)
     return v.x, v.y, v.z
 end
 
-local function sumVectorComponents(v)
-    return v.x + v.y + v.z
+local function sumAbsVectorComponents(v)
+    return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 
 local function getHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
@@ -84,7 +85,10 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         end
         assert(turtle.forward())
 
-        coords2 = vector.new(locate())
+        -- coords2 = vector.new(locate())
+
+        -- for debug purposes:
+        coords2 = vector.new(4, 0, -1)
         assert(turtle.back())
 
         local delta = coords2:sub(Coords)
@@ -133,50 +137,58 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         z = math.abs(delta.rel.z)
     }
 
+    print(Lt.tableSum(delta.abs))
     checkFuel(Lt.tableSum(delta.abs))
 
     local orientationMatrix = {
         x = {
         [1] = {
             ["x"] = {},
-            ["-x"] = {turtle.turnRight(), turtle.turnRight()},
-            ["z"] = {turtle.turnLeft()},
-            ["-z"] = {turtle.turnRight()}
+            ["-x"] = {turtle.turnRight, turtle.turnRight},
+            ["z"] = {turtle.turnLeft},
+            ["-z"] = {turtle.turnRight}
         },
         [-1] = {
-            ["x"] = {turtle.turnRight(), turtle.turnRight()},
+            ["x"] = {turtle.turnRight, turtle.turnRight},
             ["-x"] = {},
-            ["z"] = {turtle.turnRight()},
-            ["-z"] = {turtle.turnLeft()}
-        }
+            ["z"] = {turtle.turnRight},
+            ["-z"] = {turtle.turnLeft}
+        },
         },
         z = {
         [1] = {
-            ["x"] = {turtle.turnRight()},
-            ["-x"] = {turtle.turnLeft()},
+            ["x"] = {turtle.turnRight},
+            ["-x"] = {turtle.turnLeft},
             ["z"] = {},
-            ["-z"] = {turtle.turnRight(), turtle.turnRight()}
+            ["-z"] = {turtle.turnRight, turtle.turnRight}
         },
         [-1] = {
-            ["x"] = {turtle.turnLeft()},
-            ["-x"] = {turtle.turnRight()},
-            ["z"] = {turtle.turnRight(), turtle.turnRight()},
+            ["x"] = {turtle.turnLeft},
+            ["-x"] = {turtle.turnRight},
+            ["z"] = {turtle.turnRight, turtle.turnRight},
             ["-z"] = {}
-        }
+        },
         }
     }
+    print("Heading: "..Heading)
+    print("relative x: "..delta.rel.x)
+    print("absolute x: "..delta.abs.x)
+    print("xsign: "..delta.rel.x / delta.abs.x)
+    _ = io.read()
 
-    for action in _, ipairs(orientationMatrix.x[delta.rel.x / delta.abs.x][Heading]) do
-        action = action
+    if delta.rel.x ~= 0 then
+        for _, action in ipairs(orientationMatrix.x[delta.rel.x / delta.abs.x][Heading]) do
+            action()
+        end
+        Tt.tunnel(delta.abs.x, strip)
     end
 
-    Tt.tunnel(delta.abs.x, strip)
-
-    for action in _, ipairs(orientationMatrix.z[delta.rel.z / delta.abs.z][Heading]) do
-        action = action
+    if delta.rel.z ~= 0 then
+        for _, action in ipairs(orientationMatrix.z[delta.rel.z / delta.abs.z][Heading]) do
+            action = action
+        end
+        Tt.tunnel(delta.abs.z, strip)
     end
-
-    Tt.tunnel(delta.abs.z, strip)
 
     -- if delta.rel.x < 0 then
     --     if Heading == "x" then
@@ -242,7 +254,7 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
 
     --Tt.tunnel(delta.abs.z, strip)
 
-    if delta.res.y < 0 then
+    if delta.rel.y < 0 then
         local move = 0
 
         while move < delta.abs.y do
@@ -254,7 +266,7 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
             assert(turtle.down())
             move = move + 1
         end
-    elseif delta.res.y > 0 then
+    elseif delta.rel.y > 0 then
         local move = 0
 
         while move < delta.abs.y do
@@ -315,14 +327,18 @@ local function buildArray() -- WIP
     _ = io.read()
 end
 
-Coords = vector.new(locate())
+-- Coords = vector.new(locate())
+
+--for debug purposes:
+Coords = vector.new(4, 0, 0)
+
 getHeading()
 
 return {
     locate = locate,
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,
-    sumVectorComponents = sumVectorComponents,
+    sumAbsVectorComponents = sumAbsVectorComponents,
     getHeading = getHeading,
     goThere = goThere,
     buildArray = buildArray

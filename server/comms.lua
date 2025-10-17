@@ -11,7 +11,10 @@ while true do
     end
 end
 
-local serverCoords = vector.new(GPS.locate())
+-- local serverCoords = vector.new(GPS.locate())
+
+-- for debug purposes:
+local serverCoords = vector.new(0, 0 ,0)
 
 -- return current turtle's ID
 local function getTurtleID()

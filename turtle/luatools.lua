@@ -40,7 +40,7 @@ end
 
 local function tableSum(t)
   local sum = 0
-  for _, v in ipairs(t) do
+  for _, v in pairs(t) do
     sum = sum + v
   end
   return sum

@@ -33,7 +33,8 @@ end
 local function sendStatus(head, body)
     if serverID then
         rednet.send(serverID, {head = head, body = body}, "status")
-        if body[2] then
+        if head == "console" and body[2] then
+            print("awaiting answer form server")
             return getCmd()
         end
     else

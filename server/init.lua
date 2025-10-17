@@ -81,22 +81,24 @@ local function setupQuarry()
     local cmd = {head = "mine", body = {}}
     Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
 
-    Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-    local ans = io.read()
+    -- Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
+    -- local ans = io.read()
 
-    print("\'"..ans.."\'") _ = io.read()
-    if ans ~= "y" or ans ~= "Y" then
-        ans = {GPS.handleCoordsInput(ans)}
-    end
-    table.insert(cmd.body, ans)
+    -- if ans ~= "y" and ans ~= "Y" then
+    --     ans = {GPS.handleCoordsInput(ans)}
+    -- end
+    -- table.insert(cmd.body, ans)
 
-    Gt.drawConsole("Input first coordinates:", true)
-    table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+    -- Gt.drawConsole("Input first coordinates:", true)
+    -- table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
 
-    Gt.drawConsole("Input second coodinates:", true)
-    table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+    -- Gt.drawConsole("Input second coodinates:", true)
+    -- table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
 
-    Comms.sendCmd(cmd)
+    -- Comms.sendCmd(cmd)
+
+    --For debug purposes:
+    Comms.sendCmd({head = "mine", body = {"y", {4, 0, 0}, {10, -10, 10}}})
 
     -- loop through all status messages until mining is completed, then return to main menu
     while true do

@@ -71,6 +71,8 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
 end
 
 local function startup(cmd)
+    print(textutils.serialize(cmd))
+    _ = io.read()
     QuarryCompletion = 0
 
     local pattern, signs, fuelNeeded = {}, {}, {}
@@ -138,7 +140,13 @@ local function startup(cmd)
     --     end
     -- end
 
-    local Recall = vector.new(table.unpack(cmd[1]))
+    local Recall = {}
+
+    if cmd[1] == "y" or cmd[1] == "Y" then
+        Recall = Coords
+    else
+        Recall = vector.new(table.unpack(cmd[1]))
+    end
     local coords1, coords2 = vector.new(table.unpack(cmd[2])), vector.new(table.unpack(cmd[3]))
 
     Patterns = {
@@ -182,13 +190,14 @@ local function startup(cmd)
     nLayer = math.ceil(quarrySize.abs.y / i)
     nCycle = math.ceil(quarrySize.abs.z / pattern.cycleLn)
     fuelNeeded = {
-        arrival = GPS.sumVectorComponents(coords1:sub(Coords)),
+        arrival = GPS.sumAbsVectorComponents(coords1:sub(Coords)),
         quarry = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap),
-        departure = GPS.sumVectorComponents(coords2:sub(Coords))
+        departure = GPS.sumAbsVectorComponents(coords2:sub(Coords))
     }
+    print("fuelNeeded: "..textutils.serialize(fuelNeeded))
 
     Comms.sendStatus("task", {QuarryCompletion, colours.red, CurrentTask})
-    GPS.checkFuel(Lt.tableSum(fuelNeeded)) -- stopped working here
+    GPS.checkFuel(Lt.tableSum(fuelNeeded))
     Comms.sendStatus("task", {QuarryCompletion, nil, CurrentTask})
 
     Comms.sendStatus("console", {"Begin mining sequence..."})
