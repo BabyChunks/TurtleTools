@@ -9,6 +9,6 @@
 [ ] put parallel functions where time is important e.g. ping timeout
 [ ] automatically disconnect turtle if main script errors (prob with a multishell)
 [ ] make a settings menu on turtle (-s flag) and server side (menu option)
-[ ] make turtle pathfind around inventory blocks
+[ ] make turtle pathfinds around inventory blocks and CC blocks
 [ ] (make it so user doesn't have to input coordinates if they haven't changed)
 [ ] Implement inventory sorting and retrieval
