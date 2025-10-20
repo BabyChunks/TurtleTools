@@ -183,10 +183,10 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         local oMx = orientationMatrix.x[delta.rel.x / delta.abs.x]
         for _, action in ipairs(oMx[Heading]) do
             action()
-            local steer = function() for k, v in pairs(oMx) do if next(v) == nil then return k end end end
-            Heading = steer()
         end
-        print("Heading:"..Heading)
+        local steer = function() for k, v in pairs(oMx) do if next(v) == nil then return k end end end
+        Heading = steer()
+        print("Heading: "..Heading)
         Tt.tunnel(delta.abs.x, strip)
     end
 
@@ -194,76 +194,12 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         local oMz = orientationMatrix.z[delta.rel.z / delta.abs.z]
         for _, action in ipairs(oMz[Heading]) do
             action()
-            local steer = function() for k, v in pairs(oMz) do if next(v) == nil then return k end end end
-            Heading = steer()
         end
-        print("Heading:"..Heading)
+        local steer = function() for k, v in pairs(oMz) do if next(v) == nil then return k end end end
+        Heading = steer()
+        print("Heading: "..Heading)
         Tt.tunnel(delta.abs.z, strip)
     end
-
-    -- if delta.rel.x < 0 then
-    --     if Heading == "x" then
-    --         turtle.turnRight()
-    --         turtle.turnRight()
-
-    --     elseif Heading == "z" then
-    --         turtle.turnRight()
-
-    --     elseif Heading == "-z" then
-    --         turtle.turnLeft()
-    --     end
-
-    --     Heading = "-x"
-
-    -- elseif delta.rel.x > 0 then
-    --     if Heading == "-x" then
-    --         turtle.turnRight()
-    --         turtle.turnRight()
-
-    --     elseif Heading == "z" then
-    --         turtle.turnLeft()
-
-    --     elseif Heading == "-z" then
-    --         turtle.turnRight()
-    --     end
-
-    --     Heading = "x"
-    -- end
-
-    -- Tt.tunnel(delta.abs.x, strip)
-
-    -- if delta.rel.z < 0 then
-    --     if Heading == "z" then
-    --         turtle.turnRight()
-    --         turtle.turnRight()
-
-    --     elseif Heading == "x" then
-    --         turtle.turnLeft()
-
-    --     elseif Heading == "-x" then
-    --         turtle.turnRight()
-
-    --     end
-
-    --     Heading = "-z"
-
-    -- elseif delta.rel.z > 0 then
-    --     if Heading == "-z" then
-    --         turtle.turnRight()
-    --         turtle.turnRight()
-
-    --     elseif Heading == "x" then
-    --         turtle.turnRight()
-
-    --     elseif Heading == "-x" then
-    --         turtle.turnLeft()
-
-    --     end
-
-    --     Heading = "z"
-    -- end
-
-    --Tt.tunnel(delta.abs.z, strip)
 
     if delta.rel.y < 0 then
         local move = 0
