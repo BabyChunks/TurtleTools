@@ -11,7 +11,6 @@ end
 local function connectServer()
     while true do
         local id, msg = rednet.receive("ping")
-        --if msg then
             if msg[1] == "ping" then
                 rednet.send(id, {"pong", {Coords.x, Coords.y, Coords.z}}, "ping")
             elseif msg[1] == "ack" then
@@ -19,7 +18,6 @@ local function connectServer()
                 print("Server connected at ID "..serverID)
                 return
             end
-        --end
     end
 end
 
