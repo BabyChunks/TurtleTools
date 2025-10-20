@@ -147,15 +147,15 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         x = {
         [1] = {
             ["x"] = {},
-            ["-x"] = {turtle.turnRight, getHeading("right"), turtle.turnRight, getHeading("right")},
-            ["z"] = {turtle.turnLeft, getHeading("left")},
-            ["-z"] = {turtle.turnRight, getHeading("right")}
+            ["-x"] = {turtle.turnRight, turtle.turnRight},
+            ["z"] = {turtle.turnLef},
+            ["-z"] = {turtle.turnRight}
         },
         [-1] = {
-            ["x"] = {turtle.turnRight, getHeading("right"), turtle.turnRight, getHeading("right")},
+            ["x"] = {turtle.turnRight, turtle.turnRight},
             ["-x"] = {},
-            ["z"] = {turtle.turnRight, getHeading("right")},
-            ["-z"] = {turtle.turnLeft, getHeading("left")}
+            ["z"] = {turtle.turnRight},
+            ["-z"] = {turtle.turnLef}
         },
         },
         z = {
