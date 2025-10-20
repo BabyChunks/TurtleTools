@@ -7,6 +7,7 @@
 [x] send recall point or "y" to turtle for first mining arg
 [x] de-index caller args for turtle init
 [ ] change all occurances of getHeading() for setHeading()
+[ ] make it so main menu writes "Disconnect" when there is a turtle connected
 [ ] change the completion bar to display background golour instead of I's
 [ ] put parallel functions where time is important e.g. ping timeout
 [ ] automatically disconnect turtle if main script errors (prob with a multishell)

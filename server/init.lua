@@ -108,7 +108,8 @@ local function setupQuarry()
 end
 
 local function mainMenu()
-    local options = {Comms.getTurtleID() and "Disconnect Turtle" or "Connect turtle", "Inventory", "Mine", "Move", "Quit"}
+    local connect = Comms.getTurtleID() and "Disconnect Turtle" or "Connect turtle"
+    local options = {connect, "Inventory", "Mine", "Move", "Quit"}
 
     local actions = {
         function() --(Dis)connect turtle
