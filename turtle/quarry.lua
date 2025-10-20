@@ -58,7 +58,6 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
     local move = 0
 
     while move < blocks do
-        print("move: "..move) _ = io.read()
         if strip then
             mineVein()
         end
@@ -79,68 +78,6 @@ local function startup(cmd)
 
     local pattern, signs, fuelNeeded = {}, {}, {}
     local i, nCycle, layer, nLayer = 0, 0, 0, 0
-
-    -- Comms.sendStatus("Use current coordinates as recall point? (y/[xyz])", true)
-    -- incomplete = true
-    -- while incomplete do
-    --     local ans = io.read()
-    --     if ans == "y" or ans == "Y" then
-    --         Recall = Coords
-    --         incomplete = false
-    --     else
-    --         err, Recall = pcall(Lt.argparse, ans)
-    --         if err then
-    --             incomplete = false
-    --             for _, coord in pairs(Recall) do
-    --                 if type(coord) ~= "number" then
-    --                     io.write("Input must be numbers\n")
-    --                     incomplete = true
-    --                     break
-    --                 end
-    --             end
-    --         else
-    --             io.write(Recall .. "\n")
-    --         end
-    --     end
-    -- end
-
-    
-
-    -- print("first coordinates:")
-
-    -- incomplete = true
-    -- while incomplete do
-    --     err, coords1 = pcall(Lt.argparse, io.read())
-    --     if err then
-    --         incomplete = false
-    --         for _, coord in pairs(coords1) do
-    --             if type(coord) ~= "number" then
-    --                 io.write("Input must be numbers\n")
-    --                 incomplete = true
-    --             end
-    --         end
-    --     else
-    --         io.write(coords1 .. "\n")
-    --     end
-    -- end
-
-    -- incomplete = true
-    -- print("second coordinates:")
-
-    -- while incomplete do
-    --     err, coords2 = pcall(Lt.argparse, io.read(), { "x", "y", "z" })
-    --     if err then
-    --         incomplete = false
-    --         for _, coord in pairs(coords2) do
-    --             if type(coord) ~= "number" then
-    --                 io.write("Input must be numbers\n")
-    --                 incomplete = true
-    --             end
-    --         end
-    --     else
-    --         io.write(coords2 .. "\n")
-    --     end
-    -- end
 
     local Recall = {}
 
@@ -229,9 +166,6 @@ local function startup(cmd)
                     coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1),
                     coords1.y + signs.y * (i * layer + pattern.yOffset[t]),
                     coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t]))
-                -- local x = coords1.x + signs.x * (t % 2) * (quarrySize.abs.x - 1)
-                -- local y = coords1.y + signs.y * (i * layer + pattern.yOffset[t])
-                -- local z = coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t])
 
                 QuarryCompletion = ((layer / nLayer) * 0.99 + (cycle / nCycle) * 0.01)
                 Comms.sendStatus("task", {QuarryCompletion, colours.yellow, "Mining"})
