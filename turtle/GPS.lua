@@ -73,7 +73,7 @@ local function sumAbsVectorComponents(v)
     return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 
-local function getHeading(turn) --set or get Heading to turtle's current heading on the x-z plane. Requires gps
+local function getHeading(turn) --set Heading to turtle's current heading on the x-z plane. Requires gps
     if not Heading then
         local coords2 = {}
 
@@ -88,7 +88,7 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
         -- coords2 = vector.new(locate())
 
         -- for debug purposes:
-        coords2 = vector.new(4, 0, -1)
+        coords2 = vector.new(1, 0, 0)
         assert(turtle.back())
 
         local delta = coords2:sub(Coords)
@@ -127,6 +127,7 @@ local function getHeading(turn) --set or get Heading to turtle's current heading
 end
 
 local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
+    print("goThere() accessed")
     strip = strip or false
     local delta = {}
 
@@ -137,22 +138,24 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         z = math.abs(delta.rel.z)
     }
 
-    print(Lt.tableSum(delta.abs))
+    print("Coords: "..textutils.serialize(Coords)) _ = io.read()
+    print("dest: "..textutils.serialize(dest)) _ = io.read()
+    print("delta: "..textutils.serialize(delta.rel)) _ = io.read()
     checkFuel(Lt.tableSum(delta.abs))
 
     local orientationMatrix = {
         x = {
         [1] = {
             ["x"] = {},
-            ["-x"] = {turtle.turnRight, turtle.turnRight},
-            ["z"] = {turtle.turnLeft},
-            ["-z"] = {turtle.turnRight}
+            ["-x"] = {turtle.turnRight, getHeading("right"), turtle.turnRight, getHeading("right")},
+            ["z"] = {turtle.turnLeft, getHeading("left")},
+            ["-z"] = {turtle.turnRight, getHeading("right")}
         },
         [-1] = {
-            ["x"] = {turtle.turnRight, turtle.turnRight},
+            ["x"] = {turtle.turnRight, getHeading("right"), turtle.turnRight, getHeading("right")},
             ["-x"] = {},
-            ["z"] = {turtle.turnRight},
-            ["-z"] = {turtle.turnLeft}
+            ["z"] = {turtle.turnRight, getHeading("right")},
+            ["-z"] = {turtle.turnLeft, getHeading("left")}
         },
         },
         z = {
@@ -177,16 +180,24 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
     _ = io.read()
 
     if delta.rel.x ~= 0 then
-        for _, action in ipairs(orientationMatrix.x[delta.rel.x / delta.abs.x][Heading]) do
+        local oMx = orientationMatrix.x[delta.rel.x / delta.abs.x]
+        for _, action in ipairs(oMx[Heading]) do
             action()
+            local steer = function() for k, v in pairs(oMx) do if next(v) == nil then return k end end end
+            Heading = steer()
         end
+        print("Heading:"..Heading)
         Tt.tunnel(delta.abs.x, strip)
     end
 
     if delta.rel.z ~= 0 then
-        for _, action in ipairs(orientationMatrix.z[delta.rel.z / delta.abs.z][Heading]) do
-            action = action
+        local oMz = orientationMatrix.z[delta.rel.z / delta.abs.z]
+        for _, action in ipairs(oMz[Heading]) do
+            action()
+            local steer = function() for k, v in pairs(oMz) do if next(v) == nil then return k end end end
+            Heading = steer()
         end
+        print("Heading:"..Heading)
         Tt.tunnel(delta.abs.z, strip)
     end
 
@@ -330,7 +341,7 @@ end
 -- Coords = vector.new(locate())
 
 --for debug purposes:
-Coords = vector.new(4, 0, 0)
+Coords = vector.new(0, 0, 0)
 
 getHeading()
 

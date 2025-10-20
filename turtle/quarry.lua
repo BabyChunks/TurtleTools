@@ -53,10 +53,12 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
 end
 
 local function tunnel(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
+    print("tunnel() accessed for "..blocks.." blocks")
     strip = strip or false
     local move = 0
 
     while move < blocks do
+        print("move: "..move) _ = io.read()
         if strip then
             mineVein()
         end
@@ -261,7 +263,7 @@ local function startup(cmd)
         layer = layer + 1
     end
     GPS.goThere(Recall)
-    Comms.sendStatus("console", {"Mining sequence done!"})
+    Comms.sendStatus("task", {1, nil, "Mining"})
 end
 
 return {
