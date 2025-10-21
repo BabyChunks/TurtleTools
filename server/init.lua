@@ -98,7 +98,7 @@ local function setupQuarry()
     -- Comms.sendCmd(cmd)
 
     --For debug purposes:
-    Comms.sendCmd({head = "mine", body = {"y", {1, 0, 0}, {3, 1, 6}}})
+    Comms.sendCmd({head = "mine", body = {"y", {1, 0, 0}, {3, 3, 6}}})
 
     -- loop through all status messages until mining is completed, then return to main menu
     while true do

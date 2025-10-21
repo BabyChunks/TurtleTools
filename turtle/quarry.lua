@@ -167,7 +167,8 @@ local function startup(cmd)
                     coords1.y + signs.y * (i * layer + pattern.yOffset[t]),
                     coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t]))
 
-                QuarryCompletion = ((layer / nLayer) * 0.99 + (cycle / nCycle) * 0.01)
+                QuarryCompletion = ((layer / nLayer) * 0.99 + ((cycleStart + (step * cycle)) / nCycle) * 0.01)
+                print("QuarryCompletion: "..QuarryCompletion) _ = io.read()
                 Comms.sendStatus("task", {QuarryCompletion, colours.yellow, "Mining"})
 
                 if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.abs.z then
