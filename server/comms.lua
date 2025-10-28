@@ -11,10 +11,7 @@ while true do
     end
 end
 
--- local serverCoords = vector.new(GPS.locate())
-
--- for debug purposes:
-local serverCoords = vector.new(4, 4, 4)
+local serverCoords = vector.new(GPS.locate())
 
 -- return current turtle's ID
 local function getTurtleID()
@@ -102,6 +99,7 @@ local function getStatus()
             if msg.body[1] == 1 then
                 Gt.drawConsole("Task complete! Press Enter to continue", true)
                 _ = io.read()
+                Gt.drawTaskStatus()
                 return true
             end
         end

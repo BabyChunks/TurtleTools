@@ -72,8 +72,6 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
 end
 
 local function startup(cmd)
-    print(textutils.serialize(cmd))
-    _ = io.read()
     QuarryCompletion = 0
 
     local pattern, signs, fuelNeeded = {}, {}, {}
@@ -133,7 +131,6 @@ local function startup(cmd)
         quarry = nLayer * nCycle * (pattern.tunnels * quarrySize.abs.x + pattern.endCap),
         departure = GPS.sumAbsVectorComponents(coords2:sub(Coords))
     }
-    print("fuelNeeded: "..textutils.serialize(fuelNeeded))
 
     Comms.sendStatus("task", {QuarryCompletion, colours.red, CurrentTask})
     GPS.checkFuel(Lt.tableSum(fuelNeeded))
@@ -168,10 +165,10 @@ local function startup(cmd)
                     coords1.z + signs.z * (pattern.cycleLn * cycle + pattern.zOffset[t]))
 
                 QuarryCompletion = ((layer / nLayer) * 0.99 + ((cycleStart + (step * cycle)) / nCycle) * 0.01)
-                print("QuarryCompletion: "..QuarryCompletion) _ = io.read()
                 Comms.sendStatus("task", {QuarryCompletion, colours.yellow, "Mining"})
 
-                if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.abs.z then
+                if (pattern.cycleLn * cycle + pattern.zOffset[t]) <= quarrySize.abs.z and
+                (i * layer + pattern.yOffset[t] <= quarrySize.abs.y) then
                     local emptySlot = 0
                     GPS.goThere(v, true)
 

@@ -42,7 +42,6 @@ local function locate()
 end
 
 local function checkFuel(fuelNeeded)
-    print("accessed checkFuel("..fuelNeeded..")")
     local item = {}
     local currFuel = turtle.getFuelLevel()
 
@@ -85,10 +84,7 @@ local function getHeading(turn) --set Heading to turtle's current heading on the
         end
         assert(turtle.forward())
 
-        -- coords2 = vector.new(locate())
-
-        -- for debug purposes:
-        coords2 = vector.new(1, 0, 0)
+        coords2 = vector.new(locate())
         assert(turtle.back())
 
         local delta = coords2:sub(Coords)
@@ -127,7 +123,6 @@ local function getHeading(turn) --set Heading to turtle's current heading on the
 end
 
 local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
-    print("goThere() accessed")
     strip = strip or false
     local delta = {}
 
@@ -138,9 +133,6 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         z = math.abs(delta.rel.z)
     }
 
-    print("Coords: "..textutils.serialize(Coords)) _ = io.read()
-    print("dest: "..textutils.serialize(dest)) _ = io.read()
-    print("delta: "..textutils.serialize(delta.rel)) _ = io.read()
     checkFuel(Lt.tableSum(delta.abs))
 
     local orientationMatrix = {
@@ -173,11 +165,6 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         },
         }
     }
-    print("Heading: "..Heading)
-    print("relative x: "..delta.rel.x)
-    print("absolute x: "..delta.abs.x)
-    print("xsign: "..delta.rel.x / delta.abs.x)
-    _ = io.read()
 
     if delta.rel.x ~= 0 then
         local oMx = orientationMatrix.x[delta.rel.x / delta.abs.x]
@@ -186,7 +173,6 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         end
         local steer = function() for k, v in pairs(oMx) do if next(v) == nil then return k end end end
         Heading = steer()
-        print("Heading: "..Heading)
         Tt.tunnel(delta.abs.x, strip)
     end
 
@@ -197,7 +183,6 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         end
         local steer = function() for k, v in pairs(oMz) do if next(v) == nil then return k end end end
         Heading = steer()
-        print("Heading: "..Heading)
         Tt.tunnel(delta.abs.z, strip)
     end
 
@@ -274,10 +259,7 @@ local function buildArray() -- WIP
     _ = io.read()
 end
 
--- Coords = vector.new(locate())
-
---for debug purposes:
-Coords = vector.new(0, 0, 0)
+Coords = vector.new(locate())
 
 getHeading()
 
