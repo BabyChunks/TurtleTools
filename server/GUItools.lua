@@ -110,13 +110,14 @@ local function drawTaskStatus(taskCompletion, statusColour, task)
     task = task or "No current task"
     statusColour = statusColour or colours.white
 
-    local barLength = termWidth - #task - 4
-    local completionBar = ("I"):rep(barLength * taskCompletion)..(" "):rep(barLength * (1 - taskCompletion))
+    local barLength = termWidth - #task - 2
+    local completionBar = (" "):rep(barLength * taskCompletion)
+    local completionBarNeg = (" "):rep(barLength - #completionBar)
 
     drawText(task, taskStatus, "left", nil, statusColour)
-    drawText(": [", taskStatus, nil)
-    drawText(completionBar, taskStatus, nil, nil, statusColour)
-    drawText("]", taskStatus, "right")
+    drawText(": ", taskStatus)
+    drawText(completionBar, taskStatus, nil, nil, nil, statusColour)
+    drawText(completionBarNeg, taskStatus, "right", nil, nil, colours.grey)
 end
 
 -- update console window with new status added below the previous one

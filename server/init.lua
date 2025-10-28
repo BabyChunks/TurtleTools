@@ -49,29 +49,28 @@ Gt = require(filePath.."GUItools")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
 
+-- start menu selection at first option
+local selected = 1
+
 -- navigation function for all menus. options is a table with menu option names, 
 -- actions is a table of functions executing these options
 local function navMenu(options, actions)
-    local selected = 1
+    Gt.drawMenu(options, selected)
 
-    while true do
-        Gt.drawMenu(options, selected)
-
-        local _, key = os.pullEvent("key")
-        if key == keys.w or key == keys.up then
-            selected = selected - 1
-            if selected < 1 then selected = #options end
-        elseif key == keys.s or key == keys.down then
-            selected = selected + 1
-            if selected > #options then selected = 1 end
-        elseif key == keys.enter then
-            term.clear()
-            term.setCursorPos(1,1)
-            local action = actions[selected]
-            if action then
-                local shouldExit = action()
-                if shouldExit then return end
-            end
+    local _, key = os.pullEvent("key")
+    if key == keys.w or key == keys.up then
+        selected = selected - 1
+        if selected < 1 then selected = #options end
+    elseif key == keys.s or key == keys.down then
+        selected = selected + 1
+        if selected > #options then selected = 1 end
+    elseif key == keys.enter then
+        term.clear()
+        term.setCursorPos(1,1)
+        local action = actions[selected]
+        if action then
+            local shouldExit = action()
+            if shouldExit then return end
         end
     end
 end
@@ -148,4 +147,6 @@ local function mainMenu()
     navMenu(options, actions)
 end
 
-mainMenu()
+while true do
+    mainMenu()
+end

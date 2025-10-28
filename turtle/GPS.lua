@@ -72,7 +72,7 @@ local function sumAbsVectorComponents(v)
     return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 
-local function getHeading(turn) --set Heading to turtle's current heading on the x-z plane. Requires gps
+local function setHeading(turn) --set Heading to turtle's current heading on the x-z plane. Requires gps
     if not Heading then
         local coords2 = {}
 
@@ -261,14 +261,14 @@ end
 
 Coords = vector.new(locate())
 
-getHeading()
+setHeading()
 
 return {
     locate = locate,
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,
     sumAbsVectorComponents = sumAbsVectorComponents,
-    getHeading = getHeading,
+    setHeading = setHeading,
     goThere = goThere,
     buildArray = buildArray
 }

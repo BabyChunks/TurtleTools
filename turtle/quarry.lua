@@ -47,7 +47,7 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
         end
 
         turtle.turnRight()
-        GPS.getHeading("right")
+        GPS.setHeading("right")
         turn = turn + 1
     end
 end
