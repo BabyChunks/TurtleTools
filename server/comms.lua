@@ -90,7 +90,7 @@ local function getStatus()
                 sendCmd(io.read())
             end
         -- "turtle" status writes to turtleID window
-        elseif msg.head == "turtle" then
+        elseif msg.head == "turtle" then -- change this to handle "disconnect" events
             Gt.drawTurtleStatus(turtleID)
         -- "task" status writes to task completion window
         elseif msg.head == "task" then
