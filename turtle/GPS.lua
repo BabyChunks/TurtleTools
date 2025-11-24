@@ -122,6 +122,51 @@ local function setHeading(turn) --set Heading to turtle's current heading on the
     end
 end
 
+local function setCoords(move)
+    local orientationMatrix = {
+        ["x"] = function() Coords.x = Coords.x + move end,
+        ["-x"] = function() Coords.x = Coords.x - move end,
+        ["z"] = function() Coords.z = Coords.z + move end,
+        ["-z"] = function() Coords.z = Coords.z - move print("bullshit") end
+    }
+    orientationMatrix[Heading]()
+end
+
+local function turnRight()
+    assert(turtle.turnRight())
+    setHeading("right")
+end
+
+local function turnLeft()
+    assert(turtle.turnLeft())
+    setHeading("left")
+end
+
+local function forward()
+    while turtle.detect() do 
+        if isProtectedBlock() then
+            circumvent()
+        end
+        turtle.dig()
+        turtle.suck()
+    end
+    assert(turtle.forward())
+    setCoords(1)
+end
+
+local function back()
+    assert(turtle.back())
+    setCoords(-1)
+end
+
+local function up()
+    
+end
+
+local function down()
+
+end
+
 local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
     strip = strip or false
     local delta = {}
@@ -139,28 +184,28 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         x = {
         [1] = {
             ["x"] = {},
-            ["-x"] = {turtle.turnRight, turtle.turnRight},
-            ["z"] = {turtle.turnLeft},
-            ["-z"] = {turtle.turnRight}
+            ["-x"] = {turnRight, turnRight},
+            ["z"] = {turnLeft},
+            ["-z"] = {turnRight}
         },
         [-1] = {
-            ["x"] = {turtle.turnRight, turtle.turnRight},
+            ["x"] = {turnRight, turnRight},
             ["-x"] = {},
-            ["z"] = {turtle.turnRight},
-            ["-z"] = {turtle.turnLeft}
+            ["z"] = {turnRight},
+            ["-z"] = {turnLeft}
         },
         },
         z = {
         [1] = {
-            ["x"] = {turtle.turnRight},
-            ["-x"] = {turtle.turnLeft},
+            ["x"] = {turnRight},
+            ["-x"] = {turnLeft},
             ["z"] = {},
-            ["-z"] = {turtle.turnRight, turtle.turnRight}
+            ["-z"] = {turnRight, turnRight}
         },
         [-1] = {
-            ["x"] = {turtle.turnLeft},
-            ["-x"] = {turtle.turnRight},
-            ["z"] = {turtle.turnRight, turtle.turnRight},
+            ["x"] = {turnLeft},
+            ["-x"] = {turnRight},
+            ["z"] = {turnRight, turnRight},
             ["-z"] = {}
         },
         }
@@ -269,6 +314,8 @@ return {
     getVectorComponents = getVectorComponents,
     sumAbsVectorComponents = sumAbsVectorComponents,
     setHeading = setHeading,
+    turnRight = turnRight,
+    turnLeft = turnLeft,
     goThere = goThere,
     buildArray = buildArray
 }

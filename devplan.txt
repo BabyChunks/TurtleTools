@@ -7,7 +7,7 @@
 [x] send recall point or "y" to turtle for first mining arg
 [x] de-index caller args for turtle init
 [x] change all occurances of getHeading() for setHeading()
-[ ] (consider changing calls to turtle.turn*() to custom GPS.turn*() [or steer*()] function to better manage heading)
+[~] (consider changing calls to turtle.turn*() to custom GPS.turn*() [or steer*()] function to better manage heading)
 [~] make it so main menu writes "Disconnect" when there is a turtle connected
 [~] change the completion bar to display background colour instead of I's
 [ ] put parallel functions where time is important e.g. ping timeout

@@ -46,14 +46,55 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
             end
         end
 
-        turtle.turnRight()
-        GPS.setHeading("right")
+        GPS.turnRight()
         turn = turn + 1
     end
 end
 
+local function isProtectedBlock()
+    for _, func in pairs(St.PROTECTED_BLOCKS) do
+        if func() == true then
+            return true
+        end
+    end
+end
+
+local function circumvent()
+    turtle.turnRight()
+    local periph = peripheral.find("inventory")
+    if periph then
+        if peripheral.getName(periph) == "front" then
+            circumvent()
+        end
+    end
+    turtle.forward()
+    turtle.turnLeft()
+    local periph = peripheral.find("inventory")
+    if periph then
+        if peripheral.getName(periph) == "front" then
+            circumvent()
+        end
+    end
+    turtle.forward()
+    local periph = peripheral.find("inventory")
+    if periph then
+        if peripheral.getName(periph) == "front" then
+            circumvent()
+        end
+    end
+    turtle.forward()
+    turtle.turnLeft()
+    local periph = peripheral.find("inventory")
+    if periph then
+        if peripheral.getName(periph) == "front" then
+            circumvent()
+        end
+    end
+    turtle.forward()
+    turtle.turnRight()
+end
+
 local function tunnel(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
-    print("tunnel() accessed for "..blocks.." blocks")
     strip = strip or false
     local move = 0
 
@@ -63,6 +104,17 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
         end
 
         while turtle.detect() do
+            if isProtectedBlock() then
+                XOffset, ZOffset = 0, 0
+                Course = Heading
+                repeat
+                    circumvent()
+                until XOffset > 0 and ZOffset == 0
+                while Heading ~= Course do
+                    GPS.turnRight()
+                end
+                move = move + XOffset
+            end
             turtle.dig()
             turtle.suck()
         end

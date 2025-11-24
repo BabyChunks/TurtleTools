@@ -10,6 +10,16 @@
     "immersiveengineering:coal_coke",
     "immersiveengineering:coke",
   },
+  PROTECTED_BLOCKS = {
+    function()
+      local periph = peripheral.find("inventory")
+      if periph then
+        if peripheral.getName(periph) == "front" then
+          return true
+        end
+      end
+    end
+  },
   INVS = {
     "immersiveengineering:crate",
     "immersiveengineering:reinforced_crate",
