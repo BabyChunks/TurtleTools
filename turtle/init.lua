@@ -25,6 +25,7 @@ for _, v in pairs(arg) do
         local files = {
             "quarry.lua",
             "GPS.lua",
+            "GUITools.lua",
             "luatools.lua",
             "comms.lua"
         }
@@ -61,7 +62,10 @@ St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Tt = require(filePath.."quarry")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
+Gt = require(filepath.."GUITools")
 print("Done!")
+
+
 
 print("Awaiting server pings...")
 Comms.connectServer()
