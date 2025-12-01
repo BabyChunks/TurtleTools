@@ -95,7 +95,7 @@ local function drawTurtleStatus(id)
     turtleStatus.clear()
     local statusColour = not id and colours.grey or colours.white
 
-    drawText(string.format("Current turtle: [%s]", id or "  "), turtleStatus, "right", nil, statusColour)
+    drawText(string.format("Current turtle: [%02d]", id or "  "), turtleStatus, "right", nil, statusColour)
 end
 
 -- update task window with task completion (0 to 1), textcolour and task name
