@@ -62,7 +62,7 @@ St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Tt = require(filePath.."quarry")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
-Gt = require(filepath.."GUITools")
+Gt = require(filePath.."GUITools")
 print("Done!")
 
 
