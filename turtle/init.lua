@@ -63,28 +63,96 @@ Tt = require(filePath.."quarry")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
 Gt = require(filePath.."GUITools")
-print("Done!")
 
+-- start menu selection at first option
+local selected = 1
 
+-- navigation function for all menus. options is a table with menu option names, 
+-- actions is a table of functions executing these options
+local function navMenu(options, actions)
+    Gt.drawMenu(options, selected)
 
-print("Awaiting server pings...")
-Comms.connectServer()
+    local _, key = os.pullEvent("key")
+    if key == keys.w or key == keys.up then
+        selected = selected - 1
+        if selected < 1 then selected = #options end
+    elseif key == keys.s or key == keys.down then
+        selected = selected + 1
+        if selected > #options then selected = 1 end
+    elseif key == keys.enter then
+        term.clear()
+        term.setCursorPos(1,1)
+        local action = actions[selected]
+        if action then
+            local shouldExit = action()
+            if shouldExit then return end
+        end
+    end
+end
+
+local function mainMenu()
+    local connect = Comms.getServerID() and "Disconnect Server" or "Connect Server"
+    local options = {connect, "Mine", "Move", "Quit"}
+
+    local actions = {
+        function() --(Dis)connect server
+            if Comms.getServerID() then
+                local id = Comms.getServerID()
+                Comms.setServerID(nil)
+                Gt.drawServerStatus(nil)
+                Gt.drawConsole("Computer #"..id.." disconnected successfully")
+            else
+                print("Awaiting server pings...")
+                Comms.connectServer()
+
+                while true do
+                    print("Awaiting server commands...")
+                    CurrentTask = nil
+
+                    local cmd = Comms.getCmd()
+
+                    if cmd.head == "mine" then
+                        CurrentTask = "Mining"
+                        Tt.startup(cmd.body)
+                    elseif cmd.head == "move" then
+                        CurrentTask = "Moving"
+                        GPS.goThere(table.unpack(cmd.body))
+                    elseif cmd.head == "courrier" then
+                        CurrentTask = "Fetching"
+                    elseif cmd.head == "disconnect" then
+                        Comms.setServerID(nil)
+                    end
+                end
+            end
+            os.sleep(0.8)
+        end,
+        function() --Mine
+         local cmd = {}
+            Gt.drawConsole("Starting mining sequence")
+            Gt.drawConsole("Use current coords as recall point?(y/[xyz])", true)
+            local ans = io.read()
+
+            if ans ~= "y" and ans ~= "Y" then
+                ans = {GPS.handleCoordsInput(ans)}
+            end
+            table.insert(cmd, ans)
+            Gt.drawConsole("Input first coordinates:", true)
+        end,
+        function() --Move
+            -- print("Input destination coordinates [xyz]")
+            -- local ans = Lt.argparse(io.read(), {"x", "y", "z"})
+            -- term.clear()
+            -- term.setCursorPos(1,1)
+            -- Tt.GoThere(ans.x, ans.y, ans.z)
+        end,
+        function() --Quit
+            os.queueEvent("terminate")
+        end
+    }
+
+    navMenu(options, actions)
+end
 
 while true do
-    print("Awaiting server commands...")
-    CurrentTask = nil
-
-    local cmd = Comms.getCmd()
-
-    if cmd.head == "mine" then
-        CurrentTask = "Mining"
-        Tt.startup(cmd.body)
-    elseif cmd.head == "move" then
-        CurrentTask = "Moving"
-        GPS.goThere(table.unpack(cmd.body))
-    elseif cmd.head == "courrier" then
-        CurrentTask = "Fetching"
-    elseif cmd.head == "disconnect" then
-        Comms.setServerID(nil)
-    end
+    mainMenu()
 end

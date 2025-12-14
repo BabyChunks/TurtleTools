@@ -16,3 +16,4 @@
 [ ] make turtle pathfinds around inventory blocks and CC blocks
 [ ] (make it so user doesn't have to input coordinates if they haven't changed)
 [ ] Implement inventory sorting and retrieval
+[ ] Add more mining patterns such as stairs, tunnel, quarry
