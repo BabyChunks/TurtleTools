@@ -1,6 +1,4 @@
-local function getCompletion()
-    return QuarryCompletion
-end
+local mineutils = require("/ChunksWare/".."mineutils")
 
 local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
     local block, blockdata = turtle.inspectUp()
@@ -51,49 +49,6 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
     end
 end
 
-local function isProtectedBlock()
-    for _, func in pairs(St.PROTECTED_BLOCKS) do
-        if func() == true then
-            return true
-        end
-    end
-end
-
-local function circumvent()
-    turtle.turnRight()
-    local periph = peripheral.find("inventory")
-    if periph then
-        if peripheral.getName(periph) == "front" then
-            circumvent()
-        end
-    end
-    turtle.forward()
-    turtle.turnLeft()
-    local periph = peripheral.find("inventory")
-    if periph then
-        if peripheral.getName(periph) == "front" then
-            circumvent()
-        end
-    end
-    turtle.forward()
-    local periph = peripheral.find("inventory")
-    if periph then
-        if peripheral.getName(periph) == "front" then
-            circumvent()
-        end
-    end
-    turtle.forward()
-    turtle.turnLeft()
-    local periph = peripheral.find("inventory")
-    if periph then
-        if peripheral.getName(periph) == "front" then
-            circumvent()
-        end
-    end
-    turtle.forward()
-    turtle.turnRight()
-end
-
 local function tunnel(blocks, strip) -- Mine in a straight line for a number of blocks. Specify strip if turtle should evaluate every adjacent block for strip mining
     strip = strip or false
     local move = 0
@@ -123,7 +78,7 @@ local function tunnel(blocks, strip) -- Mine in a straight line for a number of 
     end
 end
 
-local function startup(cmd)
+local function main(cmd)
     QuarryCompletion = 0
 
     local pattern, signs, fuelNeeded = {}, {}, {}
@@ -250,8 +205,4 @@ local function startup(cmd)
     Comms.sendStatus("task", {1, nil, "Mining"})
 end
 
-return {
-    getCompletion = getCompletion,
-    tunnel = tunnel,
-    startup = startup
-}
+

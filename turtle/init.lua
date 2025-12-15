@@ -23,9 +23,9 @@ for _, v in pairs(arg) do
     if v == "-u" then
         local results = {}
         local files = {
-            "quarry.lua",
+            "strip.lua",
             "GPS.lua",
-            "GUITools.lua",
+            "GUI.lua",
             "luatools.lua",
             "comms.lua"
         }
@@ -59,10 +59,10 @@ end
 print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
-Tt = require(filePath.."quarry")
+Tt = require(filePath.."strip")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
-Gt = require(filePath.."GUITools")
+Gt = require(filePath.."GUI")
 
 -- start menu selection at first option
 local selected = 1

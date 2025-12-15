@@ -127,7 +127,7 @@ local function setCoords(move)
         ["x"] = function() Coords.x = Coords.x + move end,
         ["-x"] = function() Coords.x = Coords.x - move end,
         ["z"] = function() Coords.z = Coords.z + move end,
-        ["-z"] = function() Coords.z = Coords.z - move print("bullshit") end
+        ["-z"] = function() Coords.z = Coords.z - move end
     }
     orientationMatrix[Heading]()
 end
