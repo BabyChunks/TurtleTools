@@ -144,9 +144,9 @@ end
 
 local function forward()
     while turtle.detect() do 
-        if isProtectedBlock() then
-            circumvent()
-        end
+        -- if isProtectedBlock() then
+        --     circumvent()
+        -- end
         turtle.dig()
         turtle.suck()
     end
@@ -160,11 +160,139 @@ local function back()
 end
 
 local function up()
-    
+    while turtle.detectUp() do
+        turtle.digUp()
+        turtle.suckUp()
+    end
+    assert(turtle.up())
+    Coords.y = Coords.y + 1
 end
 
 local function down()
+    while turtle.detectDown() do
+        turtle.digDown()
+        turtle.suckDown()
+    end
+    assert(turtle.down())
+    Coords.y = Coords.y - 1
+end
 
+local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
+    local block, blockdata = turtle.inspectUp()
+
+    if block then
+        if Lt.tableContainsKey(blockdata.tags, "forge:ores") then
+            up()
+            mineVein()
+            down()
+        end
+    end
+
+    block, blockdata = turtle.inspectDown()
+
+    if block then
+        if Lt.tableContainsKey(blockdata.tags, "forge:ores") then
+            down()
+            mineVein()
+            up()
+        end
+    end
+
+    for turn = 1, 4 do
+        block, blockdata = turtle.inspect()
+
+        if block then
+            if Lt.tableContainsKey(blockdata.tags, "forge:ores") then
+                forward()
+                mineVein()
+                back()
+            end
+        end
+
+        turnRight()
+        turn = turn + 1
+    end
+end
+
+local function dig(blocks, strip)
+    local move = 0
+    while move < blocks do
+        if strip then
+            mineVein()
+        end
+        forward()
+    end
+end
+
+local function move(delta, strip)
+    checkFuel(sumAbsVectorComponents(delta))
+
+    local orientationMatrix = {
+        x = {
+        [1] = {
+            ["x"] = {},
+            ["-x"] = {turnRight, turnRight},
+            ["z"] = {turnLeft},
+            ["-z"] = {turnRight}
+        },
+        [-1] = {
+            ["x"] = {turnRight, turnRight},
+            ["-x"] = {},
+            ["z"] = {turnRight},
+            ["-z"] = {turnLeft}
+        },
+        },
+        z = {
+        [1] = {
+            ["x"] = {turnRight},
+            ["-x"] = {turnLeft},
+            ["z"] = {},
+            ["-z"] = {turnRight, turnRight}
+        },
+        [-1] = {
+            ["x"] = {turnLeft},
+            ["-x"] = {turnRight},
+            ["z"] = {turnRight, turnRight},
+            ["-z"] = {}
+        },
+        }
+    }
+
+    if delta.x ~= 0 then
+        local oMx = orientationMatrix.x[delta.x / math.abs(delta.x)]
+        for _, action in ipairs(oMx[Heading]) do
+            action()
+        end
+        dig(math.abs(delta.x), strip)
+    end
+
+    if delta.z ~= 0 then
+        local oMz = orientationMatrix.z[delta.rel.z / math.abs(delta.z)]
+        for _, action in ipairs(oMz[Heading]) do
+            action()
+        end
+        dig(math.abs(delta.z), strip)
+    end
+
+    if delta.y < 0 then
+        local move = 0
+        while move < math.abs(delta.y) do
+            if strip then
+                mineVein()
+            end
+            down()
+            move = move + 1
+        end
+    elseif delta.y > 0 then
+        local move = 0
+        while move < delta.y do
+            if strip then
+                mineVein()
+            end
+            up()
+            move = move + 1
+        end
+    end
 end
 
 local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
@@ -216,8 +344,6 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         for _, action in ipairs(oMx[Heading]) do
             action()
         end
-        local steer = function() for k, v in pairs(oMx) do if next(v) == nil then return k end end end
-        Heading = steer()
         Tt.tunnel(delta.abs.x, strip)
     end
 
@@ -226,8 +352,6 @@ local function goThere(dest, strip) -- main function for navigation. Uses absolu
         for _, action in ipairs(oMz[Heading]) do
             action()
         end
-        local steer = function() for k, v in pairs(oMz) do if next(v) == nil then return k end end end
-        Heading = steer()
         Tt.tunnel(delta.abs.z, strip)
     end
 
@@ -305,7 +429,6 @@ local function buildArray() -- WIP
 end
 
 Coords = vector.new(locate())
-
 setHeading()
 
 return {
@@ -313,6 +436,7 @@ return {
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,
     sumAbsVectorComponents = sumAbsVectorComponents,
+    move = move,
     setHeading = setHeading,
     turnRight = turnRight,
     turnLeft = turnLeft,

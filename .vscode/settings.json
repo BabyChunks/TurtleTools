@@ -10,6 +10,7 @@
         "term",
         "window",
         "colours",
-        "keys"
+        "keys",
+        "vector"
     ]
 }
