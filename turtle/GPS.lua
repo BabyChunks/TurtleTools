@@ -221,11 +221,14 @@ local function dig(blocks, strip)
             mineVein()
         end
         forward()
+        move = move + 1
     end
 end
 
 local function move(delta, strip)
     checkFuel(sumAbsVectorComponents(delta))
+
+    print(delta) _ = io.read()
 
     local orientationMatrix = {
         x = {
@@ -267,7 +270,7 @@ local function move(delta, strip)
     end
 
     if delta.z ~= 0 then
-        local oMz = orientationMatrix.z[delta.rel.z / math.abs(delta.z)]
+        local oMz = orientationMatrix.z[delta.z / math.abs(delta.z)]
         for _, action in ipairs(oMz[Heading]) do
             action()
         end
@@ -295,92 +298,11 @@ local function move(delta, strip)
     end
 end
 
-local function goThere(dest, strip) -- main function for navigation. Uses absolute coords to navigate
-    strip = strip or false
-    local delta = {}
-
-    delta.rel = dest:sub(Coords)
-    delta.abs = {
-        x = math.abs(delta.rel.x),
-        y = math.abs(delta.rel.y),
-        z = math.abs(delta.rel.z)
-    }
-
-    checkFuel(Lt.tableSum(delta.abs))
-
-    local orientationMatrix = {
-        x = {
-        [1] = {
-            ["x"] = {},
-            ["-x"] = {turnRight, turnRight},
-            ["z"] = {turnLeft},
-            ["-z"] = {turnRight}
-        },
-        [-1] = {
-            ["x"] = {turnRight, turnRight},
-            ["-x"] = {},
-            ["z"] = {turnRight},
-            ["-z"] = {turnLeft}
-        },
-        },
-        z = {
-        [1] = {
-            ["x"] = {turnRight},
-            ["-x"] = {turnLeft},
-            ["z"] = {},
-            ["-z"] = {turnRight, turnRight}
-        },
-        [-1] = {
-            ["x"] = {turnLeft},
-            ["-x"] = {turnRight},
-            ["z"] = {turnRight, turnRight},
-            ["-z"] = {}
-        },
-        }
-    }
-
-    if delta.rel.x ~= 0 then
-        local oMx = orientationMatrix.x[delta.rel.x / delta.abs.x]
-        for _, action in ipairs(oMx[Heading]) do
-            action()
-        end
-        Tt.tunnel(delta.abs.x, strip)
-    end
-
-    if delta.rel.z ~= 0 then
-        local oMz = orientationMatrix.z[delta.rel.z / delta.abs.z]
-        for _, action in ipairs(oMz[Heading]) do
-            action()
-        end
-        Tt.tunnel(delta.abs.z, strip)
-    end
-
-    if delta.rel.y < 0 then
-        local move = 0
-
-        while move < delta.abs.y do
-            while turtle.detectDown() do
-                turtle.digDown()
-                turtle.suckDown()
-            end
-
-            assert(turtle.down())
-            move = move + 1
-        end
-    elseif delta.rel.y > 0 then
-        local move = 0
-
-        while move < delta.abs.y do
-            while turtle.detectUp() do
-                turtle.digUp()
-                turtle.suckUp()
-            end
-
-            assert(turtle.up())
-            move = move + 1
-        end
-    end
-    Coords = dest
+local function goThere(dest, strip)
+    print(Coords)
+    print(dest)
+    _ = io.read()
+    move(dest - Coords, strip)
 end
 
 local function buildArray() -- WIP
@@ -432,6 +354,7 @@ Coords = vector.new(locate())
 setHeading()
 
 return {
+    handleCoordsInput = handleCoordsInput,
     locate = locate,
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,

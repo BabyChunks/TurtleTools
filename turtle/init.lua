@@ -59,7 +59,6 @@ end
 print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
-Tt = require(filePath.."strip")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
 Gt = require(filePath.."GUI")
@@ -128,24 +127,32 @@ local function mainMenu()
         end,
         function() --Mine
          local cmd = {}
-            Gt.drawConsole("Starting mining sequence")
-            Gt.drawConsole("Use current coords as recall point?(y/[xyz])", true)
-            local ans = io.read()
+        Gt.drawConsole("Starting mining sequence")
+        Gt.drawConsole("Use current coords as recall point?(y/[xyz])", true)
+        local ans = io.read()
 
-            if ans ~= "y" and ans ~= "Y" then
-                ans = {GPS.handleCoordsInput(ans)}
-            end
-            table.insert(cmd, ans)
-            Gt.drawConsole("Input first coordinates:", true)
+        if ans == "y" or ans == "Y" then
+            table.insert(cmd, Coords)
+        else
+            table.insert({GPS.handleCoordsInput(ans)}, ans)
+        end
+            Gt.drawConsole("Input quarry origin:", true)
+            local origin = vector.new(GPS.handleCoordsInput(io.read()))
+            Gt.drawConsole("Input quarry boundaries:", true)
+            table.insert(cmd, {GPS.handleCoordsInput(io.read())})
+            GPS.goThere(origin)
+            shell.execute(filePath.."strip", cmd)
         end,
         function() --Move
-            -- print("Input destination coordinates [xyz]")
-            -- local ans = Lt.argparse(io.read(), {"x", "y", "z"})
-            -- term.clear()
-            -- term.setCursorPos(1,1)
-            -- Tt.GoThere(ans.x, ans.y, ans.z)
+            Gt.drawConsole("Input destination coordinates [xyz]", true)
+            GPS.goThere(vector.new(GPS.handleCoordsInput(io.read())))
         end,
         function() --Quit
+            Gt.clearConsole()
+            Gt.drawConsole("Goodbye.")
+            os.sleep(1)
+            term.native().clear()
+            
             os.queueEvent("terminate")
         end
     }

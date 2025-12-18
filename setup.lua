@@ -8,7 +8,8 @@ if turtle then
         "init.lua",
         "luatools.lua",
         "GPS.lua",
-        "quarry.lua",
+        "GUI.lua",
+        "strip.lua",
         "comms.lua"
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"

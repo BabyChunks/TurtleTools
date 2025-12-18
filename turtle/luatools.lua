@@ -1,3 +1,14 @@
+local function breakUpString(s, n)
+  local t = {}
+  local len = #s / n
+  while #s > len do
+    table.insert(t, string.sub(s, 1, len))
+    s = string.sub(s, len, -1)
+  end
+  table.insert(t, s)
+  return t
+end
+
 local function tableContainsValue(t, element)
     for _, value in ipairs(t) do
         if value == element then
@@ -75,6 +86,7 @@ local function argparse(str, keys)
 end
 
 return {
+  breakUpString = breakUpString,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,

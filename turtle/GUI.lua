@@ -94,8 +94,9 @@ local function drawServerStatus(id)
 
     serverStatus.clear()
     local statusColour = not id and colours.grey or colours.white
+    id = id or 0
 
-    drawText(string.format("Current server: [%02d]", id or "  "), serverStatus, "right", nil, statusColour)
+    drawText(string.format("Current server: [%02d]", id), serverStatus, "right", nil, statusColour)
 end
 
 -- update task window with task completion (0 to 1), textcolour and task name
@@ -125,6 +126,10 @@ local function drawConsole(status, requestInput)
     drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
 end
 
+local function clearConsole()
+    console.clear()
+end
+
 -- Initialize entire screen
 drawCorpBanner()
 drawServerStatus()
@@ -136,5 +141,6 @@ return {
     drawMenu = drawMenu,
     drawServerStatus = drawServerStatus,
     drawTaskStatus = drawTaskStatus,
-    drawConsole = drawConsole
+    drawConsole = drawConsole,
+    clearConsole = clearConsole
 }
