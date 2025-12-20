@@ -228,8 +228,6 @@ end
 local function move(delta, strip)
     checkFuel(sumAbsVectorComponents(delta))
 
-    print(delta) _ = io.read()
-
     local orientationMatrix = {
         x = {
         [1] = {
@@ -299,9 +297,6 @@ local function move(delta, strip)
 end
 
 local function goThere(dest, strip)
-    print(Coords)
-    print(dest)
-    _ = io.read()
     move(dest - Coords, strip)
 end
 
@@ -359,10 +354,17 @@ return {
     checkFuel = checkFuel,
     getVectorComponents = getVectorComponents,
     sumAbsVectorComponents = sumAbsVectorComponents,
-    move = move,
     setHeading = setHeading,
+    setCoords = setCoords,
     turnRight = turnRight,
     turnLeft = turnLeft,
+    forward = forward,
+    back = back,
+    up = up,
+    down = down,
+    mineVein = mineVein,
+    dig = dig,
+    move = move,
     goThere = goThere,
     buildArray = buildArray
 }

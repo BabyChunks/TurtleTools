@@ -62,9 +62,9 @@ local function argparse(str, keys)
   local args = {}
 
   for arg in string.gmatch(str, "-?%w+") do
-    if tonumber(arg) then
-      arg = tonumber(arg)
-    end
+    --if tonumber(arg) then
+    --  arg = tonumber(arg)
+    --end
     table.insert(parsed, arg)
   end
 

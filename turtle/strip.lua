@@ -86,7 +86,7 @@ for layer = 0, nLayer do
             if (pattern.ln * cycle + pattern.zOffset[t]) <= abs.z and
             (i * layer + pattern.yOffset[t] <= abs.y) then
                 local emptySlot = 0
-                GPS.move(v - Coords, true)
+                GPS.goThere(v, true)
                 if t % 2 == 0 then
                     for slot = 1, 16 do
                         if turtle.getItemCount(slot) == 0 then
@@ -94,18 +94,18 @@ for layer = 0, nLayer do
                         end
                     end
                     if emptySlot <= St.emptySlots then
-                        GPS.move(Recall - Coords)
+                        GPS.goThere(Recall)
                         Comms.sendStatus("task", {QuarryCompletion, colours.red, "Mining"})
                         _ = Comms.sendStatus("console",{"Inventory is nearly full. Unload turtle to continue, then press Enter.", true})
                         GPS.checkFuel(fuelNeeded / (1 - QuarryCompletion))
                         Comms.sendStatus("console",{"Resume mining..."})
                         Comms.sendStatus("task", {QuarryCompletion, nil, "Mining"})
-                        GPS.move(v - Coords)
+                        GPS.goThere(v)
                     end
                 end
             end
         end
     end
 end
-GPS.move(Recall - Coords)
+GPS.goThere(Recall)
 Comms.sendStatus("task", {1, nil, "Mining"})

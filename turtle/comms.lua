@@ -22,9 +22,13 @@ local function connectServer()
 end
 
 local function getCmd()
-    local id, msg = rednet.receive("cmd")
-    if id == serverID then
-        return textutils.unserialize(msg)
+    if serverID then
+        local id, msg = rednet.receive("cmd")
+        if id == serverID then
+            return textutils.unserialize(msg)
+        end
+    else
+        return io.read()
     end
 end
 

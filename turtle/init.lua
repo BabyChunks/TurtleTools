@@ -112,7 +112,7 @@ local function mainMenu()
 
                     if cmd.head == "mine" then
                         CurrentTask = "Mining"
-                        Tt.startup(cmd.body)
+                        shell.execute(filePath.."strip", cmd.body)
                     elseif cmd.head == "move" then
                         CurrentTask = "Moving"
                         GPS.goThere(table.unpack(cmd.body))
