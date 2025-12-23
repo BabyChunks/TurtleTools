@@ -214,11 +214,34 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
     end
 end
 
+local function isProtectedBlock()
+    for _, func in pairs(St.PROTECTED_BLOCKS) do
+        if func then return true end
+    end
+end
+
+local function circumvent()
+    turnRight()
+    if isProtectedBlock() then circumvent() end
+    forward()
+    turnLeft()
+    if isProtectedBlock() then circumvent() end
+    forward()
+    turnLeft()
+    if isProtectedBlock() then circumvent() end
+end
+
 local function dig(blocks, strip)
     local move = 0
     while move < blocks do
         if strip then
             mineVein()
+        end
+        if isProtectedBlock() then
+            X, _, Z = getVectorComponents(Coords)
+            while Coords.x <= X and Coords.x ~= X do
+                circumvent()
+            end
         end
         forward()
         move = move + 1
