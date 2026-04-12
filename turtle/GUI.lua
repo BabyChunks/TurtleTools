@@ -12,7 +12,7 @@ term.redirect(console)
 
 -- main function to draw text on screen. Specify which window to draw to, position of 1st character
 -- or alignment of text, if it should end with a new line and colours
-local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
+local function drawText(text, monitor, pos, nL, txtColour, bkgColour) -- text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num
     --set default parameters
     monitor = monitor or term.current()
     txtColour = txtColour or colours.white
@@ -78,7 +78,7 @@ local function drawCorpBanner()
 end
 
 -- update menu window with menu options and current selections
-local function drawMenu(options, selected)
+local function drawMenu(options, selected) -- options : table, selected : num
     console.clear()
 
     for i, option in pairs(options) do
@@ -88,7 +88,7 @@ local function drawMenu(options, selected)
 end
 
 -- update turtle window with id if provided
-local function drawServerStatus(id)
+local function drawServerStatus(id) -- id : num
     -- if no turtle: grey;
     -- if turtle: white
 
@@ -100,7 +100,7 @@ local function drawServerStatus(id)
 end
 
 -- update task window with task completion (0 to 1), textcolour and task name
-local function drawTaskStatus(taskCompletion, statusColour, task)
+local function drawTaskStatus(taskCompletion, statusColour, task) -- taskCompletion : num, statusColour : num, task : str
     -- if no task: white;
     -- if task is ongoing: white;
     -- if task is stopped: red
@@ -112,7 +112,7 @@ local function drawTaskStatus(taskCompletion, statusColour, task)
     statusColour = statusColour or colours.white
 
     local barLength = termWidth - #task - 2
-    local completionBar = (" "):rep(barLength * taskCompletion)
+    local completionBar = (" "):rep(Lt.lerp(0, barLength, taskCompletion))
     local completionBarNeg = (" "):rep(barLength - #completionBar)
 
     drawText(task, taskStatus, "left", nil, statusColour)
@@ -122,7 +122,7 @@ local function drawTaskStatus(taskCompletion, statusColour, task)
 end
 
 -- update console window with new status added below the previous one
-local function drawConsole(status, requestInput)
+local function drawConsole(status, requestInput) -- status : str, requestInput: bool
     drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
 end
 

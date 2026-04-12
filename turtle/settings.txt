@@ -20,6 +20,26 @@
       end
     end
   },
+  PROTECTED_BLOCKS_UP = {
+    function()
+      local periph = peripheral.find("inventory")
+      if periph then
+        if peripheral.getName(periph) == "top" then
+          return true
+        end
+      end
+    end
+  },
+  PROTECTED_BLOCKS_DOWN = {
+    function()
+      local periph = peripheral.find("inventory")
+      if periph then
+        if peripheral.getName(periph) == "bottom" then
+          return true
+        end
+      end
+    end
+  },
   INVS = {
     "immersiveengineering:crate",
     "immersiveengineering:reinforced_crate",

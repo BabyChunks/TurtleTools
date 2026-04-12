@@ -62,6 +62,7 @@ St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
 Gt = require(filePath.."GUI")
+Strip = require(filePath.."strip")
 
 -- start menu selection at first option
 local selected = 1
@@ -109,18 +110,6 @@ local function mainMenu()
                     CurrentTask = nil
 
                     local cmd = Comms.getCmd()
-
-                    if cmd.head == "mine" then
-                        CurrentTask = "Mining"
-                        shell.execute(filePath.."strip", cmd.body)
-                    elseif cmd.head == "move" then
-                        CurrentTask = "Moving"
-                        GPS.goThere(table.unpack(cmd.body))
-                    elseif cmd.head == "courrier" then
-                        CurrentTask = "Fetching"
-                    elseif cmd.head == "disconnect" then
-                        Comms.setServerID(nil)
-                    end
                 end
             end
             os.sleep(0.8)
@@ -134,14 +123,14 @@ local function mainMenu()
         if ans == "y" or ans == "Y" then
             table.insert(cmd, Coords)
         else
-            table.insert({GPS.handleCoordsInput(ans)}, ans)
+            table.insert(cmd, {GPS.handleCoordsInput(ans)})
         end
             Gt.drawConsole("Input quarry origin:", true)
             local origin = vector.new(GPS.handleCoordsInput(io.read()))
             Gt.drawConsole("Input quarry boundaries:", true)
             table.insert(cmd, {GPS.handleCoordsInput(io.read())})
             GPS.goThere(origin)
-            shell.execute(filePath.."strip", cmd)
+            Strip.strip(cmd)
         end,
         function() --Move
             Gt.drawConsole("Input destination coordinates [xyz]", true)

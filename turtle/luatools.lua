@@ -57,14 +57,18 @@ local function tableSum(t)
   return sum
 end
 
+local function tableAvg(t)
+  return tableSum(t) / #t
+end
+
 local function argparse(str, keys)
   local parsed = {}
   local args = {}
 
   for arg in string.gmatch(str, "-?%w+") do
-    --if tonumber(arg) then
-    --  arg = tonumber(arg)
-    --end
+    if tonumber(arg) then
+      arg = tonumber(arg)
+    end
     table.insert(parsed, arg)
   end
 
@@ -85,6 +89,10 @@ local function argparse(str, keys)
   return parsed
 end
 
+local function lerp(a, b, t)
+  return a + (b - a) * t
+end
+
 return {
   breakUpString = breakUpString,
   tableContainsValue = tableContainsValue,
@@ -92,5 +100,7 @@ return {
   getKeyForValue = getKeyForValue,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,
-  argparse = argparse
+  tableAvg = tableAvg,
+  argparse = argparse,
+  lerp = lerp
 }

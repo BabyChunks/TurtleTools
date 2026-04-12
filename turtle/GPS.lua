@@ -18,7 +18,7 @@ local function handleCoordsInput(ans)
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    ans = Comms.sendStatus("console",{"Input must be numbers", true})
+                    ans = Comms.sendStatus("console",{"Input must be numbers. Received "..type(coord).." type.", true})
                     incomplete = true
                     break
                 end
@@ -132,6 +132,24 @@ local function setCoords(move)
     orientationMatrix[Heading]()
 end
 
+local function isProtectedBlock()
+    for _, func in pairs(St.PROTECTED_BLOCKS) do
+        if func then return true end
+    end
+end
+
+local function isProtectedBlockUp()
+    for _, func in pairs(St.PROTECTED_BLOCKS_UP) do
+        if func then return true end
+    end
+end
+
+local function isProtectedBlockDown()
+    for _, func in pairs(St.PROTECTED_BLOCKS_DOWN) do
+        if func() then return true end
+    end
+end
+
 local function turnRight()
     assert(turtle.turnRight())
     setHeading("right")
@@ -144,9 +162,7 @@ end
 
 local function forward()
     while turtle.detect() do 
-        -- if isProtectedBlock() then
-        --     circumvent()
-        -- end
+        if isProtectedBlock() then error() end
         turtle.dig()
         turtle.suck()
     end
@@ -175,6 +191,11 @@ local function down()
     end
     assert(turtle.down())
     Coords.y = Coords.y - 1
+end
+
+local function circumvent()
+    if not pcall(forward) then turnRight() circumvent() end
+    turnLeft()
 end
 
 local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
@@ -214,37 +235,47 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
     end
 end
 
-local function isProtectedBlock()
-    for _, func in pairs(St.PROTECTED_BLOCKS) do
-        if func then return true end
-    end
-end
-
-local function circumvent()
-    turnRight()
-    if isProtectedBlock() then circumvent() end
-    forward()
-    turnLeft()
-    if isProtectedBlock() then circumvent() end
-    forward()
-    turnLeft()
-    if isProtectedBlock() then circumvent() end
-end
-
 local function dig(blocks, strip)
-    local move = 0
-    while move < blocks do
+    local step = 0
+    while step < blocks do
         if strip then
             mineVein()
         end
-        if isProtectedBlock() then
-            X, _, Z = getVectorComponents(Coords)
-            while Coords.x <= X and Coords.x ~= X do
-                circumvent()
+        if not pcall(forward) then
+            local fwAxisCoord, swAxisCoord = 0, 0
+            if Heading == "x" then
+                fwAxisCoord = Coords.x
+                swAxisCoord = Coords.z
+                repeat
+                    circumvent()
+                until swAxisCoord == Coords.z and fwAxisCoord < Coords.x
+                step = step + (Coords.x - fwAxisCoord) - 1
+            elseif Heading == "-x" then
+                fwAxisCoord = Coords.x
+                swAxisCoord = Coords.z
+                repeat
+                    circumvent()
+                until swAxisCoord == Coords.z and fwAxisCoord > Coords.x
+                step = step + (fwAxisCoord - Coords.x) - 1
+            elseif Heading == "z" then
+                fwAxisCoord = Coords.z
+                swAxisCoord = Coords.x
+                repeat
+                    circumvent()
+                until swAxisCoord == Coords.x and fwAxisCoord < Coords.z
+                step = step + (Coords.z - fwAxisCoord) - 1
+            elseif Heading == "-z" then
+                fwAxisCoord = Coords.z
+                swAxisCoord = Coords.x
+                repeat
+                    circumvent()
+                until swAxisCoord == Coords.x and fwAxisCoord > Coords.z
+                step = step + (fwAxisCoord - Coords.z) + 1
             end
+            turnRight()
+            turnRight()
         end
-        forward()
-        move = move + 1
+        step = step + 1
     end
 end
 
@@ -283,38 +314,38 @@ local function move(delta, strip)
     }
 
     if delta.x ~= 0 then
-        local oMx = orientationMatrix.x[delta.x / math.abs(delta.x)]
-        for _, action in ipairs(oMx[Heading]) do
+        --local oMx = orientationMatrix.x[delta.x / math.abs(delta.x)]
+        for _, action in ipairs(orientationMatrix.x[delta.x / math.abs(delta.x)][Heading]) do
             action()
         end
         dig(math.abs(delta.x), strip)
     end
 
     if delta.z ~= 0 then
-        local oMz = orientationMatrix.z[delta.z / math.abs(delta.z)]
-        for _, action in ipairs(oMz[Heading]) do
+        --local oMz = orientationMatrix.z[delta.z / math.abs(delta.z)]
+        for _, action in ipairs(orientationMatrix.z[delta.z / math.abs(delta.z)][Heading]) do
             action()
         end
         dig(math.abs(delta.z), strip)
     end
 
+    local step = 0
+
     if delta.y < 0 then
-        local move = 0
-        while move < math.abs(delta.y) do
+        while step < math.abs(delta.y) do
             if strip then
                 mineVein()
             end
             down()
-            move = move + 1
+            step = step + 1
         end
     elseif delta.y > 0 then
-        local move = 0
-        while move < delta.y do
+        while step < delta.y do
             if strip then
                 mineVein()
             end
             up()
-            move = move + 1
+            step = step + 1
         end
     end
 end
