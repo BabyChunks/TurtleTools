@@ -15,7 +15,7 @@ local function connectServer()
                 rednet.send(id, {"pong", {Coords.x, Coords.y, Coords.z}}, "ping")
             elseif msg[1] == "ack" then
                 serverID = id
-                print("Server connected at ID "..serverID)
+                GUI.drawConsole("Server connected at ID "..serverID)
                 return
             end
     end
@@ -49,19 +49,26 @@ end
 
 -- Check for equipped modem and open it if found, else prompt user for modem --
 while true do
-    peripheral.find("modem", rednet.open)
-    if not rednet.isOpen() then
+    
+    local modem = peripheral.find("modem")
+    if not modem then
         for slot = 1, 16 do
             local item = turtle.getItemDetail(slot)
             if item then
                 if Lt.tableContainsValue(St.MODEMS, item.name) then
                     turtle.select(slot)
-                    turtle.equipRight()
+                    turtle.equipLeft()
+                    rednet.open("left")
                     break
                 end
             end
         end
-        sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to conitnue", true})
+        sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to continue", true})
+    elseif peripheral.getName(modem) == "right" then
+        turtle.unequipRight()
+        turtle.equipLeft()
+        rednet.open("left")
+        break
     else break
     end
 end

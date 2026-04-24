@@ -10,36 +10,6 @@
     "immersiveengineering:coal_coke",
     "immersiveengineering:coke",
   },
-  PROTECTED_BLOCKS = {
-    function()
-      local periph = peripheral.find("inventory")
-      if periph then
-        if peripheral.getName(periph) == "front" then
-          return true
-        end
-      end
-    end
-  },
-  PROTECTED_BLOCKS_UP = {
-    function()
-      local periph = peripheral.find("inventory")
-      if periph then
-        if peripheral.getName(periph) == "top" then
-          return true
-        end
-      end
-    end
-  },
-  PROTECTED_BLOCKS_DOWN = {
-    function()
-      local periph = peripheral.find("inventory")
-      if periph then
-        if peripheral.getName(periph) == "bottom" then
-          return true
-        end
-      end
-    end
-  },
   INVS = {
     "immersiveengineering:crate",
     "immersiveengineering:reinforced_crate",
@@ -53,5 +23,104 @@
   MODEMS = {
     "computercraft:wireless_modem",
     "computercraft:wireless_modem_advanced"
+  },
+  PICKAXES = {
+    "minecraft:wooden_pickaxe",
+    "minecraft:stone_pickaxe",
+    "minecraft:iron_pickaxe",
+    "minecraft:golden_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:netherite_pickaxe",
+    "immersiveengineering:steel_pickaxe"
+  },
+  PROTECTED_BLOCKS = {
+    tags = {
+      "minecraft:buttons",
+      "minecraft:doors",
+      "minecraft:fences",
+      "minecraft:fence_gates",
+      "minecraft:all_hanging_signs",
+      "minecraft:pressure_plates",
+      "minecraft:wooden_shelves",
+      "minecraft:signs",
+      "minecraft:trapdoors",
+      "minecraft:rails",
+      "minecraft:walls",
+      "minecraft:anvil",
+      "minecraft:banners",
+      "minecraft:beds",
+      "minecraft:wool_carpets",
+      "minecraft:copper_chests",
+      "minecraft:copper_golem_statues",
+      "minecraft:lanterns",
+      "minecraft:lightning_rods",
+      "computercraft:computers",
+      "computercraft:wired_modem"
+    },
+    names = {
+      "minecraft:barrel",
+      "minecraft:beacon",
+      "minecraft:beehive",
+      "minecraft:bell",
+      "minecraft:blast_furnace",
+      "minecraft:bookshelf",
+      "minecraft:brewing_stand",
+      "minecraft:cartography_table",
+      "minecraft:cauldron",
+      "minecraft:chest",
+      "minecraft:chiseled_bookshelf",
+      "minecraft:command_block",
+      "minecraft:chain_command_block",
+      "minecraft:repeating_command_block",
+      "minecraft:composter",
+      "minecraft:copper_torch",
+      "minecraft:copper_wall_torch",
+      "minecraft:crafter",
+      "minecraft:crafting_table",
+      "minecraft:daylight_detector",
+      "minecraft:dispenser",
+      "minecraft:dropper",
+      "minecraft:enchanting_table",
+      "minecraft:ender_chest",
+      "minecraft:fletching_table",
+      "minecraft:furnace",
+      "minecraft:grindstone",
+      "minecraft:hopper",
+      "minecraft:jukebox",
+      "minecraft:ladder",
+      "minecraft:lectern",
+      "minecraft:lever",
+      "minecraft:loom",
+      "minecraft:spawner",
+      "minecraft:observer",
+      "minecraft:piston",
+      "minecraft:comparator",
+      "minecraft:repeater",
+      "minecraft:redstone_torch",
+      "minecraft:redstone_wire",
+      "minecraft:respawn_anchor",
+      "minecraft:scaffolding",
+      "minecraft:slime_block",
+      "minecraft:smithing_table",
+      "minecraft:smoker",
+      "minecraft:soul_torch",
+      "minecraft:soul_wall_torch",
+      "minecraft:sticky_piston",
+      "minecraft:stonecutter",
+      "minecraft:target",
+      "minecraft:tnt",
+      "minecraft:torch",
+      "minecraft:wall_torch",
+      "minecraft:trapped_chest",
+      "minecraft:trial_spawner",
+      "minecraft:tripwaire",
+      "minecraft:tripwire_hook",
+      "computercraft:speaker",
+      "computercraft:redstone_relay",
+      "computercraft:wired_modem",
+      "computercraft:wireless_modem_advanced",
+      "computercraft:disk_drive",
+      "computercraft:printer"
+    }
   }
 }

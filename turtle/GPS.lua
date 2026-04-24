@@ -116,7 +116,7 @@ local function setHeading(turn) --set Heading to turtle's current heading on the
         end
 
         if i == 4 then i = 0
-        elseif i == -1 then i = 4 end
+        elseif i == -1 then i = 3 end
 
         Heading = compass[i]
     end
@@ -132,22 +132,23 @@ local function setCoords(move)
     orientationMatrix[Heading]()
 end
 
-local function isProtectedBlock()
-    for _, func in pairs(St.PROTECTED_BLOCKS) do
-        if func then return true end
+local function isProtectedBlock(dir)
+    local block, blockdata = false, {}
+    if not dir then
+        block, blockdata = turtle.inspect()
+    elseif dir == "up" then
+        block, blockdata = turtle.inspectUp()
+    elseif dir == "down" then
+        block, blockdata = turtle.inspectDown()
+    else error("dir can take 3 values: nil, 'up' and 'down'")
     end
-end
-
-local function isProtectedBlockUp()
-    for _, func in pairs(St.PROTECTED_BLOCKS_UP) do
-        if func then return true end
+    if block then
+        if Lt.tableContainsValue(St.PROTECTED_BLOCKS.names, blockdata.name) then return true end
+        for tag, _ in pairs(blockdata.tags) do
+            if Lt.tableContainsValue(St.PROTECTED_BLOCKS.tags, tag) then return true end
+        end
     end
-end
-
-local function isProtectedBlockDown()
-    for _, func in pairs(St.PROTECTED_BLOCKS_DOWN) do
-        if func() then return true end
-    end
+    return false
 end
 
 local function turnRight()
@@ -161,8 +162,10 @@ local function turnLeft()
 end
 
 local function forward()
-    while turtle.detect() do 
-        if isProtectedBlock() then error() end
+    while turtle.detect() do
+        if isProtectedBlock() then
+            error()
+        end
         turtle.dig()
         turtle.suck()
     end
@@ -177,6 +180,9 @@ end
 
 local function up()
     while turtle.detectUp() do
+        if isProtectedBlock("up") then
+            error()
+        end
         turtle.digUp()
         turtle.suckUp()
     end
@@ -186,6 +192,9 @@ end
 
 local function down()
     while turtle.detectDown() do
+        if isProtectedBlock("down") then
+            error()
+        end
         turtle.digDown()
         turtle.suckDown()
     end
@@ -194,8 +203,12 @@ local function down()
 end
 
 local function circumvent()
-    if not pcall(forward) then turnRight() circumvent() end
-    turnLeft()
+    if not pcall(forward) then
+        turnRight()
+        circumvent()
+    else
+        turnLeft()
+    end
 end
 
 local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
@@ -270,7 +283,7 @@ local function dig(blocks, strip)
                 repeat
                     circumvent()
                 until swAxisCoord == Coords.x and fwAxisCoord > Coords.z
-                step = step + (fwAxisCoord - Coords.z) + 1
+                step = step + (fwAxisCoord - Coords.z) - 1
             end
             turnRight()
             turnRight()
@@ -314,7 +327,6 @@ local function move(delta, strip)
     }
 
     if delta.x ~= 0 then
-        --local oMx = orientationMatrix.x[delta.x / math.abs(delta.x)]
         for _, action in ipairs(orientationMatrix.x[delta.x / math.abs(delta.x)][Heading]) do
             action()
         end
@@ -322,7 +334,6 @@ local function move(delta, strip)
     end
 
     if delta.z ~= 0 then
-        --local oMz = orientationMatrix.z[delta.z / math.abs(delta.z)]
         for _, action in ipairs(orientationMatrix.z[delta.z / math.abs(delta.z)][Heading]) do
             action()
         end
@@ -336,7 +347,23 @@ local function move(delta, strip)
             if strip then
                 mineVein()
             end
-            down()
+            if not pcall(down) then
+                local clear = false
+                local startX, startY, startZ = Coords.x, Coords.y, Coords.z
+                while clear == false do
+                    repeat
+                        dig(1)
+                    until pcall(down)
+                    repeat
+                        dig(1)
+                    until pcall(down)
+                    move(vector.new(startX - Coords.x, Coords.y, startZ - Coords.z))
+                    if Coords.x == startX and Coords.z == startZ then
+                        clear = true
+                        step = step + (startY - Coords.y) - 1
+                    end
+                end
+            end
             step = step + 1
         end
     elseif delta.y > 0 then
@@ -344,7 +371,23 @@ local function move(delta, strip)
             if strip then
                 mineVein()
             end
-            up()
+            if not pcall(up) then
+                local clear = false
+                local start = Coords
+                while clear == false do
+                    repeat
+                        dig(1)
+                    until pcall(up)
+                    -- repeat
+                    --     dig(1)
+                    -- until pcall(up)
+                    move(start - Coords)
+                    if Coords.x == start.x and Coords.z == start.x then
+                        clear = true
+                        step = step + (Coords.y - start.y) - 1
+                    end
+                end
+            end
             step = step + 1
         end
     end
@@ -397,6 +440,23 @@ local function buildArray() -- WIP
 
     io.write("Clear a space of 6 blocks in the positive x and z direction, as well as a clearance of 6 blocks above the square delimited thus. Press Enter when this is done.\n")
     _ = io.read()
+end
+
+while true do
+    if not Lt.tableContainsValue(St.PICKAXES, turtle.getEquippedRight().name) then
+        for slot = 1, 16 do
+            local item = turtle.getItemDetail(slot)
+            if item then
+                if Lt.tableContainsValue(St.PICKAXES, item.name) then
+                    turtle.select(slot)
+                    turtle.equipRight()
+                    break
+                end
+            end
+        end
+        Comms.sendStatus("console", {"Could not find pickaxe on turtle. Place a pickaxe in inventory, or equip it and press Enter to continue.", true})
+    else break
+    end
 end
 
 Coords = vector.new(locate())

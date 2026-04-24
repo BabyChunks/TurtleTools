@@ -10,6 +10,7 @@
 [x] (consider changing calls to turtle.turn*() to custom GPS.turn*() [or steer*()] function to better manage heading)
 [~] make it so main menu writes "Disconnect" when there is a turtle connected
 [x] change the completion bar to display background colour instead of I's
+[ ] print calls in turtle comms should be changed to use the magnificent GUI module!
 [ ] put parallel functions where time is important e.g. ping timeout
 [ ] automatically disconnect turtle if main script errors (prob with a multishell)
 [ ] make a settings menu on turtle (-s flag) and server side (menu option)

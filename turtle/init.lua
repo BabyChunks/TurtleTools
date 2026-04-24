@@ -59,9 +59,9 @@ end
 print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
+GUI = require(filePath.."GUI")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
-Gt = require(filePath.."GUI")
 Strip = require(filePath.."strip")
 
 -- start menu selection at first option
@@ -70,7 +70,7 @@ local selected = 1
 -- navigation function for all menus. options is a table with menu option names, 
 -- actions is a table of functions executing these options
 local function navMenu(options, actions)
-    Gt.drawMenu(options, selected)
+    GUI.drawMenu(options, selected)
 
     local _, key = os.pullEvent("key")
     if key == keys.w or key == keys.up then
@@ -99,8 +99,8 @@ local function mainMenu()
             if Comms.getServerID() then
                 local id = Comms.getServerID()
                 Comms.setServerID(nil)
-                Gt.drawServerStatus(nil)
-                Gt.drawConsole("Computer #"..id.." disconnected successfully")
+                GUI.drawServerStatus(nil)
+                GUI.drawConsole("Computer #"..id.." disconnected successfully")
             else
                 print("Awaiting server pings...")
                 Comms.connectServer()
@@ -115,30 +115,30 @@ local function mainMenu()
             os.sleep(0.8)
         end,
         function() --Mine
-         local cmd = {}
-        Gt.drawConsole("Starting mining sequence")
-        Gt.drawConsole("Use current coords as recall point?(y/[xyz])", true)
-        local ans = io.read()
+            local cmd = {}
+            GUI.drawConsole("Starting mining sequence")
+            GUI.drawConsole("Use current coords as recall point?(y/[xyz])", true)
+            local ans = io.read()
 
-        if ans == "y" or ans == "Y" then
-            table.insert(cmd, Coords)
-        else
-            table.insert(cmd, {GPS.handleCoordsInput(ans)})
-        end
-            Gt.drawConsole("Input quarry origin:", true)
+            if ans == "y" or ans == "Y" then
+                table.insert(cmd, Coords)
+            else
+                table.insert(cmd, {GPS.handleCoordsInput(ans)})
+            end
+            GUI.drawConsole("Input quarry origin:", true)
             local origin = vector.new(GPS.handleCoordsInput(io.read()))
-            Gt.drawConsole("Input quarry boundaries:", true)
+            GUI.drawConsole("Input quarry boundaries:", true)
             table.insert(cmd, {GPS.handleCoordsInput(io.read())})
             GPS.goThere(origin)
             Strip.strip(cmd)
         end,
         function() --Move
-            Gt.drawConsole("Input destination coordinates [xyz]", true)
+            GUI.drawConsole("Input destination coordinates [xyz]", true)
             GPS.goThere(vector.new(GPS.handleCoordsInput(io.read())))
         end,
         function() --Quit
-            Gt.clearConsole()
-            Gt.drawConsole("Goodbye.")
+            GUI.clearConsole()
+            GUI.drawConsole("Goodbye.")
             os.sleep(1)
             term.native().clear()
             
