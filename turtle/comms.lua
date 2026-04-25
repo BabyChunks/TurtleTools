@@ -65,7 +65,7 @@ while true do
         end
         sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to continue", true})
     elseif peripheral.getName(modem) == "right" then
-        turtle.unequipRight()
+        turtle.equipRight()
         turtle.equipLeft()
         rednet.open("left")
         break

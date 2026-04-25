@@ -349,18 +349,15 @@ local function move(delta, strip)
             end
             if not pcall(down) then
                 local clear = false
-                local startX, startY, startZ = Coords.x, Coords.y, Coords.z
+                local start = Lt.tableShallowCopy(Coords)
                 while clear == false do
                     repeat
                         dig(1)
                     until pcall(down)
-                    repeat
-                        dig(1)
-                    until pcall(down)
-                    move(vector.new(startX - Coords.x, Coords.y, startZ - Coords.z))
-                    if Coords.x == startX and Coords.z == startZ then
+                    move(vector.new(start.x - Coords.x, 0, start.z - Coords.z))
+                    if Coords.x == start.x and Coords.z == start.x then
                         clear = true
-                        step = step + (startY - Coords.y) - 1
+                        step = step + (start.y - Coords.y) - 1
                     end
                 end
             end
@@ -373,15 +370,12 @@ local function move(delta, strip)
             end
             if not pcall(up) then
                 local clear = false
-                local start = Coords
+                local start = Lt.tableShallowCopy(Coords)
                 while clear == false do
                     repeat
                         dig(1)
                     until pcall(up)
-                    -- repeat
-                    --     dig(1)
-                    -- until pcall(up)
-                    move(start - Coords)
+                    move(vector.new(start.x - Coords.x, 0, start.z - Coords.z))
                     if Coords.x == start.x and Coords.z == start.x then
                         clear = true
                         step = step + (Coords.y - start.y) - 1
@@ -442,20 +436,25 @@ local function buildArray() -- WIP
     _ = io.read()
 end
 
-while true do
-    if not Lt.tableContainsValue(St.PICKAXES, turtle.getEquippedRight().name) then
+pickEquipped = false
+while not pickEquipped do
+    local equip = turtle.getEquippedRight() 
+    if not equip or not Lt.tableContainsValue(St.PICKAXES, equip.name) then
         for slot = 1, 16 do
             local item = turtle.getItemDetail(slot)
             if item then
                 if Lt.tableContainsValue(St.PICKAXES, item.name) then
                     turtle.select(slot)
                     turtle.equipRight()
+                    pickEquipped = true
                     break
                 end
             end
         end
+    else pickEquipped = true
+    end
+    if not pickEquipped then
         Comms.sendStatus("console", {"Could not find pickaxe on turtle. Place a pickaxe in inventory, or equip it and press Enter to continue.", true})
-    else break
     end
 end
 

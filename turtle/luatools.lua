@@ -9,6 +9,14 @@ local function breakUpString(s, n)
   return t
 end
 
+local function tableShallowCopy(t)
+  local copy = {}
+  for k, v in pairs(t) do
+    copy[k] = v
+  end
+  return copy
+end
+
 local function tableContainsValue(t, element)
     for _, value in ipairs(t) do
         if value == element then
@@ -95,6 +103,7 @@ end
 
 return {
   breakUpString = breakUpString,
+  tableShallowCopy = tableShallowCopy,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,

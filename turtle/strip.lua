@@ -1,7 +1,7 @@
 local function strip(env)
     Recall = vector.new(table.unpack(env[1]))
 
-    local origin = Coords
+    local origin = Lt.tableShallowCopy(Coords)
     local delta = vector.new(table.unpack(env[2]))
 
         if Lt.tableContainsValue(delta, 0) then error("Quarry boundaries must be 3-dimensional") end
@@ -14,7 +14,7 @@ local function strip(env)
 
         local signs = {
             x = delta.x / abs.x,
-            y = delta.y / abs.z,
+            y = delta.y / abs.y,
             z = delta.z / abs.z
         }
 
