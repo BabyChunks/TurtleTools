@@ -26,7 +26,6 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     --wrap text according to window width
     lines = Lt.breakUpString(text, #text / w)
     for n, line in ipairs(lines) do
-
         -- set cursor postion according to position specified or alignment; stay in place by default
         if type(pos) == "string" then
             if pos == "left" then
@@ -160,6 +159,12 @@ end
 -- update console window with new status added below the previous one
 -- status : str, requestInput: bool
 local function drawConsole(status, requestInput)
+    local width, height = console.getSize()
+    local _, y = console.getCursorPos()
+    local nScrolls = math.max(0, y + math.floor(#status / width) - height + 1)
+
+    console.scroll(nScrolls)
+    console.setCursorPos(1, y - nScrolls)
     drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
 end
 

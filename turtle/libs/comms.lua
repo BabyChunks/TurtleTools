@@ -40,7 +40,7 @@ local function sendStatus(head, body)
             return getCmd()
         end
     else
-        if head == "console" then GUI.drawConsole(body[1])
+        if head == "console" then GUI.drawConsole(body[1], body[2])
             if body[2] then
                 return io.read()
             end
@@ -71,7 +71,7 @@ while true do
                 end
             end
             if slot == 16 then
-                sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to continue", true})
+                sendStatus("console", {"Could not find modem on turtle. Put a wireless modem in inventory, or equip it, then press Enter to continue", true})
             end
         end
     elseif peripheral.getName(modem) == "right" then
