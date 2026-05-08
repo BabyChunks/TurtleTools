@@ -1,20 +1,22 @@
 local gitPath = ""
-local files = {}
+local libs, commons = {}, {}
 local filePath = "/ChunksWare/"
 
 print("Setting up files...")
 if turtle then
-    files = {
-        "init.lua",
+    libs = {
         "luatools.lua",
         "GPS.lua",
         "GUI.lua",
-        "strip.lua",
         "comms.lua"
+    }
+    commons = {
+        "init.lua",
+        "strip.lua"
     }
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
 else
-    files = {
+    libs = {
         "init.lua",
         "luatools.lua",
         "GUItools.lua",
@@ -27,10 +29,21 @@ end
 local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
 if #fs.find(filePath.."settings.txt") == 0 then
-    table.insert(files, "settings.txt")
+    table.insert(commons, "settings.txt")
 end
 
-for _, file in pairs(files) do
+for _, lib in pairs(libs) do
+    local results = {}
+    results = fs.find(filePath.."libs/"..lib)
+    if #results ~= 0 then
+        for _, result in pairs(results) do
+            fs.delete(result)
+        end
+    end
+    shell.execute("wget", gitPath.."libs/"..lib, filePath.."libs/"..lib)
+end
+
+for _, file in pairs(commons) do
     local results = {}
     results = fs.find(filePath..file)
     if #results ~= 0 then

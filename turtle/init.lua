@@ -1,5 +1,6 @@
 local termWidth, termHeight = term.getSize()
 local filePath = "/ChunksWare/"
+local libPath = "libs/"
 
 --initial screen--
 local initScreen = {
@@ -21,35 +22,45 @@ term.setCursorPos(1,1)
 for _, v in pairs(arg) do
     -- "update" options
     if v == "-u" then
-        local results = {}
-        local files = {
-            "strip.lua",
+        print("Updating files...")
+        local libs = {
+            "luatools.lua",
             "GPS.lua",
             "GUI.lua",
-            "luatools.lua",
             "comms.lua"
         }
-
-        if #fs.find(filePath.."settings.txt") == 0 then
-            table.insert(files, "settings.txt")
-        end
-
+        local commons = {
+            "init.lua",
+            "strip.lua"
+        }
         local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
 
-        print("Updating files...")
         --whipser On
         local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
-            for _, file in pairs(files) do
-                results = fs.find(filePath..file)
-                if #results ~= 0 then
-                    for _, result in pairs(results) do
-                        fs.delete(result)
-                    end
+        if #fs.find(filePath.."settings.txt") == 0 then
+            table.insert(commons, "settings.txt")
+        end
+
+        for _, lib in pairs(libs) do
+            local results = fs.find(libPath..lib)
+            if #results ~= 0 then
+                for _, result in pairs(results) do
+                    fs.delete(result)
                 end
-                shell.execute("wget", gitPath..file, filePath..file)
-
             end
+            shell.execute("wget", gitPath.."libs/"..lib, libPath..lib)
+        end
 
+        for _, file in pairs(commons) do
+            local results = {}
+            results = fs.find(filePath..file)
+            if #results ~= 0 then
+                for _, result in pairs(results) do
+                    fs.delete(result)
+                end
+            end
+            shell.execute("wget", gitPath..file, filePath..file)
+        end
         --whisper Off
         whisper = term.redirect(whisper)
         print("Done!")
@@ -131,7 +142,8 @@ local function mainMenu()
             GUI.drawConsole("Input quarry boundaries:", true)
             table.insert(cmd, {GPS.handleCoordsInput(io.read())})
             GPS.goThere(origin)
-            Strip.strip(cmd)
+            shell.execute("/Chunksware/strip.lua", table.unpack(cmd))
+            --Strip.strip(cmd)
         end,
         function() --Move
             GUI.drawConsole("Input destination coordinates [xyz]", true)

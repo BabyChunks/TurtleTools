@@ -46,10 +46,10 @@ local function sendStatus(head, body)
             end
         elseif head == "task" then GUI.drawTaskStatus(body[1], body[2], body[3])
             --if task is 100% at completion, return status
-            if msg.body[1] == 1 then
-                Gt.drawConsole("Task complete! Press Enter to continue", true)
+            if body[1] == 1 then
+                GUI.drawConsole("Task complete! Press Enter to continue", true)
                 _ = io.read()
-                Gt.drawTaskStatus()
+                GUI.drawTaskStatus()
                 return true
             end
         end
