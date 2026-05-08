@@ -3,7 +3,7 @@ local function breakUpString(s, n)
   local len = #s / n
   while #s > len do
     table.insert(t, string.sub(s, 1, len))
-    s = string.sub(s, len, -1)
+    s = string.sub(s, len + 1, -1)
   end
   table.insert(t, s)
   return t
