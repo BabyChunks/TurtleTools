@@ -36,20 +36,28 @@ local function sendStatus(head, body)
     if serverID then
         rednet.send(serverID, {head = head, body = body}, "status")
         if head == "console" and body[2] then
-            print("awaiting answer from server")
+            GUI.drawConsole("awaiting answer from server")
             return getCmd()
         end
     else
-        print(head..": "..body[1])
-        if body[2] then
-            return io.read()
+        if head == "console" then GUI.drawConsole(body[1])
+            if body[2] then
+                return io.read()
+            end
+        elseif head == "task" then GUI.drawTaskStatus(body[1], body[2], body[3])
+            --if task is 100% at completion, return status
+            if msg.body[1] == 1 then
+                Gt.drawConsole("Task complete! Press Enter to continue", true)
+                _ = io.read()
+                Gt.drawTaskStatus()
+                return true
+            end
         end
     end
 end
 
 -- Check for equipped modem and open it if found, else prompt user for modem --
 while true do
-    
     local modem = peripheral.find("modem")
     if not modem then
         for slot = 1, 16 do
@@ -62,14 +70,18 @@ while true do
                     break
                 end
             end
+            if slot == 16 then
+                sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to continue", true})
+            end
         end
-        sendStatus("console", {"Could not find modem on turtle. Place a wireless modem in inventory, or equip it, and press Enter to continue", true})
     elseif peripheral.getName(modem) == "right" then
         turtle.equipRight()
         turtle.equipLeft()
         rednet.open("left")
         break
-    else break
+    else
+        rednet.open("left")
+        break
     end
 end
 

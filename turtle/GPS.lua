@@ -436,9 +436,8 @@ local function buildArray() -- WIP
     _ = io.read()
 end
 
-pickEquipped = false
-while not pickEquipped do
-    local equip = turtle.getEquippedRight() 
+while true do
+    local equip = turtle.getEquippedRight()
     if not equip or not Lt.tableContainsValue(St.PICKAXES, equip.name) then
         for slot = 1, 16 do
             local item = turtle.getItemDetail(slot)
@@ -446,15 +445,14 @@ while not pickEquipped do
                 if Lt.tableContainsValue(St.PICKAXES, item.name) then
                     turtle.select(slot)
                     turtle.equipRight()
-                    pickEquipped = true
                     break
                 end
             end
+            if slot == 16 then
+                Comms.sendStatus("console", {"Could not find pickaxe on turtle. Place a pickaxe in inventory, or equip it and press Enter to continue.", true})
+            end
         end
-    else pickEquipped = true
-    end
-    if not pickEquipped then
-        Comms.sendStatus("console", {"Could not find pickaxe on turtle. Place a pickaxe in inventory, or equip it and press Enter to continue.", true})
+    else break
     end
 end
 

@@ -6,7 +6,7 @@
     - server/GPS/locate
 [x] send recall point or "y" to turtle for first mining arg
 [x] de-index caller args for turtle init
-[x] change all occurances of getHeading() for setHeading()
+[x] change all occurences of getHeading() for setHeading()
 [x] (consider changing calls to turtle.turn*() to custom GPS.turn*() [or steer*()] function to better manage heading)
 [~] make it so main menu writes "Disconnect" when there is a turtle connected
 [x] change the completion bar to display background colour instead of I's
@@ -14,6 +14,6 @@
 [ ] put parallel functions where time is important e.g. ping timeout
 [ ] automatically disconnect turtle if main script errors (prob with a multishell)
 [ ] make a settings menu on turtle (-s flag) and server side (menu option)
-[ ] make turtle pathfinds around inventory blocks and CC blocks
+[x] make turtle pathfinds around inventory blocks and CC blocks
 [ ] Implement inventory sorting and retrieval
 [ ] Add more mining patterns such as stairs, tunnel, quarry

@@ -102,7 +102,7 @@ local function mainMenu()
                 GUI.drawServerStatus(nil)
                 GUI.drawConsole("Computer #"..id.." disconnected successfully")
             else
-                print("Awaiting server pings...")
+                GUI.drawConsole("Awaiting server pings...")
                 Comms.connectServer()
 
                 while true do

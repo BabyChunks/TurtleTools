@@ -26,7 +26,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour) -- text : 
     lines = Lt.breakUpString(text, #text / w)
     for n, line in ipairs(lines) do
 
-        -- set cursor postion according to position specified or alignment or stay in place by default
+        -- set cursor postion according to position specified or alignment; stay in place by default
         if type(pos) == "string" then
             if pos == "left" then
                 monitor.setCursorPos(1, y)
@@ -80,8 +80,13 @@ end
 -- update menu window with menu options and current selections
 local function drawMenu(options, selected) -- options : table, selected : num
     console.clear()
+    local _, height = console.getSize()
 
-    for i, option in pairs(options) do
+    --handle menus longer than console screen, only display options at or before the currently selected option
+    local correction = math.max(0, selected - height)
+    local windowedOptions = {table.unpack(options, 1 + correction, height + correction)}
+
+    for i, option in pairs(windowedOptions) do
             drawText((i == selected) and " > " or "   ", console, {1, i + 1})
             drawText(option, console, nil, false, (i == selected) and colours.yellow or colours.white)
     end
@@ -142,5 +147,6 @@ return {
     drawServerStatus = drawServerStatus,
     drawTaskStatus = drawTaskStatus,
     drawConsole = drawConsole,
-    clearConsole = clearConsole
+    clearConsole = clearConsole,
+    navMenu = navMenu
 }
