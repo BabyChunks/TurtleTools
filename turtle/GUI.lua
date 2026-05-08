@@ -10,9 +10,10 @@ local serverStatus = window.create(term.current(), 1, termHeight - 1, termWidth,
 
 term.redirect(console)
 
--- main function to draw text on screen. Specify which window to draw to, position of 1st character
--- or alignment of text, if it should end with a new line and colours
-local function drawText(text, monitor, pos, nL, txtColour, bkgColour) -- text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num
+--main function to draw text on screen. Specify which window to draw to, position of 1st character
+--or alignment of text, if it should end with a new line and colours
+-- text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num
+local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     --set default parameters
     monitor = monitor or term.current()
     txtColour = txtColour or colours.white
@@ -65,6 +66,23 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour) -- text : 
     end
 end
 
+local function scrollFeedThru(n, feed)
+    local _, height = console.getSize()
+    if #feed ~= math.abs(n) then error("number of lines doesn't match scroll amount") end
+    console.scroll(n)
+    if n > 0  then
+        console.setCursoPos(0, 0)
+        for i = 1, n do
+            drawText(feed[i])
+        end
+    elseif n < 0 then
+        console.setCursorPos(0, height - n)
+        for i = n, 1, -1 do
+            drawText(feed[i])
+        end
+    end
+end
+
 --update banner
 local function drawCorpBanner()
     local logo = "CHUNKSWARE TECH"
@@ -78,22 +96,34 @@ local function drawCorpBanner()
 end
 
 -- update menu window with menu options and current selections
-local function drawMenu(options, selected) -- options : table, selected : num
+-- options : table, selected : num
+
+local uBound = 1
+local debug = term.current()
+
+local function drawMenu(options, selected)
     console.clear()
     local _, height = console.getSize()
 
-    --handle menus longer than console screen, only display options at or before the currently selected option
-    local correction = math.max(0, selected - height)
-    local windowedOptions = {table.unpack(options, 1 + correction, height + correction)}
+    --handle menus longer than console screen, move upper and lower boundary according to previous state and current selection
+    if selected < uBound then uBound = selected
+    elseif selected > uBound + height - 3 then uBound = selected - height + 3
+    end
+    local lBound = uBound + height - 3
+
+    local windowedOptions = {table.unpack(options, uBound, lBound)}
 
     for i, option in pairs(windowedOptions) do
-            drawText((i == selected) and " > " or "   ", console, {1, i + 1})
-            drawText(option, console, nil, false, (i == selected) and colours.yellow or colours.white)
+            drawText((i == selected - uBound + 1) and " > " or "   ", console, {1, i + 1})
+            drawText(option, console, nil, false, (i == selected - uBound + 1) and colours.yellow or colours.white)
     end
+
+    debug.write("selected: "..selected.."\nuBound: "..uBound,"\nlBound:"..lBound.."\n")
 end
 
 -- update turtle window with id if provided
-local function drawServerStatus(id) -- id : num
+-- id : num
+local function drawServerStatus(id)
     -- if no turtle: grey;
     -- if turtle: white
 
@@ -105,7 +135,8 @@ local function drawServerStatus(id) -- id : num
 end
 
 -- update task window with task completion (0 to 1), textcolour and task name
-local function drawTaskStatus(taskCompletion, statusColour, task) -- taskCompletion : num, statusColour : num, task : str
+-- taskCompletion : num, statusColour : num, task : str
+local function drawTaskStatus(taskCompletion, statusColour, task)
     -- if no task: white;
     -- if task is ongoing: white;
     -- if task is stopped: red
@@ -127,7 +158,8 @@ local function drawTaskStatus(taskCompletion, statusColour, task) -- taskComplet
 end
 
 -- update console window with new status added below the previous one
-local function drawConsole(status, requestInput) -- status : str, requestInput: bool
+-- status : str, requestInput: bool
+local function drawConsole(status, requestInput)
     drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
 end
 

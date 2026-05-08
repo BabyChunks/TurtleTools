@@ -70,6 +70,7 @@ local selected = 1
 -- navigation function for all menus. options is a table with menu option names, 
 -- actions is a table of functions executing these options
 local function navMenu(options, actions)
+    if #options ~= #actions then error("options and actions table should contain the same number of items") end
     GUI.drawMenu(options, selected)
 
     local _, key = os.pullEvent("key")
@@ -143,7 +144,7 @@ local function mainMenu()
             term.native().clear()
             
             os.queueEvent("terminate")
-        end
+        end,
     }
 
     navMenu(options, actions)
