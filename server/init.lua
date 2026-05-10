@@ -2,38 +2,49 @@
 -- "-u" flag to update libs through wget program, pulling from raw github files.
 
 local filePath = "/ChunksWare/"
+local libPath = filePath.."libs/"
 
 
 for _, v in ipairs(arg) do
     -- update sequence if flag -u is specified
     if v == "-u" then
-        local results = {}
-        local files = {
+        print("Updating files...")
+        local libs = {
             "luatools.lua",
-            "GUItools.lua",
+            "GUI.lua",
             "GPS.lua",
             "comms.lua"
         }
+        local commons = {
+            "init.lua",
+        }
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
 
+        --whipser On
+        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
         if #fs.find(filePath.."settings.txt") == 0 then
             table.insert(files, "settings.txt")
         end
 
-        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
-        print("Updating files...")
-        --whipser On
-        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
-            for _, file in pairs(files) do
-                results = fs.find(filePath..file)
-                if #results ~= 0 then
-                    for _, result in pairs(results) do
-                            fs.delete(result)
-                    end
+        for _, lib in pairs(libs) do
+            local oldFiles = fs.find(libPath..lib)
+            if #oldFiles ~= 0 then
+                for _, oldFile in pairs(oldFiles) do
+                        fs.delete(oldFile)
                 end
-                shell.execute("wget", gitPath..file, filePath..file)
-
             end
+            shell.execute("wget", gitPath.."libs/"..lib, libPath..lib)
+        end
 
+        for _, file in pairs(commons) do
+            local oldFiles = fs.find(filePath..file)
+            if #oldFiles ~= 0 then
+                for _, oldFile in pairs(oldFiles) do
+                    fs.delete(oldFile)
+                end
+            end
+            shell.execute("wget",gitPath..file, filePath..file)
+        end
         --whisper Off
         whisper = term.redirect(whisper)
         print("Done!")
@@ -43,6 +54,7 @@ for _, v in ipairs(arg) do
 end
 
 -- loading libs, setting global variables
+print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 Gt = require(filePath.."GUItools")
@@ -55,7 +67,8 @@ local selected = 1
 -- navigation function for all menus. options is a table with menu option names, 
 -- actions is a table of functions executing these options
 local function navMenu(options, actions)
-    Gt.drawMenu(options, selected)
+    if #options ~= #actions then error("options and actions table should contain the same number of items") end
+    GUI.drawMenu(options, selected)
 
     local _, key = os.pullEvent("key")
     if key == keys.w or key == keys.up then
@@ -100,7 +113,6 @@ local function setupQuarry()
     while true do
         if Comms.getStatus() then break end
     end
-
 end
 
 local function mainMenu()
