@@ -1,50 +1,45 @@
--- Main script for server. Libs are loaded at this level. when called, can specify
--- "-u" flag to update libs through wget program, pulling from raw github files.
+--[[ Main script for server. Libs are loaded at this level. when called, can specify
+-- "-u" flag to update libs through wget program, pulling from raw github files. ]]
 
 local filePath = "/ChunksWare/"
-local libPath = filePath.."libs/"
-
 
 for _, v in ipairs(arg) do
     -- update sequence if flag -u is specified
     if v == "-u" then
         print("Updating files...")
-        local libs = {
+        local files = {
             "luatools.lua",
             "GUI.lua",
             "GPS.lua",
             "comms.lua"
         }
-        local commons = {
-            "init.lua",
-        }
         local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
 
         --whipser On
         local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
+        local oldFiles = {}
+
         if #fs.find(filePath.."settings.txt") == 0 then
             table.insert(files, "settings.txt")
         end
 
-        for _, lib in pairs(libs) do
-            local oldFiles = fs.find(libPath..lib)
+        for _, file in pairs(files) do
+            oldFiles = fs.find(filePath..file)
             if #oldFiles ~= 0 then
                 for _, oldFile in pairs(oldFiles) do
                         fs.delete(oldFile)
                 end
             end
-            shell.execute("wget", gitPath.."libs/"..lib, libPath..lib)
+            shell.execute("wget", gitPath..file, filePath..file)
         end
 
-        for _, file in pairs(commons) do
-            local oldFiles = fs.find(filePath..file)
-            if #oldFiles ~= 0 then
-                for _, oldFile in pairs(oldFiles) do
+        oldFiles = fs.find("/init.lua")
+        if #oldFiles ~= 0 then
+            for _, oldFile in pairs(oldFiles) do
                     fs.delete(oldFile)
-                end
             end
-            shell.execute("wget",gitPath..file, filePath..file)
         end
+        shell.execute("wget", gitPath.."init.lua", "/init.lua")
         --whisper Off
         whisper = term.redirect(whisper)
         print("Done!")
@@ -53,112 +48,106 @@ for _, v in ipairs(arg) do
     end
 end
 
--- loading libs, setting global variables
-print("Loading environment...")
+-- Define globals --
+-- Comms --
+TurtleID = nil
+CurrentTask = nil
+-- GUI --
+TermWidth, TermHeight = term.getSize()
+CorpBanner = window.create(term.current(), 1, 1, TermWidth, 3)
+Console = window.create(term.current(), 1, 4, TermWidth, TermHeight - 6)
+TaskStatus = window.create(term.current(), 1, TermHeight - 1, TermWidth, 1)
+TurtleStatus = window.create(term.current(), 1, TermHeight, TermWidth, 1)
+-- GPS --
+ServerCoords = {}
+
+term.clear()
+term.setCursorPos(1,1)
+term.redirect(Console)
+
+textutils.slowPrint("Loading environment...", 8)
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
-Gt = require(filePath.."GUItools")
+GUI = require(filePath.."GUI")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
 
--- start menu selection at first option
-local selected = 1
+-- Initialize entire screen
+GUI.drawCorpBanner()
+GUI.drawTurtleStatus()
+GUI.drawTaskStatus()
 
--- navigation function for all menus. options is a table with menu option names, 
--- actions is a table of functions executing these options
-local function navMenu(options, actions)
-    if #options ~= #actions then error("options and actions table should contain the same number of items") end
-    GUI.drawMenu(options, selected)
-
-    local _, key = os.pullEvent("key")
-    if key == keys.w or key == keys.up then
-        selected = selected - 1
-        if selected < 1 then selected = #options end
-    elseif key == keys.s or key == keys.down then
-        selected = selected + 1
-        if selected > #options then selected = 1 end
-    elseif key == keys.enter then
-        term.clear()
-        term.setCursorPos(1,1)
-        local action = actions[selected]
-        if action then
-            local shouldExit = action()
-            if shouldExit then return end
-        end
-    end
-end
-
--- function to start quarry just cause it's longer than other functions
-local function setupQuarry()
-    local cmd = {head = "mine", body = {}}
-    Gt.drawConsole("Startup sequence for Mine Turtle (tm)")
-
-    Gt.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-    local ans = io.read()
-
-    if ans ~= "y" and ans ~= "Y" then
-        ans = {GPS.handleCoordsInput(ans)}
-    end
-    table.insert(cmd.body, ans)
-
-    Gt.drawConsole("Input first coordinates:", true)
-    table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
-
-    Gt.drawConsole("Input second coodinates:", true)
-    table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
-
-    Comms.sendCmd(cmd)
-
-    -- loop through all status messages until mining is completed, then return to main menu
-    while true do
-        if Comms.getStatus() then break end
-    end
-end
-
-local function mainMenu()
-    local connect = Comms.getTurtleID() and "Disconnect Turtle" or "Connect turtle"
-    local options = {connect, "Inventory", "Mine", "Move", "Quit"}
-
-    local actions = {
-        function() --(Dis)connect turtle
-            if Comms.getTurtleID() then
-                local id = Comms.getTurtleID()
-                Comms.setTurtleID(nil)
-                Gt.drawTurtleStatus(nil)
-                Gt.drawConsole("Turtle #"..id.." disconnected successfully")
-            else
-                Gt.drawConsole("Pinging nearby turtles...")
-                Comms.pingTurtles()
-                Gt.drawTurtleStatus(Comms.getTurtleID())
-                Gt.drawConsole("Connected with turtle #"..Comms.getTurtleID())
+-- Initiailze main menu --
+local mainMenu = Menu:new()
+    mainMenu.vMargins = 1
+    mainMenu.options = {"Control Turtle", "Inventory", "Quit"}
+    mainMenu.actions = {
+        function() --Control Turtle
+            GUI.drawConsole("Pinging nearby turtles...")
+            Comms.pingTurtles()
+            local function navMenu()
+                local turtleMenu = Menu:new()
+                turtleMenu.vMargins = 1
+                turtleMenu.options = {"Mine", "Move", "Courier", "Disconnect"}
+                turtleMenu.actions = {
+                    function() -- Mine
+                        local cmd = {head = "mine", body = {}}
+                        GUI.drawConsole("Startup sequence for Mine Turtle (tm)")
+                        GUI.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
+                        local ans = io.read()
+                        if ans ~= "y" and ans ~= "Y" then
+                            ans = {GPS.handleCoordsInput(ans)}
+                        end
+                        table.insert(cmd.body, ans)
+                        GUI.drawConsole("Input quarry origin:", true)
+                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+                        GUI.drawConsole("Input quarry boundaries:", true)
+                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+                        Comms.sendCmd(cmd)
+                        while true do
+                            if Comms.getStatus() then break end
+                        end
+                    end,
+                    function() --Move
+                    GUI.drawConsole("Input destination coordinates [xyz]", true)
+                    Comms.sendCmd({head = "move", body = {{GPS.handleCoordsInput(io.read())}}})
+                    end,
+                    function() --Courier
+                    end,
+                    function() --Disconnect
+                        Comms.sendCmd({head = "disconnect"})
+                        CurrentTask = nil
+                        TurtleID = nil
+                        GUI.drawTaskStatus()
+                        GUI.drawTurtleStatus()
+                        return true
+                    end
+                }
+                repeat until turtleMenu.nav(turtleMenu)
             end
-            os.sleep(0.8)
+            local function listen()
+                repeat until Comms.getStatus()
+                return true
+            end
+            parallel.waitForAny(navMenu, listen)
         end,
         function() --Inventory
+
         end,
-        function() --Mine
-            if not Comms.getTurtleID() then
-                Gt.drawConsole("No turtle connected")
-                os.sleep(0.8)
-            else
-            setupQuarry()
-            end
-        end,
-        function() --Move
-            -- print("Input destination coordinates [xyz]")
-            -- local ans = Lt.argparse(io.read(), {"x", "y", "z"})
-            -- term.clear()
-            -- term.setCursorPos(1,1)
-            -- Tt.GoThere(ans.x, ans.y, ans.z)
-        end,
-        function() --Quit
-            os.queueEvent("terminate")
+        function() --  Quit
+            Console.clear()
+            GUI.drawConsole("Goodbye.")
+            os.sleep(1)
+            os.reboot()
         end
     }
 
-    navMenu(options, actions)
-end
+--Make sure modem is placed on computer--
+Comms.checkModem()
+
+--locate server--
+ServerCoords = vector.new(GPS.locate())
 
 while true do
-    mainMenu()
+    if mainMenu.nav(mainMenu) then break end
 end

@@ -1,21 +1,12 @@
 -- Library for preparing and drawing to windows on turtle screen --
 
-local termWidth, termHeight = term.getSize()
-
--- Setup main screen --
-local corpBanner = window.create(term.current(), 1, 1, termWidth, 3)
-local console = window.create(term.current(), 1, 4, termWidth, termHeight - 6)
-local taskStatus = window.create(term.current(), 1, termHeight - 2, termWidth, 1)
-local serverStatus = window.create(term.current(), 1, termHeight - 1, termWidth, 1)
-
-term.redirect(console)
-
 --main function to draw text on screen. Specify which window to draw to, position of 1st character
 --or alignment of text, if it should end with a new line and colours
 -- text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num
 local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
+
     --set default parameters
-    monitor = monitor or term.current()
+    monitor = monitor or term.native()
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
 
@@ -68,14 +59,14 @@ end
 local function scrollFeedThru(n, feed)
     local _, height = console.getSize()
     if #feed ~= math.abs(n) then error("number of lines doesn't match scroll amount") end
-    console.scroll(n)
+    Console.scroll(n)
     if n > 0  then
-        console.setCursoPos(0, 0)
+        Console.setCursoPos(0, 0)
         for i = 1, n do
             drawText(feed[i])
         end
     elseif n < 0 then
-        console.setCursorPos(0, height - n)
+        Console.setCursorPos(0, height - n)
         for i = n, 1, -1 do
             drawText(feed[i])
         end
@@ -85,105 +76,124 @@ end
 --update banner
 local function drawCorpBanner()
     local logo = "CHUNKSWARE TECH"
-    local filler1 = ("/"):rep(termWidth / 2 - string.len(logo) / 2)
-    local filler2 = ("#"):rep(termWidth)
+    local filler1 = ("/"):rep(TermWidth / 2 - string.len(logo) / 2)
+    local filler2 = ("#"):rep(TermWidth)
 
-    corpBanner.clear()
-    drawText(filler2, corpBanner, {1, 1}, true, colours.green)
-    drawText(filler1..logo..filler1, corpBanner, "left", true, colours.green)
-    drawText(filler2, corpBanner, "left", nil, colours.green)
+    CorpBanner.clear()
+    drawText(filler2, CorpBanner, {1, 1}, true, colours.green)
+    drawText(filler1..logo..filler1, CorpBanner, "left", true, colours.green)
+    drawText(filler2, CorpBanner, "left", nil, colours.green)
 end
 
 -- update menu window with menu options and current selections
 -- options : table, selected : num
+Menu = {
+    uBound = 1,
+    vMargins = 0,
+    selected = 1,
+    options = {},
+    actions = {}
+}
 
-local uBound = 1
-local debug = term.current()
-
-local function drawMenu(options, selected)
-    console.clear()
-    local _, height = console.getSize()
+function Menu.draw(self)
+    Console.clear()
+    local _, height = Console.getSize()
 
     --handle menus longer than console screen, move upper and lower boundary according to previous state and current selection
-    if selected < uBound then uBound = selected
-    elseif selected > uBound + height - 3 then uBound = selected - height + 3
+    if self.selected < self.uBound then self.uBound = self.selected
+    elseif self.selected > self.uBound + height - (self.vMargins * 2 + 1) then self.uBound = self.selected - height + (self.vMargins * 2 + 1)
     end
-    local lBound = uBound + height - 3
+    local lBound = self.uBound + height - (self.vMargins * 2 + 1)
 
-    local windowedOptions = {table.unpack(options, uBound, lBound)}
+    local windowedOptions = {table.unpack(self.options, self.uBound, lBound)}
 
     for i, option in pairs(windowedOptions) do
-            drawText((i == selected - uBound + 1) and " > " or "   ", console, {1, i + 1})
-            drawText(option, console, nil, false, (i == selected - uBound + 1) and colours.yellow or colours.white)
+            drawText((i == self.selected - self.uBound + 1) and " > " or "   ", Console, {1, i + 1})
+            drawText(option, Console, nil, false, (i == self.selected - self.uBound + 1) and colours.yellow or colours.white)
     end
-
-    debug.write("selected: "..selected.."\nuBound: "..uBound,"\nlBound:"..lBound.."\n")
 end
 
--- update turtle window with id if provided
+function Menu.nav(self)
+    if #self.options ~= #self.actions then error("options and actions table should contain the same number of items") end
+    self.draw(self)
+
+    local _, key = os.pullEvent("key")
+    if key == keys.up then
+        self.selected = self.selected - 1
+        if self.selected < 1 then self.selected = #self.options end
+    elseif key == keys.down then
+        self.selected = self.selected + 1
+        if self.selected > #self.options then self.selected = 1 end
+    elseif key == keys.enter then
+        Console.clear()
+        Console.setCursorPos(1,1)
+        local action = self.actions[self.selected]
+        if action then
+            local shouldExit = action()
+            if shouldExit then return true end
+        end
+    end
+end
+
+function Menu.new(self, o)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    return o
+end
+
+-- update server window with id if provided
 -- id : num
 local function drawServerStatus(id)
     -- if no turtle: grey;
     -- if turtle: white
 
-    serverStatus.clear()
+    ServerStatus.clear()
     local statusColour = not id and colours.grey or colours.white
-    id = id or 0
 
-    drawText(string.format("Current server: [%02d]", id), serverStatus, "right", nil, statusColour)
+    drawText(string.format("Current server: [%02d]", id or 0), ServerStatus, "right", nil, statusColour)
 end
 
 -- update task window with task completion (0 to 1), textcolour and task name
 -- taskCompletion : num, statusColour : num, task : str
-local function drawTaskStatus(taskCompletion, statusColour, task)
+local function drawTaskStatus(taskCompletion, statusColour)
     -- if no task: white;
     -- if task is ongoing: white;
     -- if task is stopped: red
-    taskStatus.clear()
+    TaskStatus.clear()
 
     -- set default parameters
     taskCompletion = taskCompletion or 0
-    task = task or "No current task"
+    CurrentTask = CurrentTask or "No current task"
     statusColour = statusColour or colours.white
 
-    local barLength = termWidth - #task - 2
+    local barLength = TermWidth - #CurrentTask - 2
     local completionBar = (" "):rep(Lt.lerp(0, barLength, taskCompletion))
     local completionBarNeg = (" "):rep(barLength - #completionBar)
 
-    drawText(task, taskStatus, "left", nil, statusColour)
-    drawText(": ", taskStatus)
-    drawText(completionBar, taskStatus, nil, nil, nil, statusColour)
-    drawText(completionBarNeg, taskStatus, "right", nil, nil, colours.grey)
+    drawText(CurrentTask, TaskStatus, "left", nil, statusColour)
+    drawText(": ", TaskStatus)
+    drawText(completionBar, TaskStatus, nil, nil, nil, statusColour)
+    drawText(completionBarNeg, TaskStatus, "right", nil, nil, colours.grey)
 end
 
 -- update console window with new status added below the previous one
 -- status : str, requestInput: bool
 local function drawConsole(status, requestInput)
-    local width, height = console.getSize()
-    local _, y = console.getCursorPos()
+    local width, height = Console.getSize()
+    local _, y = Console.getCursorPos()
     local nScrolls = math.max(0, y + math.floor(#status / width) - height + 1)
 
-    console.scroll(nScrolls)
-    console.setCursorPos(1, y - nScrolls)
-    drawText(status, console, nil, true, requestInput and colours.orange or colours.white)
+    Console.scroll(nScrolls)
+    Console.setCursorPos(1, y - nScrolls)
+    drawText(status, Console, nil, true, requestInput and colours.orange or colours.white)
 end
-
-local function clearConsole()
-    console.clear()
-end
-
--- Initialize entire screen
-drawCorpBanner()
-drawServerStatus()
-drawTaskStatus()
 
 return {
     drawText = drawText,
     drawCorpBanner = drawCorpBanner,
-    drawMenu = drawMenu,
     drawServerStatus = drawServerStatus,
     drawTaskStatus = drawTaskStatus,
     drawConsole = drawConsole,
-    clearConsole = clearConsole,
-    navMenu = navMenu
+    Menu = Menu
 }

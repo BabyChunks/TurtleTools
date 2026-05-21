@@ -1,6 +1,69 @@
-local termWidth, termHeight = term.getSize()
+--[[ Main script for server. Libs are loaded at this level. when called, can specify
+"-u" flag to update libs through wget program, pulling from raw github files. ]]
+
 local filePath = "/ChunksWare/"
-local libPath = "libs/"
+term.clear()
+
+for _, v in pairs(arg) do
+    -- update sequence if flag -u is specified
+    if v == "-u" then
+        print("Updating files...")
+        local files = {
+            "luatools.lua",
+            "GPS.lua",
+            "GUI.lua",
+            "comms.lua",
+            "strip.lua"
+        }
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
+
+        -- whipser On
+        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
+
+        local oldFiles = {}
+
+        if #fs.find(filePath.."settings.txt") == 0 then
+            table.insert(commons, "settings.txt")
+        end
+
+        for _, file in pairs(files) do
+            oldFiles = fs.find(filePath..file)
+            if #oldFiles ~= 0 then
+                for _, oldFile in pairs(oldFiles) do
+                    fs.delete(oldFile)
+                end
+            end
+            shell.execute("wget", gitPath..file, filePath..file)
+        end
+
+        oldFiles = fs.find("/init.lua")
+        if #oldFiles ~= 0 then
+            for _, oldFile in pairs(oldFiles) do
+                fs.delete(oldFile)
+            end
+        shell.execute("wget", gitPath.."init.lua", "/init.lua")
+end
+        -- whisper Off
+        whisper = term.redirect(whisper)
+        print("Done!")
+        os.sleep(0.8)
+        term.clear()
+    end
+end
+
+-- Define globals --
+-- Comms --
+ServerID = nil
+CurrentTask = nil
+-- GUI --
+TermWidth, TermHeight = term.getSize()
+CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
+Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
+TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
+ServerStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
+-- GPS --
+Coords = {}
+Heading  = nil
 
 --initial screen--
 local initScreen = {
@@ -9,65 +72,18 @@ local initScreen = {
     [3] = {"CHUNKSWARE", 1, 15, colours.cyan},
     [4] = {"product", 2, 15, colours.white}
 }
-term.clear()
+
 for _, line in ipairs(initScreen) do
-    term.setCursorPos((termWidth - #line[1]) / 2, termHeight / 2 + line[2])
+    term.setCursorPos((TermWidth - #line[1]) / 2, TermHeight / 2 + line[2])
     term.setTextColour(line[4])
     textutils.slowWrite(line[1], line[3])
 end
 os.sleep(2)
 term.clear()
 term.setCursorPos(1,1)
+term.redirect(Console)
 
-for _, v in pairs(arg) do
-    -- "update" options
-    if v == "-u" then
-        print("Updating files...")
-        local libs = {
-            "luatools.lua",
-            "GPS.lua",
-            "GUI.lua",
-            "comms.lua"
-        }
-        local commons = {
-            "init.lua",
-            "strip.lua"
-        }
-        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
-
-        --whipser On
-        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
-        if #fs.find(filePath.."settings.txt") == 0 then
-            table.insert(commons, "settings.txt")
-        end
-
-        for _, lib in pairs(libs) do
-            local results = fs.find(libPath..lib)
-            if #results ~= 0 then
-                for _, result in pairs(results) do
-                    fs.delete(result)
-                end
-            end
-            shell.execute("wget", gitPath.."libs/"..lib, libPath..lib)
-        end
-
-        for _, file in pairs(commons) do
-            local results = {}
-            results = fs.find(filePath..file)
-            if #results ~= 0 then
-                for _, result in pairs(results) do
-                    fs.delete(result)
-                end
-            end
-            shell.execute("wget", gitPath..file, filePath..file)
-        end
-        --whisper Off
-        whisper = term.redirect(whisper)
-        print("Done!")
-    end
-end
-
-print("Loading environment...")
+textutils.slowPrint("Loading environment...", 8)
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")
@@ -75,93 +91,112 @@ Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
 Strip = require(filePath.."strip")
 
--- start menu selection at first option
-local selected = 1
+-- Initialize entire screen
+GUI.drawCorpBanner()
+GUI.drawServerStatus()
+GUI.drawTaskStatus()
 
--- navigation function for all menus. options is a table with menu option names, 
--- actions is a table of functions executing these options
-local function navMenu(options, actions)
-    if #options ~= #actions then error("options and actions table should contain the same number of items") end
-    GUI.drawMenu(options, selected)
+--initialize main menu--
+local mainMenu = Menu:new()
+    mainMenu.vMargins = 1
+    mainMenu.options = {"Connect Server", "Mine", "Move", "Quit"}
+    mainMenu.actions = {
+        function() --Connect server
+            GUI.drawConsole("Awaiting server pings... Press any key to cancel")
+            local function cancel()
+                repeat
+                    local _, key = os.pullEvent("key")
+                until key ~= keys.enter and key ~= keys.escape
+            end
 
-    local _, key = os.pullEvent("key")
-    if key == keys.w or key == keys.up then
-        selected = selected - 1
-        if selected < 1 then selected = #options end
-    elseif key == keys.s or key == keys.down then
-        selected = selected + 1
-        if selected > #options then selected = 1 end
-    elseif key == keys.enter then
-        term.clear()
-        term.setCursorPos(1,1)
-        local action = actions[selected]
-        if action then
-            local shouldExit = action()
-            if shouldExit then return end
-        end
-    end
-end
+            parallel.waitForAny(Comms.connectServer, cancel)
+            if not ServerID then return end
 
-local function mainMenu()
-    local connect = Comms.getServerID() and "Disconnect Server" or "Connect Server"
-    local options = {connect, "Mine", "Move", "Quit"}
-
-    local actions = {
-        function() --(Dis)connect server
-            if Comms.getServerID() then
-                local id = Comms.getServerID()
-                Comms.setServerID(nil)
-                GUI.drawServerStatus(nil)
-                GUI.drawConsole("Computer #"..id.." disconnected successfully")
-            else
-                GUI.drawConsole("Awaiting server pings...")
-                Comms.connectServer()
-
+            local function listenForCmds()
                 while true do
-                    print("Awaiting server commands...")
-                    CurrentTask = nil
-
                     local cmd = Comms.getCmd()
+                    if cmd.head == "mine" then
+                        local args = {}
+                        if cmd.body[1] == "y" or cmd.body[1] == "Y" then
+                            args[1] = textutils.serialize({GPS.getVectorComponents(Coords)})
+                        else
+                            args[1] = cmd.body[1]
+                        end
+                        GPS.goThere(vector.new(table.unpack(cmd.body[2])))
+                        args[2] = textutils.serialize(cmd.body[3])
+                        Strip.strip(args)
+                    elseif cmd.head == "move" then
+                        GPS.goThere(vector.new(table.unpack(cmd.body[1])))
+                    elseif cmd.head == "courier" then
+                    elseif cmd.head == "disconnect" then
+                        local id = Comms.getServerID()
+                        Comms.setServerID(nil)
+                        GUI.drawServerStatus(nil)
+                        GUI.drawConsole("Computer #"..id.." disconnected")
+                        return true
+                    end
                 end
             end
+            local function navMenu()
+                local remoteTaskMenu = Menu:new{vMargins = 2, options = {"Disconnect Server"}, actions = {
+                function()
+                    local id = Comms.getServerID()
+                    Comms.sendStatus("disconnect")
+                    Comms.setServerID()
+                    GUI.drawServerStatus()
+                    GUI.drawTaskStatus()
+                    Console.clear()
+                    GUI.drawConsole("Computer #"..id.." disconnected successfully")
+                    return true
+                end}}
+                repeat until remoteTaskMenu.nav(remoteTaskMenu)
+                -- while true do 
+                --     if remoteTaskMenu.nav(remoteTaskMenu) then break end
+                -- end
+            end
+            parallel.waitForAny(listenForCmds, navMenu)
+
             os.sleep(0.8)
         end,
         function() --Mine
-            local cmd = {}
+            local args = {}
             GUI.drawConsole("Starting mining sequence")
-            GUI.drawConsole("Use current coords as recall point?(y/[xyz])", true)
-            local ans = io.read()
+            GUI.drawConsole("Input recall point:", true)
+            table.insert(args, textutils.serialize({GPS.handleCoordsInput(io.read(), true)}))
 
-            if ans == "y" or ans == "Y" then
-                table.insert(cmd, Coords)
-            else
-                table.insert(cmd, {GPS.handleCoordsInput(ans)})
-            end
             GUI.drawConsole("Input quarry origin:", true)
-            local origin = vector.new(GPS.handleCoordsInput(io.read()))
+            table.insert(args, textutils.serialize({GPS.handleCoordsInput(io.read(), true)}))
+
             GUI.drawConsole("Input quarry boundaries:", true)
-            table.insert(cmd, {GPS.handleCoordsInput(io.read())})
-            GPS.goThere(origin)
-            shell.execute("/Chunksware/strip.lua", table.unpack(cmd))
-            --Strip.strip(cmd)
+            table.insert(args, textutils.serialize({GPS.handleCoordsInput(io.read(), true)}))
+
+            -- GPS.goThere(origin)
+            CurrentTask = "Mining"
+            Strip.strip(args)
         end,
         function() --Move
             GUI.drawConsole("Input destination coordinates [xyz]", true)
             GPS.goThere(vector.new(GPS.handleCoordsInput(io.read())))
         end,
         function() --Quit
-            GUI.clearConsole()
+            Console.clear()
             GUI.drawConsole("Goodbye.")
             os.sleep(1)
-            term.native().clear()
-            
-            os.queueEvent("terminate")
-        end,
+            os.reboot()
+        end
     }
 
-    navMenu(options, actions)
-end
+--Make sure modem is equipped on turtle--
+Comms.checkModem()
 
+--Make sure pickaxe is equipped on turtle--
+GPS.checkPick()
+
+--locate turtle--
+Coords = vector.new(GPS.locate())
+GPS.setHeading()
+
+--navigate main menu as long as computer is on--
 while true do
-    mainMenu()
+    mainMenu.nav(mainMenu)
 end

@@ -54,7 +54,7 @@
       "minecraft:copper_golem_statues",
       "minecraft:lanterns",
       "minecraft:lightning_rods",
-      "computercraft:computers",
+      "computercraft:computer",
       "computercraft:wired_modem"
     },
     names = {
@@ -116,6 +116,7 @@
       "minecraft:tripwaire",
       "minecraft:tripwire_hook",
       "computercraft:speaker",
+      "computercraft:cable",
       "computercraft:redstone_relay",
       "computercraft:wired_modem",
       "computercraft:wireless_modem_advanced",

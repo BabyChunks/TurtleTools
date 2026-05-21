@@ -3,36 +3,34 @@ local function breakUpString(s, n)
   local len = #s / n
   while #s > len do
     table.insert(t, string.sub(s, 1, len))
-    s = string.sub(s, len + 1, -1)
+    s = string.sub(s, len, -1)
   end
   table.insert(t, s)
   return t
 end
-
-local function tableShallowCopy(t)
-  local copy = {}
-  for k, v in pairs(t) do
-    copy[k] = v
+local function len(t)
+ local n = 0
+  for _, v in pairs(t) do
+      n = n + 1
   end
-  return copy
+  return n
 end
-
 local function tableContainsValue(t, element)
     for _, value in ipairs(t) do
         if value == element then
-            return value
+            return true
         end
     end
-    return nil
+    return false
 end
 
 local function tableContainsKey(t, element)
     for key, _ in pairs(t) do
         if key == element then
-            return key
+            return true
         end
     end
-    return nil
+    return false
 end
 
 local function getKeyForValue(t, value)
@@ -59,24 +57,18 @@ end
 
 local function tableSum(t)
   local sum = 0
-  for _, v in pairs(t) do
+  for _, v in ipairs(t) do
     sum = sum + v
   end
   return sum
-end
-
-local function tableAvg(t)
-  return tableSum(t) / #t
 end
 
 local function argparse(str, keys)
   local parsed = {}
   local args = {}
 
-  for arg in string.gmatch(str, "-?%w+") do
-    if tonumber(arg) then
-      arg = tonumber(arg)
-    end
+  for arg in string.gmatch(str, "[^,%s+]+") do
+    arg = tonumber(arg) or arg
     table.insert(parsed, arg)
   end
 
@@ -97,19 +89,13 @@ local function argparse(str, keys)
   return parsed
 end
 
-local function lerp(a, b, t)
-  return a + (b - a) * t
-end
-
 return {
   breakUpString = breakUpString,
-  tableShallowCopy = tableShallowCopy,
+  len = len,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,
-  tableAvg = tableAvg,
-  argparse = argparse,
-  lerp = lerp
+  argparse = argparse
 }

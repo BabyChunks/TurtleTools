@@ -1,17 +1,11 @@
-Coords = {}
-Heading  = nil
-
-local function handleCoordsInput(ans)
+local function handleCoordsInput(ans, emptyOK)
 
     local incomplete, err = true, false
     local coords = {}
 
     while incomplete do
-        term.clear()
-        term.setCursorPos(1,1)
-        if ans == "" then
-            os.queueEvent("terminate")
-        end
+
+        if emptyOK and ans == "" then return ans end
 
         err, coords = pcall(Lt.argparse, ans)
         if err then
@@ -22,6 +16,10 @@ local function handleCoordsInput(ans)
                     incomplete = true
                     break
                 end
+            end
+            if #coords ~= 3 then
+                ans = Comms.sendStatus("console", {"Coordinates must be 3-dimensional", true})
+                incomplete = true
             end
         else
             ans = Comms.sendStatus("console", {coords, true})
@@ -35,6 +33,7 @@ local function locate()
 
     if not x then
         local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
+        if ans == "" then os.reboot() end
         return handleCoordsInput(ans)
     end
 
@@ -44,6 +43,8 @@ end
 local function checkFuel(fuelNeeded)
     local item = {}
     local currFuel = turtle.getFuelLevel()
+
+    if fuelNeeded > turtle.getFuelLimit() then error("turtle can't complete planned route because of fuel capacity.") end
 
     while currFuel < fuelNeeded do
         for slot = 1, 16 do
@@ -436,28 +437,28 @@ local function buildArray() -- WIP
     _ = io.read()
 end
 
-while true do
-    local equip = turtle.getEquippedRight()
-    if not equip or not Lt.tableContainsValue(St.PICKAXES, equip.name) then
-        for slot = 1, 16 do
-            local item = turtle.getItemDetail(slot)
-            if item then
-                if Lt.tableContainsValue(St.PICKAXES, item.name) then
-                    turtle.select(slot)
-                    turtle.equipRight()
-                    break
+-- Check for equipped pickaxe, else prompt user for pickaxe --
+local function checkPick()
+    while true do
+        local equip = turtle.getEquippedRight()
+        if not equip or not Lt.tableContainsValue(St.PICKAXES, equip.name) then
+            for slot = 1, 16 do
+                local item = turtle.getItemDetail(slot)
+                if item then
+                    if Lt.tableContainsValue(St.PICKAXES, item.name) then
+                        turtle.select(slot)
+                        turtle.equipRight()
+                        break
+                    end
+                end
+                if slot == 16 then
+                    Comms.sendStatus("console", {"Could not find pickaxe on turtle. Place a pickaxe in inventory, or equip it and press Enter to continue.", true})
                 end
             end
-            if slot == 16 then
-                Comms.sendStatus("console", {"Could not find pickaxe on turtle. Place a pickaxe in inventory, or equip it and press Enter to continue.", true})
-            end
+        else break
         end
-    else break
     end
 end
-
-Coords = vector.new(locate())
-setHeading()
 
 return {
     handleCoordsInput = handleCoordsInput,
@@ -477,5 +478,6 @@ return {
     dig = dig,
     move = move,
     goThere = goThere,
-    buildArray = buildArray
+    buildArray = buildArray,
+    checkPick = checkPick
 }
