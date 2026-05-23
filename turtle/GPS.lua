@@ -73,66 +73,6 @@ local function sumAbsVectorComponents(v)
     return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 
-local function setHeading(turn) --set Heading to turtle's current heading on the x-z plane. Requires gps
-    if not Heading then
-        local coords2 = {}
-
-        checkFuel(2)
-
-        while turtle.detect() do
-            turtle.dig()
-            turtle.suck()
-        end
-        assert(turtle.forward())
-
-        coords2 = vector.new(locate())
-        assert(turtle.back())
-
-        local delta = coords2:sub(Coords)
-
-        local headingMatrix = {
-            ["x"] = delta.x > 0,
-            ["-x"] = delta.x < 0,
-            ["z"] = delta.z > 0,
-            ["-z"] = delta.z < 0
-        }
-
-        Heading = Lt.getKeyForValue(headingMatrix, true)
-    end
-    if turn then
-        local i = 0
-        local compass = {
-            [0] = "x",
-            [1] = "z",
-            [2] = "-x",
-            [3] = "-z"
-        }
-
-        if turn == "right" then
-            i = Lt.getKeyForValue(compass, Heading) + 1
-
-        elseif turn == "left" then
-            i = Lt.getKeyForValue(compass, Heading) - 1
-
-        end
-
-        if i == 4 then i = 0
-        elseif i == -1 then i = 3 end
-
-        Heading = compass[i]
-    end
-end
-
-local function setCoords(move)
-    local orientationMatrix = {
-        ["x"] = function() Coords.x = Coords.x + move end,
-        ["-x"] = function() Coords.x = Coords.x - move end,
-        ["z"] = function() Coords.z = Coords.z + move end,
-        ["-z"] = function() Coords.z = Coords.z - move end
-    }
-    orientationMatrix[Heading]()
-end
-
 local function isProtectedBlock(dir)
     local block, blockdata = false, {}
     if not dir then
@@ -152,6 +92,86 @@ local function isProtectedBlock(dir)
     return false
 end
 
+--set Heading to turtle's current heading on the x-z plane. Requires gps
+local function setHeading(turn)
+    if not Heading then
+        local coords2 = {}
+
+        checkFuel(2)
+
+        while turtle.detect() do
+            if isProtectedBlock() then
+                error()
+            end
+            turtle.dig()
+            turtle.suck()
+        end
+        assert(turtle.forward(), "Turtle couldn't go forward")
+        coords2 = vector.new(locate())
+        assert(turtle.back(), "Turtle couldn't go backward")
+
+        local delta = coords2:sub(Coords)
+
+        Heading =
+                (delta.x > 0 and "x") or
+                (delta.x < 0 and "-x") or
+                (delta.z > 0 and "z") or
+                (delta.z < 0 and "-z")
+    end
+    if turn then
+        local i = 0
+
+        local compass = {
+            ["x"] = 0,
+            ["z"] = 1,
+            ["-x"] = 2,
+            ["-z"] = 3
+        }
+
+        if turn == "right" then
+            i = (compass[Heading]) + 1
+
+        elseif turn == "left" then
+            i = (compass[Heading]) - 1
+        end
+
+        if i == 4 then i = 0
+        elseif i == -1 then i = 3 end
+
+        print(i) _ = io.read()
+
+        Heading = compass[i]
+    end
+end
+
+local function setCoords(move)
+    local orientationMatrix = {
+        ["x"] = function() Coords.x = Coords.x + move end,
+        ["-x"] = function() Coords.x = Coords.x - move end,
+        ["z"] = function() Coords.z = Coords.z + move end,
+        ["-z"] = function() Coords.z = Coords.z - move end
+    }
+    orientationMatrix[Heading]()
+end
+
+
+local function forward()
+    while turtle.detect() do
+        if isProtectedBlock() then
+            error()
+        end
+        turtle.dig()
+        turtle.suck()
+    end
+    assert(turtle.forward(), "Turtle couldn't go forward")
+    setCoords(1)
+end
+
+local function back()
+    assert(turtle.back(), "Turtle couldn't go backward")
+    setCoords(-1)
+end
+
 local function turnRight()
     assert(turtle.turnRight())
     setHeading("right")
@@ -162,22 +182,6 @@ local function turnLeft()
     setHeading("left")
 end
 
-local function forward()
-    while turtle.detect() do
-        if isProtectedBlock() then
-            error()
-        end
-        turtle.dig()
-        turtle.suck()
-    end
-    assert(turtle.forward())
-    setCoords(1)
-end
-
-local function back()
-    assert(turtle.back())
-    setCoords(-1)
-end
 
 local function up()
     while turtle.detectUp() do
@@ -187,7 +191,7 @@ local function up()
         turtle.digUp()
         turtle.suckUp()
     end
-    assert(turtle.up())
+    assert(turtle.up(), "Turtle couldn't go up")
     Coords.y = Coords.y + 1
 end
 
@@ -199,7 +203,7 @@ local function down()
         turtle.digDown()
         turtle.suckDown()
     end
-    assert(turtle.down())
+    assert(turtle.down(), "Turtle couldn't go down")
     Coords.y = Coords.y - 1
 end
 

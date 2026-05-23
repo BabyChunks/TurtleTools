@@ -17,3 +17,5 @@
 [x] make turtle pathfinds around inventory blocks and CC blocks
 [ ] Implement inventory sorting and retrieval
 [ ] Add more mining patterns such as stairs, tunnel, quarry
+--GPS Stopped working when i changed to booleans for setHeading calls...
+	--cause now the last line of the function returns the arbitrary integer instead of the new Heading string.
