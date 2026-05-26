@@ -10,6 +10,10 @@ local function strip(args)
     local origin = (args[2] == "" and Coords) or vector.new(table.unpack(textutils.unserialize(args[2])))
     local delta = (args[3] == "" and Coords) or vector.new(table.unpack(textutils.unserialize(args[3])))
 
+    textutils.serialize(recall) _ = io.read()
+    textutils.serialize(origin) _ = io.read()
+    textutils.serialize(delta) _ = io.read()
+
     if Lt.tableContainsValue(delta, 0) then error("Quarry boundaries must be 3-dimensional") end
 
     Comms.sendStatus("console", {"Moving to quarry..."})

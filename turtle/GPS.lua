@@ -101,7 +101,7 @@ local function setHeading(turn)
 
         while turtle.detect() do
             if isProtectedBlock() then
-                error()
+                error("Turtle couldn't go forward: essential block detected")
             end
             turtle.dig()
             turtle.suck()
@@ -128,17 +128,24 @@ local function setHeading(turn)
             ["-z"] = 4
         }
 
+        -- local cardinals = {
+        --     "x",
+        --     "z",
+        --     "-x",
+        --     "-z"
+        -- }
         local cardinals = Lt.tableKeys(compass)
+        table.sort(cardinals, function(a, b) return compass[a] < compass [b] end)
 
         if turn == "right" then
             i = (compass[Heading]) + 1
+            if i == 5 then i = 1 end
 
         elseif turn == "left" then
             i = (compass[Heading]) - 1
+            if i == 0 then i = 4 end
         end
 
-        if i == 5 then i = 1
-        elseif i == 0 then i = 4 end
 
         Heading = cardinals[i]
     end

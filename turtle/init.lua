@@ -83,7 +83,7 @@ term.clear()
 term.setCursorPos(1,1)
 term.redirect(Console)
 
-textutils.slowPrint("Loading environment...", 8)
+print("Loading environment...")
 Lt = require(filePath.."luatools")
 St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")

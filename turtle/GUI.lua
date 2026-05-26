@@ -128,10 +128,11 @@ function Menu.nav(self)
         Console.clear()
         Console.setCursorPos(1,1)
         local action = self.actions[self.selected]
-        if action then
-            local shouldExit = action()
-            if shouldExit then return true end
-        end
+        return action()
+        -- if action then
+        --     local shouldExit = action()
+        --     if shouldExit then return true end
+        -- end
     end
 end
 

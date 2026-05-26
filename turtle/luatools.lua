@@ -10,11 +10,11 @@ local function breakUpString(s, n)
 end
 
 local function tableKeys(t)
-  keys = {}
+  local l = {}
   for k, _ in pairs(t) do
-    table.insert(keys, k)
+    l[#l + 1] = k
   end
-  return keys
+  return l
 end
 
 local function tableShallowCopy(t)
@@ -26,7 +26,7 @@ local function tableShallowCopy(t)
 end
 
 local function tableContainsValue(t, element)
-    for _, value in ipairs(t) do
+    for _, value in pairs(t) do
         if value == element then
             return value
         end
@@ -93,7 +93,7 @@ local function argparse(str, keys)
       error("Incorrect number of arguments")
     end
 
-    for i, key in ipairs(keys) do
+    for i, key in pairs(keys) do
     args[key] = parsed[i]
     end
 

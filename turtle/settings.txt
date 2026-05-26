@@ -55,6 +55,7 @@
       "minecraft:lanterns",
       "minecraft:lightning_rods",
       "computercraft:computer",
+      "computercraft:turtle",
       "computercraft:wired_modem"
     },
     names = {
