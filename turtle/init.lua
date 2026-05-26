@@ -150,9 +150,6 @@ local mainMenu = Menu:new()
                     return true
                 end}}
                 repeat until remoteTaskMenu.nav(remoteTaskMenu)
-                -- while true do 
-                --     if remoteTaskMenu.nav(remoteTaskMenu) then break end
-                -- end
             end
             parallel.waitForAny(listenForCmds, navMenu)
 

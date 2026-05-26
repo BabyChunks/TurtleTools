@@ -122,11 +122,13 @@ local function setHeading(turn)
         local i = 0
 
         local compass = {
-            ["x"] = 0,
-            ["z"] = 1,
-            ["-x"] = 2,
-            ["-z"] = 3
+            ["x"] = 1,
+            ["z"] = 2,
+            ["-x"] = 3,
+            ["-z"] = 4
         }
+
+        local cardinals = Lt.tableKeys(compass)
 
         if turn == "right" then
             i = (compass[Heading]) + 1
@@ -135,12 +137,10 @@ local function setHeading(turn)
             i = (compass[Heading]) - 1
         end
 
-        if i == 4 then i = 0
-        elseif i == -1 then i = 3 end
+        if i == 5 then i = 1
+        elseif i == 0 then i = 4 end
 
-        print(i) _ = io.read()
-
-        Heading = compass[i]
+        Heading = cardinals[i]
     end
 end
 

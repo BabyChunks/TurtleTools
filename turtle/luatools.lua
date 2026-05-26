@@ -9,6 +9,14 @@ local function breakUpString(s, n)
   return t
 end
 
+local function tableKeys(t)
+  keys = {}
+  for k, _ in pairs(t) do
+    table.insert(keys, k)
+  end
+  return keys
+end
+
 local function tableShallowCopy(t)
   local copy = {}
   for k, v in pairs(t) do
@@ -102,6 +110,7 @@ end
 return {
   breakUpString = breakUpString,
   tableShallowCopy = tableShallowCopy,
+  tableKeys = tableKeys,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,

@@ -132,7 +132,9 @@ local mainMenu = Menu:new()
             parallel.waitForAny(navMenu, listen)
         end,
         function() --Inventory
-
+            local invMenu = Menu:new()
+                invMenu.vMargins = 1
+                
         end,
         function() --  Quit
             Console.clear()
