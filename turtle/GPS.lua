@@ -1,45 +1,52 @@
-local function handleCoordsInput(ans, emptyOK)
+-- Library for handling positioning and movement of turtle and handle coordinates --
 
+--[[ Utility function to receive a string containing coords in format: "x%y%z"
+(where '%' is any whitespace characters or commas) and return single coords in order 
+str: str , emptyOK: bool -> num, num, num ]]
+local function handleCoordsInput(str, emptyOK)
     local incomplete, err = true, false
     local coords = {}
 
     while incomplete do
+        if emptyOK and str == "" then return str end
 
-        if emptyOK and ans == "" then return ans end
-
-        err, coords = pcall(Lt.argparse, ans)
+        err, coords = pcall(Lt.argparse, str)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    ans = Comms.sendStatus("console",{"Input must be numbers. Received "..type(coord).." type.", true})
+                    str = Comms.sendStatus("console",{"Input must be numbers. Received "..type(coord).." type.", true})
                     incomplete = true
                     break
                 end
             end
             if #coords ~= 3 then
-                ans = Comms.sendStatus("console", {"Coordinates must be 3-dimensional", true})
+                str = Comms.sendStatus("console", {"Coordinates must be 3-dimensional", true})
                 incomplete = true
             end
         else
-            ans = Comms.sendStatus("console", {coords, true})
+            str = Comms.sendStatus("console", {coords, true})
         end
     end
     return table.unpack(coords)
 end
 
+--[[ Make a call for gps coordinates, or prompt user for manual input of coords if no gps is found 
+-> num, num, num ]]
 local function locate()
     local x, y, z = gps.locate()
 
     if not x then
-        local ans = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
-        if ans == "" then os.reboot() end
-        return handleCoordsInput(ans)
+        local str = Comms.sendStatus("console", {"Could not locate computer using gps. Input coordinates (xyz) manually or press Enter to terminate", true})
+        if str == "" then os.reboot() end
+        return handleCoordsInput(str)
     end
 
     return x, y, z
 end
 
+--[[ Look at current fuel and fuel limit on turtle and send a message for more fuel if insufficient
+fuelNeeded: num ]]
 local function checkFuel(fuelNeeded)
     local item = {}
     local currFuel = turtle.getFuelLevel()
@@ -65,14 +72,23 @@ local function checkFuel(fuelNeeded)
     end
 end
 
+--[[ Extract vector xyz components in order 
+v: table -> num, num, num]]
 local function getVectorComponents(v)
+    if not pcall(v:unm()) then error("argument must be Vector type") end
     return v.x, v.y, v.z
 end
 
+--[[ From a vector, return the absolute sum of its 3-dimensional components
+v: table -> num, num, num ]]
 local function sumAbsVectorComponents(v)
+    if not pcall(v:unm()) then error("argument must be Vector type") end
     return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 
+--[[ Retrieve information about the block in front, above or below turtle and run it against 
+essential block list from settings file and return true if block is essential
+dir: str ["up"|"down"] -> bool]]
 local function isProtectedBlock(dir)
     local block, blockdata = false, {}
     if not dir then
@@ -92,7 +108,8 @@ local function isProtectedBlock(dir)
     return false
 end
 
---set Heading to turtle's current heading on the x-z plane. Requires gps
+--[[ set Heading to turtle's current heading on the x-z plane. Requires gps
+turn: str ["right"|"left"] ]]
 local function setHeading(turn)
     if not Heading then
         local coords2 = {}
@@ -128,29 +145,23 @@ local function setHeading(turn)
             ["-z"] = 4
         }
 
-        -- local cardinals = {
-        --     "x",
-        --     "z",
-        --     "-x",
-        --     "-z"
-        -- }
         local cardinals = Lt.tableKeys(compass)
         table.sort(cardinals, function(a, b) return compass[a] < compass [b] end)
 
         if turn == "right" then
             i = (compass[Heading]) + 1
             if i == 5 then i = 1 end
-
         elseif turn == "left" then
             i = (compass[Heading]) - 1
             if i == 0 then i = 4 end
         end
 
-
         Heading = cardinals[i]
     end
 end
 
+--[[ Update Coords using the number of moves and the current Heading of turtle
+move: num ]]
 local function setCoords(move)
     local orientationMatrix = {
         ["x"] = function() Coords.x = Coords.x + move end,
@@ -161,7 +172,7 @@ local function setCoords(move)
     orientationMatrix[Heading]()
 end
 
-
+-- Move the turtle forward and check for obstacles, update coords
 local function forward()
     while turtle.detect() do
         if isProtectedBlock() then
@@ -174,22 +185,25 @@ local function forward()
     setCoords(1)
 end
 
+-- Move the turtle backward and check for obstacles, update coords
 local function back()
     assert(turtle.back(), "Turtle couldn't go backward")
     setCoords(-1)
 end
 
+-- Turn the turtle to the right and update heading
 local function turnRight()
     assert(turtle.turnRight())
     setHeading("right")
 end
 
+-- Turn the turtle to the left and update heading
 local function turnLeft()
     assert(turtle.turnLeft())
     setHeading("left")
 end
 
-
+-- Move the turtle up and check for obstacles, update coords
 local function up()
     while turtle.detectUp() do
         if isProtectedBlock("up") then
@@ -202,6 +216,7 @@ local function up()
     Coords.y = Coords.y + 1
 end
 
+-- Move the turtle down and check for obstacles, update coords
 local function down()
     while turtle.detectDown() do
         if isProtectedBlock("down") then
@@ -214,6 +229,7 @@ local function down()
     Coords.y = Coords.y - 1
 end
 
+-- Recursive function to get around essential or undestructible blocks
 local function circumvent()
     if not pcall(forward) then
         turnRight()
@@ -223,7 +239,8 @@ local function circumvent()
     end
 end
 
-local function mineVein() --Inspects adjacent blocks and enters a new mineVein() instance if ore is found
+-- Inspect adjacent blocks and enters a new mineVein() instance if ore is found
+local function mineVein()
     local block, blockdata = turtle.inspectUp()
 
     if block then
@@ -260,9 +277,10 @@ local function mineVein() --Inspects adjacent blocks and enters a new mineVein()
     end
 end
 
+--[[ Dig in a straight line for a number of blocks, checking for obstacles and, if specified, for ore chunks
+blocks: num; strip: bool ]]
 local function dig(blocks, strip)
-    local step = 0
-    while step < blocks do
+    for step = 1, blocks do
         if strip then
             mineVein()
         end
@@ -300,10 +318,11 @@ local function dig(blocks, strip)
             turnRight()
             turnRight()
         end
-        step = step + 1
     end
 end
 
+--[[ Orient turtle in the right direction and move in 3 dimensions, passing a boolean to allow ore mining or not
+delta: table; strip: bool ]]
 local function move(delta, strip)
     checkFuel(sumAbsVectorComponents(delta))
 
@@ -352,10 +371,8 @@ local function move(delta, strip)
         dig(math.abs(delta.z), strip)
     end
 
-    local step = 0
-
     if delta.y < 0 then
-        while step < math.abs(delta.y) do
+        for step = 1, math.abs(delta.y) do
             if strip then
                 mineVein()
             end
@@ -376,7 +393,7 @@ local function move(delta, strip)
             step = step + 1
         end
     elseif delta.y > 0 then
-        while step < delta.y do
+        for step = 1,  delta.y do
             if strip then
                 mineVein()
             end
@@ -399,53 +416,10 @@ local function move(delta, strip)
     end
 end
 
+--[[ Call the move function, transforming absolute coords in a usable differential vector, passing a boolean to allow ore mining or not
+dest: table; strip:bool ]]
 local function goThere(dest, strip)
     move(dest - Coords, strip)
-end
-
-local function buildArray() -- WIP
-    local base = {}
-    local err = false
-
-    io.write("Setting up a GPS array. Please input base coordinates.\n")
-    base = vector.new(handleCoordsInput(io.read()))
-
-    goThere(base)
-
-    local partsNeeded = {
-        [1] = {names = {"computercraft:computer_normal", "computercraft:computer_advanced"}, n = 4, check = false},
-        [2] = {names = {"computercraft:wireless_modem_normal", "computercraft:wireless_modem_advanced"}, n = 4, check = false},
-        [3] = {names = {"computercraft:wired_modem"}, n = 6, check = false},
-        [4] = {names = {"computercraft:cable"}, n = 9, check = false}
-    }
-
-    local incomplete = true
-    while incomplete do
-        incomplete = false
-        for _, part in pairs(partsNeeded) do
-            for slot = 1, 16 do
-                local item = turtle.getItemDetail(slot)
-                if item then
-                    if Lt.tableContainsValue(part.names, item.name) then
-                        if item.count >= part.n then
-                            part.check = true
-                        end
-                    end
-                end
-            end
-            if not part.check then
-                incomplete = true
-            end
-        end
-        if incomplete then
-            io.write("List of objects to put in inventory:\n")
-            textutils.tabulate({4, 4, 6, 9},{"Computers", "Wireless Modems", "Wired Modems", "Wires"})
-            os.pullEvent("turtle_inventory")
-        end
-    end
-
-    io.write("Clear a space of 6 blocks in the positive x and z direction, as well as a clearance of 6 blocks above the square delimited thus. Press Enter when this is done.\n")
-    _ = io.read()
 end
 
 -- Check for equipped pickaxe, else prompt user for pickaxe --
@@ -489,6 +463,5 @@ return {
     dig = dig,
     move = move,
     goThere = goThere,
-    buildArray = buildArray,
     checkPick = checkPick
 }

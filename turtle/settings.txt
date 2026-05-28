@@ -11,14 +11,18 @@
     "immersiveengineering:coke",
   },
   INVS = {
-    "immersiveengineering:crate",
-    "immersiveengineering:reinforced_crate",
-    [ "forge:boxes/shulker" ] = true,
-    [ "sophisticatedbackpacks:backpack" ] = true,
-    [ "forge:barrels" ] = true,
-    [ "farmersdelight:cabinets" ] = true,
-    [ "computercraft:turtle" ] = true,
-    [ "forge:chests" ] = true,
+    tags = {
+      "forge:boxes/shulker",
+      "sophisticatedbackpacks:backpack",
+      "forge:barrels",
+      "farmersdelight:cabinets",
+      "computercraft:turtle",
+      "forge:chests",
+    },
+    names = {
+      "immersiveengineering:crate",
+      "immersiveengineering:reinforced_crate"
+    },
   },
   MODEMS = {
     "computercraft:wireless_modem",

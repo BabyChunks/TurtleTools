@@ -1,13 +1,7 @@
 -- Library for communication between turtle and server --
 
-local function getServerID()
-    return ServerID
-end
-
-local function setServerID(id)
-    ServerID = id
-end
-
+--[[ Wait for pings from computers to take control of turtle, answer with turtle coords and wait for
+connection message ]]
 local function connectServer()
     while true do
         local id, msg = rednet.receive("ping")
@@ -22,6 +16,7 @@ local function connectServer()
     end
 end
 
+-- wait for commands or generic messages from controlling computer
 local function getCmd()
     if ServerID then
         local id, msg = rednet.receive("cmd")
@@ -33,6 +28,8 @@ local function getCmd()
     end
 end
 
+--[[ If a computer is controlling: send status messages; if no computer controls the turtle: draw 
+information to relevant window ]]
 local function sendStatus(head, body)
     if ServerID then
         rednet.send(ServerID, {head = head, body = body}, "status")
@@ -57,7 +54,7 @@ local function sendStatus(head, body)
     end
 end
 
--- Check for equipped modem and open it if found, else prompt user for modem --
+-- Check for equipped modem and open it if found, else prompt user for modem
 local function checkModem()
     while true do
         local modem = peripheral.find("modem")
@@ -87,8 +84,6 @@ local function checkModem()
 end
 
 return {
-    getServerID = getServerID,
-    setServerID = setServerID,
     connectServer = connectServer,
     getCmd = getCmd,
     sendStatus = sendStatus,

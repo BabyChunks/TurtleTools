@@ -1,9 +1,10 @@
---strip mining script for use with the luatools, comms, GPS and GUI libraries.
---mining patterns have been implemented to optimize number of tunnels, saving energy and maximizing yield.
---env args:
---[1] = coords for recalling the turtle -> table
---[2] = coords of quarry origin -> table
---[3] = length, height and  width of mining quarry -> table
+--[[ Strip mining script for use with the luatools, comms, GPS and GUI libraries.
+mining patterns have been implemented to optimize number of tunnels, saving energy and maximizing yield.
+
+env args:
+[1] = coords for recalling the turtle -> table
+[2] = coords of quarry origin -> table
+[3] = length, height and  width of mining quarry -> table ]]
 
 local function strip(args)
     local recall = (args[1] == "" and Coords) or vector.new(table.unpack(textutils.unserialize(args[1])))

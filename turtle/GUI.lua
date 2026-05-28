@@ -1,8 +1,8 @@
 -- Library for preparing and drawing to windows on turtle screen --
 
---main function to draw text on screen. Specify which window to draw to, position of 1st character
---or alignment of text, if it should end with a new line and colours
--- text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num
+--[[ Main function to draw text on screen. Specify which window to draw to, position of 1st character
+or alignment of text, if it should end with a new line and colours
+text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num ]]
 local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
 
     --set default parameters
@@ -56,24 +56,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     end
 end
 
-local function scrollFeedThru(n, feed)
-    local _, height = console.getSize()
-    if #feed ~= math.abs(n) then error("number of lines doesn't match scroll amount") end
-    Console.scroll(n)
-    if n > 0  then
-        Console.setCursoPos(0, 0)
-        for i = 1, n do
-            drawText(feed[i])
-        end
-    elseif n < 0 then
-        Console.setCursorPos(0, height - n)
-        for i = n, 1, -1 do
-            drawText(feed[i])
-        end
-    end
-end
-
---update banner
+--Update banner
 local function drawCorpBanner()
     local logo = "CHUNKSWARE TECH"
     local filler1 = ("/"):rep(TermWidth / 2 - string.len(logo) / 2)
@@ -85,34 +68,36 @@ local function drawCorpBanner()
     drawText(filler2, CorpBanner, "left", nil, colours.green)
 end
 
--- update menu window with menu options and current selections
--- options : table, selected : num
+--[[ Menu class object with basic methods for updating and navigating.  ]]
 Menu = {
-    uBound = 1,
     vMargins = 0,
+    monitor = Console,
+    uBound = 1,
     selected = 1,
     options = {},
     actions = {}
 }
 
+-- Update menu screen with selected option highlighted and bounded options
 function Menu.draw(self)
-    Console.clear()
-    local _, height = Console.getSize()
+    self.monitor.clear()
+    local _, height = self.monitor.getSize()
 
-    --handle menus longer than console screen, move upper and lower boundary according to previous state and current selection
-    if self.selected < self.uBound then self.uBound = self.selected
-    elseif self.selected > self.uBound + height - (self.vMargins * 2 + 1) then self.uBound = self.selected - height + (self.vMargins * 2 + 1)
-    end
+    --handle menus longer than screen, move upper and lower boundary according to previous state and current selection
+    self.uBound = math.min(self.selected, self.uBound)
+    self.uBound = math.max(self.selected - height + (self.vMargins *2 + 1), self.uBound)
+
     local lBound = self.uBound + height - (self.vMargins * 2 + 1)
 
     local windowedOptions = {table.unpack(self.options, self.uBound, lBound)}
 
     for i, option in pairs(windowedOptions) do
-            drawText((i == self.selected - self.uBound + 1) and " > " or "   ", Console, {1, i + 1})
-            drawText(option, Console, nil, false, (i == self.selected - self.uBound + 1) and colours.yellow or colours.white)
+            drawText((i == self.selected - self.uBound + 1) and " > " or "   ", self.monitor, {1, i + 1})
+            drawText(option, self.monitor, nil, false, (i == self.selected - self.uBound + 1) and colours.yellow or colours.white)
     end
 end
 
+-- Navigate menu with arrow keys and enter, return true if option requires to exit menu.
 function Menu.nav(self)
     if #self.options ~= #self.actions then error("options and actions table should contain the same number of items") end
     self.draw(self)
@@ -125,17 +110,14 @@ function Menu.nav(self)
         self.selected = self.selected + 1
         if self.selected > #self.options then self.selected = 1 end
     elseif key == keys.enter then
-        Console.clear()
-        Console.setCursorPos(1,1)
+        self.monitor.clear()
+        self.monitor.setCursorPos(1,1)
         local action = self.actions[self.selected]
         return action()
-        -- if action then
-        --     local shouldExit = action()
-        --     if shouldExit then return true end
-        -- end
     end
 end
 
+-- Initialize an instance of Menu class
 function Menu.new(self, o)
     o = o or {}
     setmetatable(o, self)
@@ -143,8 +125,8 @@ function Menu.new(self, o)
     return o
 end
 
--- update server window with id if provided
--- id : num
+--[[ Update server window with id if provided
+id : num ]]
 local function drawServerStatus(id)
     -- if no turtle: grey;
     -- if turtle: white
@@ -155,8 +137,8 @@ local function drawServerStatus(id)
     drawText(string.format("Current server: [%02d]", id or 0), ServerStatus, "right", nil, statusColour)
 end
 
--- update task window with task completion (0 to 1), textcolour and task name
--- taskCompletion : num, statusColour : num, task : str
+--[[ Update task window with task completion (0 to 1), textcolour and task name
+taskCompletion : num, statusColour : num]]
 local function drawTaskStatus(taskCompletion, statusColour)
     -- if no task: white;
     -- if task is ongoing: white;
@@ -178,8 +160,8 @@ local function drawTaskStatus(taskCompletion, statusColour)
     drawText(completionBarNeg, TaskStatus, "right", nil, nil, colours.grey)
 end
 
--- update console window with new status added below the previous one
--- status : str, requestInput: bool
+--[[ Update console window with new status added below the previous one
+status : str, requestInput: bool ]]
 local function drawConsole(status, requestInput)
     local width, height = Console.getSize()
     local _, y = Console.getCursorPos()
