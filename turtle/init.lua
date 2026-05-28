@@ -1,4 +1,4 @@
---[[ Main script for server. Libs are loaded at this level. when called, can specify
+--[[ Main script for turtle. Libs are loaded at this level. when called, can specify
 "-u" flag to update libs through wget program, pulling from raw github files. ]]
 
 local filePath = "/ChunksWare/"
@@ -16,9 +16,6 @@ for _, v in pairs(arg) do
             "strip.lua"
         }
         local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
-
-        -- whipser On
-        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
 
         local oldFiles = {}
 
@@ -41,10 +38,9 @@ for _, v in pairs(arg) do
             for _, oldFile in pairs(oldFiles) do
                 fs.delete(oldFile)
             end
+        end
         shell.execute("wget", gitPath.."init.lua", "/init.lua")
-end
-        -- whisper Off
-        whisper = term.redirect(whisper)
+
         print("Done!")
         os.sleep(0.8)
         term.clear()
@@ -129,9 +125,9 @@ local mainMenu = Menu:new()
                         GPS.goThere(vector.new(table.unpack(cmd.body[1])))
                     elseif cmd.head == "courier" then
                     elseif cmd.head == "disconnect" then
-                        local id = Comms.getServerID()
-                        Comms.setServerID(nil)
-                        GUI.drawServerStatus(nil)
+                        local id = ServerID
+                        ServerID = nil
+                        GUI.drawServerStatus()
                         GUI.drawConsole("Computer #"..id.." disconnected")
                         return true
                     end
@@ -140,9 +136,9 @@ local mainMenu = Menu:new()
             local function navMenu()
                 local remoteTaskMenu = Menu:new{vMargins = 2, options = {"Disconnect Server"}, actions = {
                 function()
-                    local id = Comms.getServerID()
+                    local id = ServerID
                     Comms.sendStatus("disconnect")
-                    Comms.setServerID()
+                    ServerID = nil
                     GUI.drawServerStatus()
                     GUI.drawTaskStatus()
                     Console.clear()
@@ -151,8 +147,8 @@ local mainMenu = Menu:new()
                 end}}
                 repeat until remoteTaskMenu.nav(remoteTaskMenu)
             end
+            
             parallel.waitForAny(listenForCmds, navMenu)
-
             os.sleep(0.8)
         end,
         function() --Mine

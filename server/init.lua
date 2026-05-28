@@ -15,8 +15,6 @@ for _, v in ipairs(arg) do
         }
         local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
 
-        --whipser On
-        local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
         local oldFiles = {}
 
         if #fs.find(filePath.."settings.txt") == 0 then
@@ -40,8 +38,7 @@ for _, v in ipairs(arg) do
             end
         end
         shell.execute("wget", gitPath.."init.lua", "/init.lua")
-        --whisper Off
-        whisper = term.redirect(whisper)
+
         print("Done!")
         os.sleep(0.8)
         term.clear()
