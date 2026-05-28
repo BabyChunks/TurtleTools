@@ -1,37 +1,41 @@
 -- Library for positionning of server and handling coordinates --
 
---[[utility function to receive a string containing coords in format: "x*y*z"
-(where '*' is any non-alphanumerical character) and return single coords in order]]
-local function handleCoordsInput(ans)
-
+--[[ Utility function to receive a string containing coords in format: "x*y*z"
+(where '*' is any whitespace characters or commas) and return single coords in order 
+str: str , emptyOK: bool -> num, num, num ]]--
+local function handleCoordsInput(str, emptyOK)
     local incomplete, err = true, false
     local coords = {}
 
-    --loop while answer string doesn't fit "x*y*z" format + terminate script if ans is empty
     while incomplete do
-        term.clear()
-        term.setCursorPos(1,1)
-
-        err, coords = pcall(Lt.argparse, ans)
+        if emptyOK and str == "" then return str end
+        
+        err, coords = pcall(Lt.argparse, str)
         if err then
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
-                    GUI.drawConsole("Input must be numbers", true)
-                    ans = io.read()
+                    GUI.drawConsole("Input must be numbers. Received "..type(coord).." type.", true)
+                    str = io.read()
                     incomplete = true
                     break
                 end
             end
+            if #coords ~= 3 then
+                GUI.drawConsole("Coordinates must be 3-dimensional", true)
+                str = io.read()
+                incomplete = true
+            end
         else
             GUI.drawConsole(coords, true)
-            ans = io.read()
+            str = io.read()
         end
     end
     return table.unpack(coords)
 end
 
--- make a call for gps coordinates, or prompt user for manual input of coords if no gps is found
+--[[ Make a call for gps coordinates, or prompt user for manual input of coords if no gps is found 
+-> num, num, num ]]--
 local function locate()
     local x, y, z = gps.locate()
 
