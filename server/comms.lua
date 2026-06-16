@@ -44,7 +44,7 @@ local function pingTurtles()
             GUI.drawConsole("Ping request timed out. Send a new ping?(y/n)", true)
             local ans = io.read()
             if ans == "n" or ans == "N" then
-                return
+                return true
             elseif ans == "y" or ans == "Y" then
                 pingTurtles()
                 break

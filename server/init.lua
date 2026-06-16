@@ -86,7 +86,7 @@ local mainMenu = Menu:new()
     mainMenu.actions = {
         function() --Control Turtle
             GUI.drawConsole("Pinging nearby turtles...")
-            Comms.pingTurtles()
+            if Comms.pingTurtles() then return end
             local function navMenu()
                 local turtleMenu = Menu:new()
                 turtleMenu.vMargins = 1
