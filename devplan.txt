@@ -8,12 +8,13 @@
 [x] de-index caller args for turtle init
 [x] change all occurences of getHeading() for setHeading()
 [x] (consider changing calls to turtle.turn*() to custom GPS.turn*() [or steer*()] function to better manage heading)
-[~] make it so main menu writes "Disconnect" when there is a turtle connected
+[x] make it so main menu writes "Disconnect" when there is a turtle connected
 [x] change the completion bar to display background colour instead of I's
 [x] print calls in turtle comms should be changed to use the magnificent GUI module!
-[ ] put parallel functions where time is important e.g. ping timeout
+[x] put parallel functions where time is important e.g. ping timeout
 [ ] automatically disconnect turtle if main script errors (prob with a multishell)
 [ ] make a settings menu on turtle (-s flag) and server side (menu option)
 [x] make turtle pathfinds around inventory blocks and CC blocks
 [ ] Implement inventory sorting and retrieval
 [ ] Add more mining patterns such as stairs, tunnel, quarry
+[ ] Make a "control hub" option on server to control multiple turtles (maybe able to receive calls from other servers to 'rent' a turtle?)
