@@ -73,14 +73,14 @@ local function checkFuel(fuelNeeded)
 end
 
 --[[ Extract vector xyz components in order 
-v: table -> num, num, num]]
+v: Vector -> num, num, num]]
 local function getVectorComponents(v)
     if not pcall(v:unm()) then error("argument must be Vector type") end
     return v.x, v.y, v.z
 end
 
 --[[ From a vector, return the absolute sum of its 3-dimensional components
-v: table -> num, num, num ]]
+v: Vector -> num, num, num ]]
 local function sumAbsVectorComponents(v)
     if not pcall(v:unm()) then error("argument must be Vector type") end
     return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)

@@ -32,7 +32,7 @@ local function pingTurtles()
     end
 
     --find ID for turtle closest to server and send a "get linked" message
-    table.sort(turtles, function(a, b) return a > b end) 
+    table.sort(turtles, function(a, b) return a > b end)
     TurtleID = next(turtles)
     if TurtleID then
         GUI.drawConsole("Connected to turtle with ID "..TurtleID)
