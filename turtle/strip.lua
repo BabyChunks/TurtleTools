@@ -97,7 +97,8 @@ local function strip(args)
                     origin.y + signs.y * factors.y,
                     origin.z + signs.z * factors.z)
 
-                QuarryCompletion = ((layer / nLayer) * 0.9 + ((cycleStart + (step * cycle)) / nCycle) * 0.09)
+                --QuarryCompletion = ((layer / nLayer) * 0.9 + ((cycleStart + (step * cycle)) / nCycle) * 0.09)
+                QuarryCompletion = delta:mul(Coords:sub(origin):dot(delta) / delta:length() ^ 2)
                 Comms.sendStatus("task", {QuarryCompletion, colours.yellow})
 
                 if (pattern.ln * cycle + pattern.zOffset[t]) <= abs.z and
