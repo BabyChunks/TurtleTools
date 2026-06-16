@@ -15,7 +15,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     local lines = {}
 
     --wrap text according to window width
-    lines = Lt.breakUpString(text, #text / w)
+    lines = {Lt.stringBreakUp(text, #text / w)}
     for n, line in ipairs(lines) do
         -- set cursor postion according to position specified or alignment; stay in place by default
         if type(pos) == "string" then
@@ -50,7 +50,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
         x = 1
     end
 
-    -- set position one line down for next drawText() call
+    -- set position one line down for next line of text
     if nL then
         monitor.setCursorPos(1, y)
     end
@@ -92,8 +92,8 @@ function Menu.draw(self)
     local windowedOptions = {table.unpack(self.options, self.uBound, lBound)}
 
     for i, option in pairs(windowedOptions) do
-            drawText((i == self.selected - self.uBound + 1) and " > " or "   ", self.monitor, {1, i + 1})
-            drawText(option, self.monitor, nil, false, (i == self.selected - self.uBound + 1) and colours.yellow or colours.white)
+        drawText((i == self.selected - self.uBound + 1) and " > " or "   ", self.monitor, {1, i + 1})
+        drawText(option, self.monitor, nil, false, (i == self.selected - self.uBound + 1) and colours.yellow or colours.white)
     end
 end
 
@@ -117,6 +117,11 @@ function Menu.nav(self)
     end
 end
 
+-- Call to start menu navigation and update, exit if receives true
+function Menu.init(self)
+    repeat until self.nav(self)
+end
+
 -- Initialize an instance of Menu class
 function Menu.new(self, o)
     o = o or {}
@@ -125,16 +130,15 @@ function Menu.new(self, o)
     return o
 end
 
---[[ Update server window with id if provided
-id : num ]]
-local function drawServerStatus(id)
-    -- if no turtle: grey;
-    -- if turtle: white
+-- Update server window with id if provided
+local function drawServerStatus()
+    -- if no server: grey;
+    -- if server: white
 
     ServerStatus.clear()
-    local statusColour = not id and colours.grey or colours.white
+    local statusColour = not ServerID and colours.grey or colours.white
 
-    drawText(string.format("Current server: [%02d]", id or 0), ServerStatus, "right", nil, statusColour)
+    drawText(string.format("Current server: [%02d]", ServerID or 0), ServerStatus, "right", nil, statusColour)
 end
 
 --[[ Update task window with task completion (0 to 1), textcolour and task name
