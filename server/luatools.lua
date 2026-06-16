@@ -1,36 +1,46 @@
-local function breakUpString(s, n)
+local function stringBreakUp(s, n)
   local t = {}
   local len = #s / n
   while #s > len do
     table.insert(t, string.sub(s, 1, len))
-    s = string.sub(s, len, -1)
+    s = string.sub(s, len + 1, -1)
   end
   table.insert(t, s)
-  return t
+  return table.unpack(t)
 end
-local function len(t)
- local n = 0
-  for _, v in pairs(t) do
-      n = n + 1
+
+local function tableKeys(t)
+  local l = {}
+  for k, _ in pairs(t) do
+    l[#l + 1] = k
   end
-  return n
+  return l
 end
+
+local function tableShallowCopy(t)
+  local copy = {}
+  for k, v in pairs(t) do
+    copy[k] = v
+  end
+  return copy
+end
+
 local function tableContainsValue(t, element)
-    for _, value in ipairs(t) do
+    for _, value in pairs(t) do
         if value == element then
-            return true
+            return value
         end
     end
-    return false
+    return nil
 end
 
 local function tableContainsKey(t, element)
     for key, _ in pairs(t) do
         if key == element then
-            return true
+            return key
         end
     end
-    return false
+    return nil
 end
 
 local function getKeyForValue(t, value)
@@ -57,10 +67,14 @@ end
 
 local function tableSum(t)
   local sum = 0
-  for _, v in ipairs(t) do
+  for _, v in pairs(t) do
     sum = sum + v
   end
   return sum
+end
+
+local function tableAvg(t)
+  return tableSum(t) / #t
 end
 
 local function argparse(str, keys)
@@ -79,7 +93,7 @@ local function argparse(str, keys)
       error("Incorrect number of arguments")
     end
 
-    for i, key in ipairs(keys) do
+    for i, key in pairs(keys) do
     args[key] = parsed[i]
     end
 
@@ -89,13 +103,20 @@ local function argparse(str, keys)
   return parsed
 end
 
+local function lerp(a, b, t)
+  return a + (b - a) * t
+end
+
 return {
-  breakUpString = breakUpString,
-  len = len,
+  stringBreakUp = stringBreakUp,
+  tableShallowCopy = tableShallowCopy,
+  tableKeys = tableKeys,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,
-  argparse = argparse
+  tableAvg = tableAvg,
+  argparse = argparse,
+  lerp = lerp
 }

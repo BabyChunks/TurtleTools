@@ -1,4 +1,4 @@
-local function breakUpString(s, n)
+local function stringBreakUp(s, n)
   local t = {}
   local len = #s / n
   while #s > len do
@@ -6,7 +6,7 @@ local function breakUpString(s, n)
     s = string.sub(s, len + 1, -1)
   end
   table.insert(t, s)
-  return t
+  return table.unpack(t)
 end
 
 local function tableKeys(t)
@@ -108,7 +108,7 @@ local function lerp(a, b, t)
 end
 
 return {
-  breakUpString = breakUpString,
+  stringBreakUp = stringBreakUp,
   tableShallowCopy = tableShallowCopy,
   tableKeys = tableKeys,
   tableContainsValue = tableContainsValue,
