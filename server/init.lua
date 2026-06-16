@@ -51,12 +51,16 @@ TurtleID = nil
 CurrentTask = nil
 -- GUI --
 TermWidth, TermHeight = term.getSize()
-CorpBanner = window.create(term.current(), 1, 1, TermWidth, 3)
-Console = window.create(term.current(), 1, 4, TermWidth, TermHeight - 6)
-TaskStatus = window.create(term.current(), 1, TermHeight - 1, TermWidth, 1)
-TurtleStatus = window.create(term.current(), 1, TermHeight, TermWidth, 1)
+CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
+Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
+TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
+TurtleStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
 -- GPS --
 ServerCoords = {}
+-- Inv --
+Interface = nil
+Invs = {}
+Items = {}
 
 term.clear()
 term.setCursorPos(1,1)
@@ -68,6 +72,7 @@ St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
+Inv = require(filePath.."inv")
 
 -- Initialize entire screen
 GUI.drawCorpBanner()
@@ -129,9 +134,16 @@ local mainMenu = Menu:new()
             parallel.waitForAny(navMenu, listen)
         end,
         function() --Inventory
-            local invMenu = Menu:new()
-                invMenu.vMargins = 1
-                
+            if not Interface then
+                GUI.drawConsole("No interface inventory registered. Input the peripheral name of this computer's interface inventory", true)
+                local ans = io.read()
+                while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory"))  do
+                    GUI.drawConsole("No inventory by that name on the network. Please input the interface inventory's name", true)
+                    ans = io.read()
+                end
+                Interface = peripheral.wrap(ans)
+            end
+            Inv.invMenu:init()
         end,
         function() --  Quit
             Console.clear()
@@ -147,6 +159,4 @@ Comms.checkModem()
 --locate server--
 ServerCoords = vector.new(GPS.locate())
 
-while true do
-    if mainMenu.nav(mainMenu) then break end
-end
+mainMenu:init()
