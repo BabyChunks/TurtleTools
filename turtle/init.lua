@@ -190,6 +190,4 @@ Coords = vector.new(GPS.locate())
 GPS.setHeading()
 
 --navigate main menu as long as computer is on--
-while true do
-    mainMenu.nav(mainMenu)
-end
+mainMenu:init()
