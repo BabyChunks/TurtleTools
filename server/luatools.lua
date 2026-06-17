@@ -50,6 +50,16 @@ local function getKeyForValue(t, value)
   return nil
 end
 
+local function tablesEqual(...)
+  local tables = {arg}
+  for i = 1, #tables do
+    for k, v in pairs(tables[i]) do
+      if v ~= tables[i + 1][k] then return false end
+    end
+  end
+  return true
+end
+
 local function tablesOverlap(t1, t2)
   local overlap = {}
   for _, v1 in pairs(t1) do
@@ -114,6 +124,7 @@ return {
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,
+  tablesEqual = tablesEqual,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,
   tableAvg = tableAvg,
