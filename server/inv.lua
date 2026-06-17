@@ -11,10 +11,6 @@ local function updateItems()
     if #Invs ~= 0 then
         for _, inv in pairs(Invs) do
             Items[peripheral.getName(inv)] = inv.list()
-            -- local slots = inv.list()
-            -- for slot, item in pairs(slots) do
-            --     Items[peripheral.getName(inv)][slot] = item
-            -- end
         end
     end
 end
