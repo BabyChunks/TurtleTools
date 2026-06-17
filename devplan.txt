@@ -18,3 +18,4 @@
 [ ] Implement inventory sorting and retrieval
 [ ] Add more mining patterns such as stairs, tunnel, quarry
 [ ] Make a "control hub" option on server to control multiple turtles (maybe able to receive calls from other servers to 'rent' a turtle?)
+[ ] Add a setting containing the filepath value, automatically added at setup, so filepath can be changed via update or manually by user
