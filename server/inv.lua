@@ -37,19 +37,26 @@ local invMenu = Menu:new()
             while true do
                 local ans = string.lower(io.read())
                 if string.match(ans, "^%s*quit%s*$") then break end
+                local keywords = Lt.argparse(ans)
                 GUI.drawConsole("Retrieving items...")
                 updateInvs()
                 updateItems()
-                local pulledNum = 0
+                local pullCount = 0
                 for periph, slots in pairs(Items) do
                     for slot, item in pairs(slots) do
-                        if string.match(item.name, ans) then
-                            Interface.pullItems(periph, slot)
-                            pulledNum = pulledNum + item.count
+                        for _, keyword in pairs(keywords) do
+                            if string.match(item.name, keyword) then
+                                Interface.pullItems(periph, slot)
+                                pullCount = pullCount + item.count
+                            end
                         end
                     end
                 end
-                GUI.drawConsole("Done. "..pulledNum.." items moved to "..peripheral.getName(Interface))
+                if pullCount == 0 then
+                    GUI.drawConsole("No item found with keyword".."s" and #keywords > 1)
+                else
+                end
+                GUI.drawConsole("Done. "..pullCount.." items moved to "..peripheral.getName(Interface))
             end
         end,
         function() --Stock Items
