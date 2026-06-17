@@ -12,8 +12,8 @@ if turtle then
     table.insert(files, "strip.lua")
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
 else
+    table.insert(files, "inv.lua")
     gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
-
 end
 -- whipser On
 -- local whisper = term.redirect(window.create(term.current(), 1, 1, 1, 1, false))
