@@ -15,6 +15,16 @@ local function updateItems()
     end
 end
 
+local function flushInterface()
+    local pushCount = 0
+    for _, inv in pairs(Invs) do
+        for slot, item in pairs(Interface.list()) do
+            pushCount = pushCount + Interface.pushItems(inv.getName(), slot)
+        end
+    end
+    return pushCount
+end
+
 local invMenu = Menu:new()
     invMenu.vMargins = 1
     invMenu.options = {"Retrieve Items", "Stock Items", "Change Interface", "Quit"}
@@ -43,6 +53,20 @@ local invMenu = Menu:new()
             end
         end,
         function() --Stock Items
+            GUI.drawConsole("All items in interface inventory will be put away. Proceed? [y/n]", true)
+            while true do
+                local ans = string.lower(io.read())
+                if ans == "y" then
+                    local count = flushInterface()
+                    if count ~= 0 then
+                        GUI.drawConsole("Done. "..count.. " items put away in inventory")
+                        os.sleep(5)
+                        break
+                    else
+                        GUI.drawConsole("No items could be moved")
+                    end
+                elseif ans == "n" then break end
+            end
         end,
         function() --Change Interface
         end,
