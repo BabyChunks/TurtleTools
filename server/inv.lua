@@ -3,7 +3,7 @@
 local function updateInvs()
     Invs = {peripheral.find("inventory")}
     for pos, inv in pairs(Invs) do
-        if inv.getName() == Interface.getName() then table.remove(Invs, pos) end
+        if peripheral.getName(inv) == peripheral.getName(Interface) then table.remove(Invs, pos) end
     end
 end
 
@@ -19,7 +19,7 @@ local function flushInterface()
     local pushCount = 0
     for _, inv in pairs(Invs) do
         for slot, item in pairs(Interface.list()) do
-            pushCount = pushCount + Interface.pushItems(inv.getName(), slot)
+            pushCount = pushCount + Interface.pushItems(peripheral.getName(inv), slot)
         end
     end
     return pushCount
@@ -33,36 +33,46 @@ local invMenu = Menu:new()
             GUI.drawConsole("*** Item Retrieval ***")
             GUI.drawConsole("Items containing the input keywords will be moved to the interface")
             GUI.drawConsole("You can also search for a specific item set")
+            GUI.drawConsole("An empty query ('') will retrieve the entire inventory")
             GUI.drawConsole("Type 'quit' to go back to Inventory menu")
             while true do
                 local ans = string.lower(io.read())
-                if string.match(ans, "^%s*quit%s*$") then break end
-                local keywords = Lt.argparse(ans)
+                local keywords = {}
+                local pullCount = 0
+                if string.match(ans, "^quit$") then
+                    flushInterface()
+                    break
+                elseif string.match(ans, "%s*") then
+                    keywords = {"%a"}
+                else
+                    keywords = Lt.argparse(ans)
+                end
                 GUI.drawConsole("Retrieving items...")
                 updateInvs()
                 updateItems()
-                local pullCount = 0
                 for periph, slots in pairs(Items) do
                     for slot, item in pairs(slots) do
                         for _, keyword in pairs(keywords) do
                             if string.match(item.name, keyword) then
-                                Interface.pullItems(periph, slot)
-                                pullCount = pullCount + item.count
+                                pullCount = pullCount + Interface.pullItems(periph, slot)
                             end
                         end
                     end
                 end
                 if pullCount == 0 then
-                    GUI.drawConsole("No item found with keyword".."s" and #keywords > 1)
+                    GUI.drawConsole("No item found with keyword"..((#keywords > 1) and "s" or ""))
                 else
+                    GUI.drawConsole("Done. "..pullCount.." items moved to "..peripheral.getName(Interface))
                 end
-                GUI.drawConsole("Done. "..pullCount.." items moved to "..peripheral.getName(Interface))
             end
         end,
         function() --Stock Items
             GUI.drawConsole("All items in interface inventory will be put away. Proceed? [y/n]", true)
+            updateInvs()
             while true do
                 local ans = string.lower(io.read())
+                Console.setCursorPos(1, 3)
+                Console.clearLine()
                 if ans == "y" then
                     local count = flushInterface()
                     if count ~= 0 then
@@ -71,6 +81,8 @@ local invMenu = Menu:new()
                         break
                     else
                         GUI.drawConsole("No items could be moved")
+                        os.sleep(5)
+                        break
                     end
                 elseif ans == "n" then break end
             end
