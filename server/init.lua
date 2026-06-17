@@ -136,20 +136,7 @@ local mainMenu = Menu:new()
         function() --Inventory
             if not Interface then
                 GUI.drawConsole("No interface inventory registered. Input the peripheral name of this computer's interface inventory", true)
-                local ans = io.read()
-                local faces = {
-                    "front",
-                    "back",
-                    "left",
-                    "right",
-                    "bottom",
-                    "top"
-                }
-                while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory") and not Lt.tableContainsValue(faces, ans))  do
-                    GUI.drawConsole("No inventory by that name on any wired network. Please input the interface inventory's name", true)
-                    ans = io.read()
-                end
-                Interface = peripheral.wrap(ans)
+                Inv.updateInterface()
             end
             Inv.invMenu:init()
         end,

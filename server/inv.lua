@@ -1,5 +1,22 @@
 -- Library for managing inventory with a computer. One inventory must be designated as the "interfacing" inventory for a given computer
 
+local function updateInterface()
+    local ans = io.read()
+    local faces = {
+        "front",
+        "back",
+        "left",
+        "right",
+        "bottom",
+        "top"
+    }
+    while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory") and not Lt.tableContainsValue(faces, ans))  do
+        GUI.drawConsole("No inventory by that name on any wired network. Please input the interface inventory's name", true)
+        ans = io.read()
+    end
+    Interface = peripheral.wrap(ans)
+end
+
 local function updateInvs()
     Invs = {peripheral.find("inventory")}
     for pos, inv in pairs(Invs) do
@@ -88,6 +105,8 @@ local invMenu = Menu:new()
             end
         end,
         function() --Change Interface
+            GUI.drawConsole("Input new interface name:", true)
+            updateInterface()
         end,
         function() -- Quit
             return true
@@ -96,6 +115,7 @@ local invMenu = Menu:new()
 
 
 return {
+    updateInterface = updateInterface,
     itemMenu = itemMenu,
     invMenu = invMenu
 }
