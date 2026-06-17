@@ -91,7 +91,7 @@ local function argparse(str, keys)
   local parsed = {}
   local args = {}
 
-  for arg in string.gmatch(str, "[^,%s+]+") do
+  for arg in string.gmatch(str, "[^,%s]+") do
     arg = tonumber(arg) or arg
     table.insert(parsed, arg)
   end
@@ -104,7 +104,7 @@ local function argparse(str, keys)
     end
 
     for i, key in pairs(keys) do
-    args[key] = parsed[i]
+      args[key] = parsed[i]
     end
 
     return args
