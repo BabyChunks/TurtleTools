@@ -2,6 +2,9 @@
 
 local function updateInvs()
     Invs = {peripheral.find("inventory")}
+    for pos, inv in pairs(Invs) do
+        if inv.getName() == Interface.getName() then table.remove(Invs, pos) end
+    end
 end
 
 local function updateItems()
