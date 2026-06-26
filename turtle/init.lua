@@ -47,10 +47,12 @@ for _, v in pairs(arg) do
     end
 end
 
+St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
+
 -- Define globals --
 -- Comms --
-ServerID = nil
-CurrentTask = nil
+ServerID = St.defaultValues["ServerID"] or nil
+CurrentTask = St.defaultValues["CurrentTask"] or nil
 -- GUI --
 TermWidth, TermHeight = term.getSize()
 CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
@@ -58,8 +60,8 @@ Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
 TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
 ServerStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
 -- GPS --
-Coords = {}
-Heading  = nil
+Coords = St.defaultValues["Coords"] or {}
+Heading  = St.defaultValues["Heading"] or nil
 
 --initial screen--
 local initScreen = {
@@ -81,7 +83,6 @@ term.redirect(Console)
 
 print("Loading environment...")
 Lt = require(filePath.."luatools")
-St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")

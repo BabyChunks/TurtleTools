@@ -45,10 +45,13 @@ for _, v in ipairs(arg) do
     end
 end
 
+-- Loading settings --
+St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
+
 -- Define globals --
 -- Comms --
-TurtleID = nil
-CurrentTask = nil
+TurtleID = St.defaultValues.value["TurtleID"] or nil
+CurrentTask = St.defaultValues.value["CurrentTask"] or nil
 -- GUI --
 TermWidth, TermHeight = term.getSize()
 CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
@@ -56,9 +59,9 @@ Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
 TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
 TurtleStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
 -- GPS --
-ServerCoords = {}
+ServerCoords = St.defaultValues.value["ServerCoords"] or {}
 -- Inv --
-Interface = nil
+Interface = St.defaultValues.value["Interface"] and peripheral.wrap(St.defaultValues.value["Interface"]) or nil
 Invs = {}
 Items = {}
 
@@ -68,7 +71,6 @@ term.redirect(Console)
 
 print("Loading environment...")
 Lt = require(filePath.."luatools")
-St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")
 GPS = require(filePath.."GPS")
 Comms = require(filePath.."comms")
