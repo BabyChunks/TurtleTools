@@ -12,7 +12,7 @@ end
 local function tableKeys(t)
   local l = {}
   for k, _ in pairs(t) do
-    l[#l + 1] = k
+    table.insert(l, k)
   end
   return l
 end
@@ -48,6 +48,22 @@ local function getKeyForValue(t, value)
     if v == value then return k end
   end
   return nil
+end
+
+local function tablesEqual(...)
+  local tables = {...}
+  if #tables < 2 then error("Need at least 2 tables to compare") end
+  local ln = #tables[1]
+  for i, t in pairs(tables) do
+    if type(t) ~= "table" then error("tables["..i.."] is not a table") end
+    if #t ~= ln then return false end
+  end
+  for n = 1, #tables - 1 do
+    for k, v in pairs(tables[n]) do
+      if v ~= tables[n + 1][k] then return false end
+    end
+  end
+  return true
 end
 
 local function tablesOverlap(t1, t2)
@@ -114,6 +130,7 @@ return {
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
   getKeyForValue = getKeyForValue,
+  tablesEqual = tablesEqual,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,
   tableAvg = tableAvg,

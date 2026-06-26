@@ -51,10 +51,16 @@ local function getKeyForValue(t, value)
 end
 
 local function tablesEqual(...)
-  local tables = {arg}
-  for i = 1, #tables do
-    for k, v in pairs(tables[i]) do
-      if v ~= tables[i + 1][k] then return false end
+  local tables = {...}
+  if #tables < 2 then error("Need at least 2 tables to compare") end
+  local ln = #tables[1]
+  for i, t in pairs(tables) do
+    if type(t) ~= "table" then error("tables["..i.."] is not a table") end
+    if #t ~= ln then return false end
+  end
+  for n = 1, #tables - 1 do
+    for k, v in pairs(tables[n]) do
+      if v ~= tables[n + 1][k] then return false end
     end
   end
   return true
