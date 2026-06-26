@@ -7,6 +7,8 @@ local function handleCoordsInput(str, emptyOK)
     local incomplete, err = true, false
     local coords = {}
 
+    if type(str) ~= "string" then error("Received "..type(str)..", expected string") end
+
     while incomplete do
         if emptyOK and str == "" then return str end
 
@@ -75,14 +77,14 @@ end
 --[[ Extract vector xyz components in order 
 v: Vector -> num, num, num]]
 local function getVectorComponents(v)
-    if not pcall(v:unm()) then error("argument must be Vector type") end
+    if not pcall(v.unm, v) then error("argument must be Vector type") end
     return v.x, v.y, v.z
 end
 
 --[[ From a vector, return the absolute sum of its 3-dimensional components
 v: Vector -> num, num, num ]]
 local function sumAbsVectorComponents(v)
-    if not pcall(v:unm()) then error("argument must be Vector type") end
+    if not pcall(v.unm, v) then error("argument must be Vector type") end
     return math.abs(v.x) + math.abs(v.y) + math.abs(v.z)
 end
 
@@ -157,6 +159,7 @@ local function setHeading(turn)
         end
 
         Heading = cardinals[i]
+        --print("Heading: "..Heading) _ = io.read()
     end
 end
 
@@ -170,6 +173,7 @@ local function setCoords(move)
         ["-z"] = function() Coords.z = Coords.z - move end
     }
     orientationMatrix[Heading]()
+    --print("Coords: "..Coords.x..", "..Coords.y..", "..Coords.z) _ = io.read()
 end
 
 -- Move the turtle forward and check for obstacles, update coords
@@ -358,14 +362,14 @@ local function move(delta, strip)
     }
 
     if delta.x ~= 0 then
-        for _, action in ipairs(orientationMatrix.x[delta.x / math.abs(delta.x)][Heading]) do
+        for _, action in pairs(orientationMatrix.x[delta.x / math.abs(delta.x)][Heading]) do
             action()
         end
         dig(math.abs(delta.x), strip)
     end
 
     if delta.z ~= 0 then
-        for _, action in ipairs(orientationMatrix.z[delta.z / math.abs(delta.z)][Heading]) do
+        for _, action in pairs(orientationMatrix.z[delta.z / math.abs(delta.z)][Heading]) do
             action()
         end
         dig(math.abs(delta.z), strip)
