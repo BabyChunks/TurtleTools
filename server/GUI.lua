@@ -1,5 +1,34 @@
 -- Library for preparing and drawing to windows on server screen --
 
+local function getLines(text, monitor)
+    local lines = {}
+    local spaces = {}
+    local w, _ = monitor.getSize()
+    local init = 0
+
+    if string.len(text) <= w then return text end
+
+    while true do
+        local i = string.find(text, " ", init)
+        if i then
+            table.insert(spaces, i)
+            init = i + 1
+        else break
+        end
+    end
+    if #spaces == 0 then return text end
+    for j = 1, #spaces do
+        if spaces[j] >= ((#lines + 1) * w) then
+            table.insert(lines, string.sub(text, (#lines * w), spaces[j - 1]))
+        end
+        if #text - #lines * w <= w then
+            table.insert(lines, string.sub(text, spaces[j - 1] + 1))
+            break
+        end
+    end
+    return table.unpack(lines)
+end
+
 --[[ Main function to draw text on screen. Specify which window to draw to, position of 1st character
 or alignment of text, if it should end with a new line and colours
 text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num ]]
@@ -14,7 +43,8 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
     local lines = {}
 
     --wrap text according to window width
-    lines = {Lt.stringBreakUp(text, #text / w)}
+    lines = {getLines(text, monitor)}
+    --lines = {Lt.stringBreakUp(text, #text / w)}
     for n, line in ipairs(lines) do
 
         -- set cursor postion according to position specified or alignment or stay in place by default
@@ -92,8 +122,9 @@ function Menu.draw(self)
     local windowedOptions = {table.unpack(self.options, self.uBound, lBound)}
 
     for i, option in pairs(windowedOptions) do
-        drawText((i == self.selected - self.uBound + 1) and " > " or "   ", self.monitor, {1, i + 1})
-        drawText(option, self.monitor, nil, false, (i == self.selected - self.uBound + 1) and colours.yellow or colours.white)
+        local highlight = i == self.selected - self.uBound + 1
+        drawText(highlight and " > " or "   ", self.monitor, {1, i + 1})
+        drawText(option, self.monitor, nil, false, highlight and colours.yellow or colours.white)
     end
 end
 
