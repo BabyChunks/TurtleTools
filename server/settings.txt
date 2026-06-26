@@ -8,5 +8,10 @@
       caption = "Inventory Sets",
       value = {},
       desc = "Groups of items that cannot be retrieved individually, only as a set. The take the form {'item_name', 'peripheral_name', slot_num}"
+    },
+    defaultValues = {
+      caption = "Default Values",
+      value = {},
+      desc = "Values used by default by computer. Mainly used for debugging."
     }
 }
