@@ -167,6 +167,8 @@ local mainMenu = Menu:new()
             -- GPS.goThere(origin)
             CurrentTask = "Mining"
             Strip.strip(args)
+            CurrentTask = nil
+            Comms.sendStatus("task")
         end,
         function() --Move
             GUI.drawConsole("Input destination coordinates [xyz]", true)
