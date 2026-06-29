@@ -97,16 +97,12 @@ local mainMenu = Menu:new()
                     function() -- Mine
                         local cmd = {head = "mine", body = {}}
                         GUI.drawConsole("Startup sequence for Mine Turtle (tm)")
-                        GUI.drawConsole("Use current coordinates as recall point? (y/[xyz])", true)
-                        local ans = io.read()
-                        if ans ~= "y" and ans ~= "Y" then
-                            ans = {GPS.handleCoordsInput(ans)}
-                        end
-                        table.insert(cmd.body, ans)
+                        GUI.drawConsole("Input recall point:", true)
+                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
                         GUI.drawConsole("Input quarry origin:", true)
-                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
                         GUI.drawConsole("Input quarry boundaries:", true)
-                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read())})
+                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
                         Comms.sendCmd(cmd)
                         while true do
                             if Comms.getStatus() then break end
@@ -156,4 +152,11 @@ Comms.checkModem()
 --locate server--
 ServerCoords = vector.new(GPS.locate())
 
-mainMenu:init()
+--navigate main menu as long as computer is on and catch errors--
+local ok, err = pcall(mainMenu.init, mainMenu)
+if not ok then
+    if TurtleID then
+        Comms.sendStatus("disconnect")
+    end
+    error(err)
+end
