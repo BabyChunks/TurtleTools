@@ -24,7 +24,8 @@
 [ ] Add a description panel to menu drawing
 [ ] Add "courier" option to turtle and controlling server
 [ ] Change the menu drawing so options can be multiline without messing up the cursor
-[ ] make a settings menu on turtle (-s flag) and server side (menu option)
+[ ] make a settings menu on turtle and server side
 [ ] Add "level 0" to error calls that are meant to be caught, so messages look more functional
 [ ] Ideally Comms.sendStatus and sendCmd would take variable args and parsing would go to getStatus and getCmd
+[ ] Change Strip so the first block counts as a tunnel.
 [ ] Implement cc.expect for error catching
