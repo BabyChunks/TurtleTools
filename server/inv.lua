@@ -1,7 +1,5 @@
 -- Library for managing inventory with a computer. One inventory must be designated as the "interfacing" inventory for a given computer
 
-local function updateInterface()
-    local ans = io.read()
     local faces = {
         "front",
         "back",
@@ -10,6 +8,9 @@ local function updateInterface()
         "bottom",
         "top"
     }
+
+local function updateInterface()
+    local ans = io.read()
     while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory") and not Lt.tableContainsValue(faces, ans))  do
         GUI.drawConsole("No inventory by that name on any wired network. Please input the interface inventory's name", true)
         ans = io.read()
@@ -20,7 +21,8 @@ end
 local function updateInvs()
     Invs = {peripheral.find("inventory")}
     for pos, inv in pairs(Invs) do
-        if peripheral.getName(inv) == peripheral.getName(Interface) then table.remove(Invs, pos) end
+        if peripheral.getName(inv) == peripheral.getName(Interface) then table.remove(Invs, pos)
+        elseif Lt.tableContainsValue(faces, peripheral.getName(inv)) then table.remove(Invs, pos) end
     end
 end
 
