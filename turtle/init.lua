@@ -15,7 +15,7 @@ for _, v in pairs(arg) do
             "comms.lua",
             "strip.lua"
         }
-        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/turtle/"
 
         local oldFiles = {}
 

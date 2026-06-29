@@ -13,8 +13,7 @@ for _, v in ipairs(arg) do
             "GPS.lua",
             "comms.lua"
         }
-        local gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
-
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/server/"
         local oldFiles = {}
 
         if #fs.find(filePath.."settings.txt") == 0 then

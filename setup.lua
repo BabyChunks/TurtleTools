@@ -10,10 +10,10 @@ local filePath = "/ChunksWare/"
 print("Setting up files...")
 if turtle then
     table.insert(files, "strip.lua")
-    gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/turtle/"
+    gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/turtle/"
 else
     table.insert(files, "inv.lua")
-    gitPath = "https://raw.githubusercontent.com/BabyChunks/TurtleTools/refs/heads/main/server/"
+    gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/server/"
 end
 
 local oldFiles = {}
