@@ -62,7 +62,7 @@ end
 
 --wait for status from turtle
 local function getStatus()
-    --three types of status: "turtle", "task" and "console"
+    --four types of status: "turtle", "task","console" ans "disconnect"
     local id, msg = rednet.receive("status")
     if id == TurtleID then
         -- "console" status writes to console window
@@ -72,7 +72,7 @@ local function getStatus()
                 sendCmd(io.read())
             end
         -- "turtle" status writes to turtleID window
-        elseif msg.head == "turtle" then -- change this to handle "disconnect" events
+        elseif msg.head == "turtle" then
             GUI.drawTurtleStatus(TurtleID)
         -- "task" status writes to task completion window
         elseif msg.head == "task" then
@@ -84,6 +84,7 @@ local function getStatus()
                 GUI.drawTaskStatus()
                 return true
             end
+        -- "disconnect" severs connection between server and turtle
         elseif msg.head == "disconnect" then
             Console.clear()
             GUI.drawConsole("Turtle #"..TurtleID.." requested to disconnect")
