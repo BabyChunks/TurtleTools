@@ -12,10 +12,15 @@
 [x] change the completion bar to display background colour instead of I's
 [x] print calls in turtle comms should be changed to use the magnificent GUI module!
 [x] put parallel functions where time is important e.g. ping timeout
-[ ] automatically disconnect turtle if main script errors (prob with a multishell)
-[ ] make a settings menu on turtle (-s flag) and server side (menu option)
 [x] make turtle pathfinds around inventory blocks and CC blocks
+[~] automatically disconnect turtle if main script errors (prob with a multishell)
 [ ] Implement inventory sorting and retrieval
 [ ] Add more mining patterns such as stairs, tunnel, quarry
 [ ] Make a "control hub" option on server to control multiple turtles (maybe able to receive calls from other servers to 'rent' a turtle?)
 [ ] Add a setting containing the filepath value, automatically added at setup, so filepath can be changed via update or manually by user
+[ ] Add a "string.lower()" to some read() calls to cut down on logic tests
+[ ] Standardize communication and graphics calls intra and inter machines
+[ ] Add a description panel to menu drawing
+[ ] Change the menu drawing so options can be multiline without messing up the cursor
+[ ] make a settings menu on turtle (-s flag) and server side (menu option)
+[ ] Add "level 0" to error calls that are meant to be caught, so messages look more functional

@@ -11,15 +11,9 @@ local function strip(args)
         args[i] = textutils.unserialize(arg)
     end
 
-    --textutils.pagedPrint(textutils.serialize(args))
-
     local recall = Lt.tablesEqual(args[1], {""}) and vector.new(GPS.getVectorComponents(Coords)) or vector.new(table.unpack(args[1]))
     local origin = Lt.tablesEqual(args[2], {""}) and vector.new(GPS.getVectorComponents(Coords)) or vector.new(table.unpack(args[2]))
     local delta = Lt.tablesEqual(args[3], {""}) and vector.new(table.unpack(St.sampleQuarry)) or vector.new(table.unpack(args[3]))
-
-    print(textutils.serialize(recall)) _ = io.read()
-    print(textutils.serialize(origin)) _ = io.read()
-    print(textutils.serialize(delta)) _ = io.read()
 
     if Lt.tableContainsValue(delta, 0) then error("Quarry boundaries must be 3-dimensional") end
 
