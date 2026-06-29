@@ -47,12 +47,10 @@ for _, v in pairs(arg) do
     end
 end
 
-St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
-
 -- Define globals --
 -- Comms --
-ServerID = St.defaultValues["ServerID"] or nil
-CurrentTask = St.defaultValues["CurrentTask"] or nil
+ServerID = nil
+CurrentTask = nil
 -- GUI --
 TermWidth, TermHeight = term.getSize()
 CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
@@ -60,8 +58,8 @@ Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
 TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
 ServerStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
 -- GPS --
-Coords = St.defaultValues["Coords"] or {}
-Heading  = St.defaultValues["Heading"] or nil
+Coords = {}
+Heading  = nil
 
 --initial screen--
 local initScreen = {
@@ -83,6 +81,7 @@ term.redirect(Console)
 
 print("Loading environment...")
 Lt = require(filePath.."luatools")
+St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
@@ -192,5 +191,11 @@ GPS.checkPick()
 Coords = vector.new(GPS.locate())
 GPS.setHeading()
 
---navigate main menu as long as computer is on--
-mainMenu:init()
+--navigate main menu as long as computer is on and catch errors--
+local ok, err = pcall(mainMenu.init, mainMenu)
+if not ok then
+    if ServerID then
+        Comms.sendStatus("disconnect")
+    end
+    error(err)
+end
