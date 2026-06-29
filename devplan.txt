@@ -18,10 +18,13 @@
 [ ] Add more mining patterns such as stairs, tunnel, quarry
 [ ] Make a "control hub" option on server to control multiple turtles (maybe able to receive calls from other servers to 'rent' a turtle?)
 [ ] Add a setting containing the filepath value, automatically added at setup, so filepath can be changed via update or manually by user
+[ ] Settings shouldn't reset on update
 [ ] Add a "string.lower()" to some read() calls to cut down on logic tests
 [ ] Standardize communication and graphics calls intra and inter machines
 [ ] Add a description panel to menu drawing
+[ ] Add "courier" option to turtle and controlling server
 [ ] Change the menu drawing so options can be multiline without messing up the cursor
 [ ] make a settings menu on turtle (-s flag) and server side (menu option)
 [ ] Add "level 0" to error calls that are meant to be caught, so messages look more functional
 [ ] Ideally Comms.sendStatus and sendCmd would take variable args and parsing would go to getStatus and getCmd
+[ ] Implement cc.expect for error catching

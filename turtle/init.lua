@@ -1,6 +1,9 @@
 --[[ Main script for turtle. Libs are loaded at this level. when called, can specify
 "-u" flag to update libs through wget program, pulling from raw github files. ]]
 
+parallel.waitForAny(
+function()
+
 local filePath = "/ChunksWare/"
 term.clear()
 
@@ -95,7 +98,7 @@ GUI.drawTaskStatus()
 --initialize main menu--
 local mainMenu = Menu:new()
     mainMenu.vMargins = 1
-    mainMenu.options = {"Connect Server", "Mine", "Move", "Quit"}
+    mainMenu.options = {"Connect Server", "Mine", "Move", "Courier", "Quit"}
     mainMenu.actions = {
         function() --Connect server
             GUI.drawConsole("Awaiting server pings... Press any key to cancel")
@@ -173,6 +176,8 @@ local mainMenu = Menu:new()
             GUI.drawConsole("Input destination coordinates [xyz]", true)
             GPS.goThere(vector.new(GPS.handleCoordsInput(io.read())))
         end,
+        function() --Courier
+        end,
         function() --Quit
             Console.clear()
             GUI.drawConsole("Goodbye.")
@@ -199,3 +204,21 @@ if not ok then
     end
     error(err)
 end
+
+end,
+
+function()
+
+os.pullEvent = os.pullEventRaw
+repeat until os.pullEvent("terminate")
+
+if ServerID then Comms.sendStatus("disconnect") end
+
+local x, y = term.getCursorPos()
+term.clearLine()
+term.setCursorPos(1, y)
+term.setTextColour(colours.red)
+term.write("Terminated")
+
+end
+)

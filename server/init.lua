@@ -1,6 +1,9 @@
 --[[ Main script for server. Libs are loaded at this level. when called, can specify
 -- "-u" flag to update libs through wget program, pulling from raw github files. ]]
 
+parallel.waitForAny(
+function() --Main script for software; will run as long as computer is on
+
 local filePath = "/ChunksWare/"
 
 for _, v in ipairs(arg) do
@@ -103,9 +106,10 @@ local mainMenu = Menu:new()
                         GUI.drawConsole("Input quarry boundaries:", true)
                         table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
                         Comms.sendCmd(cmd)
-                        while true do
-                            if Comms.getStatus() then break end
-                        end
+                        -- while true do
+                        --     if Comms.getStatus() then break end
+                        -- end
+                        repeat until Comms.getStatus()
                     end,
                     function() --Move
                     GUI.drawConsole("Input destination coordinates [xyz]", true)
@@ -122,7 +126,7 @@ local mainMenu = Menu:new()
                         return true
                     end
                 }
-                repeat until turtleMenu.nav(turtleMenu)
+                turtleMenu:init()
             end
             local function listen()
                 repeat until Comms.getStatus()
@@ -159,3 +163,20 @@ if not ok then
     end
     error(err)
 end
+
+end,
+function() --catch "terminate" events and cleanup before basically doing what normal termination does
+
+os.pullEvent = os.pullEventRaw
+repeat until os.pullEvent("terminate")
+
+if TurtleID then Comms.sendCmd({head = "disconnect"}) end
+
+local x, y = term.getCursorPos()
+term.clearLine()
+term.setCursorPos(1, y)
+term.setTextColour(colours.red)
+term.write("Terminated")
+
+end
+)
