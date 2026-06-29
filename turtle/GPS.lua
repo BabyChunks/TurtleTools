@@ -68,7 +68,8 @@ local function checkFuel(fuelNeeded)
             end
         end
         if  currFuel < fuelNeeded then
-            Comms.sendStatus("console",{"Insufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory"})
+            Comms.sendStatus("task", {nil, colours.red})
+            Comms.sendStatus("console", {"Insufficient fuel. Add " .. fuelNeeded - currFuel .. " fuel units to turtle's inventory"})
             os.pullEvent("turtle_inventory")
         end
     end

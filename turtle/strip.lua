@@ -62,7 +62,6 @@ local function strip(args)
 
     QuarryCompletion = 0
 
-    Comms.sendStatus("task", {QuarryCompletion, colours.red})
     GPS.checkFuel(Lt.tableSum(fuelNeeded))
     Comms.sendStatus("task", {QuarryCompletion, nil})
 

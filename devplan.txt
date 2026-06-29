@@ -24,3 +24,4 @@
 [ ] Change the menu drawing so options can be multiline without messing up the cursor
 [ ] make a settings menu on turtle (-s flag) and server side (menu option)
 [ ] Add "level 0" to error calls that are meant to be caught, so messages look more functional
+[ ] Ideally Comms.sendStatus and sendCmd would take variable args and parsing would go to getStatus and getCmd
