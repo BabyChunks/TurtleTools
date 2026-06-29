@@ -1,18 +1,3 @@
--- return current turtle's ID
-local function getTurtleID()
-    return TurtleID
-end
-
--- set current turtle's ID
-local function setTurtleID(id)
-    TurtleID = id
-end
-
--- return server's position
-local function getServerCoords()
-    return ServerCoords
-end
-
 -- ping nearby turtles and link with closest one
 local function pingTurtles()
     -- send ping and listen for incoming pongs
