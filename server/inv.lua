@@ -1,13 +1,13 @@
 -- Library for managing inventory with a computer. One inventory must be designated as the "interfacing" inventory for a given computer
 
-    local faces = {
-        "front",
-        "back",
-        "left",
-        "right",
-        "bottom",
-        "top"
-    }
+local faces = {
+    "front",
+    "back",
+    "left",
+    "right",
+    "bottom",
+    "top"
+}
 
 local function updateInterface()
     local ans = io.read()
@@ -30,6 +30,87 @@ local function updateItems()
     if #Invs ~= 0 then
         for _, inv in pairs(Invs) do
             Items[peripheral.getName(inv)] = inv.list()
+        end
+    end
+end
+
+local function pushItems(inv, fromSlot, limit)
+    inv = peripheral.wrap(inv)
+    local invList = Lt.tableShallowCopy(Invs)
+    for k, v in pairs(invList) do
+        if peripheral.getName(v) == inv then table.remove(invList[k]) break end
+    end
+    local itemData = inv.getItemDetail(fromSlot)
+    local count = itemData.count
+    limit = limit or count
+    for _, t in pairs(invList) do
+        limit = limit - inv.pushItems(peripheral.getName(t), fromSlot, limit)
+        if limit == 0 then break end
+    end
+end
+
+local function pullItems(inv, fromName, fromSlot, limit, toSlot)
+
+end
+
+local function swap(inv1, slot1, inv2, slot2)
+    for _, inv in pairs(Invs) do
+        for slot = 1, inv.size() do
+            if not inv.getItemDetail(slot) then
+                inv.pullItems(inv1, slot1, nil, slot)
+                peripheral.call(inv1, "pullItems", inv2, slot2, nil, slot1)
+                inv.pushItems(inv2, slot, nil, slot2)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+-- this doesnt work. i might need to make my own push and pull functions to optimize stacking
+-- actually might recycle this function later to use on user demand to undo re-stacking mistakes.
+-- Use Interface as a temp space to organize inventories
+local function sort()
+    local items = {}
+    for periph, slots in pairs(Items) do
+        for slot, item in pairs(slots) do
+            if not items[item.name] then
+                items[item.name] = {}
+            end
+            table.insert(items[item.name], {name = item.name, count = item.count, periph = periph, slot = slot})
+        end
+    end
+
+    local sortedItems = {}
+    for _, item in pairs(items) do
+        table.insert(sortedItems, item)
+    end
+
+    table.sort(sortedItems, function(a, b) return a[1].name < b[1].name end)
+    textutils.pagedPrint(textutils.serialize(sortedItems)) _ = io.read()
+    local currItem = table.remove(sortedItems)
+    --textutils.pagedPrint(textutils.serialize(currItem)) _ = io.read()
+    local currLoc = table.remove(currItem)
+    for _, inv in pairs(Invs) do
+        for slot = 1, inv.size() do
+            if #currItem ~= 0 then
+                if currLoc.count == 0 then
+                    currLoc = table.remove(currItem)
+                end
+                local itemData = inv.getItemDetail(slot)
+                if not itemData then
+                    inv.pullItems(currLoc.periph, currLoc.slot, nil, slot)
+                else
+                    if itemData.name == currLoc.name then
+                        currLoc.count = currLoc.count - inv.pullItems(currLoc.periph, currLoc.slot, itemData.maxCount - itemData.count, slot)
+                    else
+                        swap(peripheral.getName(inv), slot, currLoc.periph, currLoc.slot)
+                        currLoc.count = 0
+                    end
+                end
+            else
+                currItem = table.remove(sortedItems)
+            end
         end
     end
 end
@@ -57,11 +138,11 @@ local invMenu = Menu:new()
             while true do
                 local ans = string.lower(io.read())
                 local keywords = {}
-                local pullCount = 0
+                local pullTotal = 0
                 if string.match(ans, "^quit$") then
                     flushInterface()
                     break
-                elseif string.match(ans, "%s*") then
+                elseif string.match(ans, "^%s*$") then
                     keywords = {"%a"}
                 else
                     keywords = Lt.argparse(ans)
@@ -73,15 +154,22 @@ local invMenu = Menu:new()
                     for slot, item in pairs(slots) do
                         for _, keyword in pairs(keywords) do
                             if string.match(item.name, keyword) then
-                                pullCount = pullCount + Interface.pullItems(periph, slot)
+                                local pullCount = Interface.pullItems(periph, slot)
+                                pullTotal = pullTotal + pullCount
+                                if item.count ~= pullCount then
+                                    GUI.drawConsole("Interface full. Please view the current inventory and press Enter when you are ready to view the other search items.", true)
+                                    _ = io.read()
+                                    flushInterface()
+                                end
+                                break
                             end
                         end
                     end
                 end
-                if pullCount == 0 then
+                if pullTotal == 0 then
                     GUI.drawConsole("No item found with keyword"..((#keywords > 1) and "s" or ""))
                 else
-                    GUI.drawConsole("Done. "..pullCount.." items moved to "..peripheral.getName(Interface))
+                    GUI.drawConsole("Done. "..pullTotal.." items moved to "..peripheral.getName(Interface))
                 end
             end
         end,
@@ -96,11 +184,11 @@ local invMenu = Menu:new()
                     local count = flushInterface()
                     if count ~= 0 then
                         GUI.drawConsole("Done. "..count.. " items put away in inventory")
-                        os.sleep(5)
+                        os.sleep(2)
                         break
                     else
                         GUI.drawConsole("No items could be moved")
-                        os.sleep(5)
+                        os.sleep(2)
                         break
                     end
                 elseif ans == "n" then break end
@@ -118,6 +206,5 @@ local invMenu = Menu:new()
 
 return {
     updateInterface = updateInterface,
-    itemMenu = itemMenu,
     invMenu = invMenu
 }
