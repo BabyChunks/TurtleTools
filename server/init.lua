@@ -3,167 +3,167 @@
 
 parallel.waitForAny(
 function() --Main script for software; will run as long as computer is on
-local filePath = "/ChunksWare/"
+    local filePath = "/ChunksWare/"
     term.clear()
 
     for _, v in pairs(arg) do
-    -- update sequence if flag -u is specified
-    if v == "-u" then
-        print("Updating files...")
-        local files = {
-            "luatools.lua",
-            "GUI.lua",
-            "GPS.lua",
+        -- update sequence if flag -u is specified
+        if v == "-u" then
+            print("Updating files...")
+            local files = {
+                "luatools.lua",
+                "GUI.lua",
+                "GPS.lua",
                 "comms.lua",
                 "inv.lua",
                 "init.lua"
-        }
-        local gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/server/"
+            }
+            local gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/server/"
 
             if not fs.exists(filePath.."settings.txt") then
-            table.insert(files, "settings.txt")
-        end
+                table.insert(files, "settings.txt")
+            end
 
-        for _, file in pairs(files) do
+            for _, file in pairs(files) do
                 if fs.exists(filePath..file) then fs.delete(filePath..file) end
-            shell.execute("wget", gitPath..file, filePath..file)
-        end
+                shell.execute("wget", gitPath..file, filePath..file)
+            end
 
             if fs.exists("/startup/alias.lua") then fs.delete("/startup/alias.lua") end
             shell.execute("wget", gitPath.."alias.lua", "/startup/alias.lua")
 
-        print("Done!")
-        os.sleep(0.8)
-        term.clear()
+            print("Done!")
+            os.sleep(0.8)
+            term.clear()
+        end
     end
-end
 
--- Loading settings --
-St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
+    -- Loading settings --
+    St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 
--- Define globals --
--- Comms --
-TurtleID = St.defaultValues.value["TurtleID"] or nil
-CurrentTask = St.defaultValues.value["CurrentTask"] or nil
--- GUI --
-TermWidth, TermHeight = term.getSize()
-CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
-Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
-TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
-TurtleStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
--- GPS --
-ServerCoords = St.defaultValues.value["ServerCoords"] or {}
--- Inv --
-Interface = St.defaultValues.value["Interface"] and peripheral.wrap(St.defaultValues.value["Interface"]) or nil
-Invs = {}
-Items = {}
+    -- Define globals --
+    -- Comms --
+    TurtleID = St.defaultValues.value["TurtleID"] or nil
+    CurrentTask = St.defaultValues.value["CurrentTask"] or nil
+    -- GUI --
+    TermWidth, TermHeight = term.getSize()
+    CorpBanner = window.create(term.native(), 1, 1, TermWidth, 3)
+    Console = window.create(term.native(), 1, 4, TermWidth, TermHeight - 6)
+    TaskStatus = window.create(term.native(), 1, TermHeight - 1, TermWidth, 1)
+    TurtleStatus = window.create(term.native(), 1, TermHeight, TermWidth, 1)
+    -- GPS --
+    ServerCoords = St.defaultValues.value["ServerCoords"] or {}
+    -- Inv --
+    Interface = St.defaultValues.value["Interface"] and peripheral.wrap(St.defaultValues.value["Interface"]) or nil
+    Invs = {}
+    Items = {}
 
-term.clear()
+    term.clear()
     term.setCursorPos(1, 1)
-term.redirect(Console)
+    term.redirect(Console)
 
-print("Loading environment...")
-Lt = require(filePath.."luatools")
-GUI = require(filePath.."GUI")
-GPS = require(filePath.."GPS")
-Comms = require(filePath.."comms")
-Inv = require(filePath.."inv")
+    print("Loading environment...")
+    Lt = require(filePath.."luatools")
+    GUI = require(filePath.."GUI")
+    GPS = require(filePath.."GPS")
+    Comms = require(filePath.."comms")
+    Inv = require(filePath.."inv")
 
--- Initialize entire screen
+    -- Initialize entire screen
     GUI.drawBanner()
-GUI.drawTurtleStatus()
-GUI.drawTaskStatus()
+    GUI.drawTurtleStatus()
+    GUI.drawTaskStatus()
 
--- Initiailze main menu --
-local mainMenu = Menu:new()
-    mainMenu.vMargins = 1
+    -- Initiailze main menu --
+    local mainMenu = Menu:new()
+        mainMenu.vMargins = 1
         mainMenu.options = {"Turtle Control", "Inventory", "Quit"}
-    mainMenu.actions = {
+        mainMenu.actions = {
             function() --Turtle Control
-            GUI.drawConsole("Pinging nearby turtles...")
-            if Comms.pingTurtles() then return end
-            local function navMenu()
-                local turtleMenu = Menu:new()
+                GUI.drawConsole("Pinging nearby turtles...")
+                if Comms.pingTurtles() then return end
+                local function navMenu()
+                    local turtleMenu = Menu:new()
                     turtleMenu.title = "Turtle Control"
-                turtleMenu.vMargins = 1
-                turtleMenu.options = {"Mine", "Move", "Courier", "Disconnect"}
-                turtleMenu.actions = {
-                    function() -- Mine
-                        local cmd = {head = "mine", body = {}}
-                        GUI.drawConsole("Startup sequence for Mine Turtle (tm)")
-                        GUI.drawConsole("Input recall point:", true)
-                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
-                        GUI.drawConsole("Input quarry origin:", true)
-                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
-                        GUI.drawConsole("Input quarry boundaries:", true)
-                        table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
-                        Comms.sendCmd(cmd)
-                        repeat until Comms.getStatus()
-                    end,
-                    function() --Move
+                    turtleMenu.vMargins = 1
+                    turtleMenu.options = {"Mine", "Move", "Courier", "Disconnect"}
+                    turtleMenu.actions = {
+                        function() -- Mine
+                            local cmd = {head = "mine", body = {}}
+                            GUI.drawConsole("Startup sequence for Mine Turtle (tm)")
+                            GUI.drawConsole("Input recall point:", true)
+                            table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
+                            GUI.drawConsole("Input quarry origin:", true)
+                            table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
+                            GUI.drawConsole("Input quarry boundaries:", true)
+                            table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
+                            Comms.sendCmd(cmd)
+                            repeat until Comms.getStatus()
+                        end,
+                        function() --Move
                         GUI.drawConsole("Input destination coordinates:", true)
-                    Comms.sendCmd({head = "move", body = {{GPS.handleCoordsInput(io.read())}}})
-                    end,
-                    function() --Courier
-                    end,
-                    function() --Disconnect
-                        Comms.sendCmd({head = "disconnect"})
-                        CurrentTask = nil
-                        TurtleID = nil
-                        GUI.drawTaskStatus()
-                        GUI.drawTurtleStatus()
-                        return true
-                    end
-                }
-                turtleMenu:init()
-            end
-            local function listen()
-                repeat until Comms.getStatus()
-                return true
-            end
-            parallel.waitForAny(navMenu, listen)
-        end,
-        function() --Inventory
-            if not Interface then
+                        Comms.sendCmd({head = "move", body = {{GPS.handleCoordsInput(io.read())}}})
+                        end,
+                        function() --Courier
+                        end,
+                        function() --Disconnect
+                            Comms.sendCmd({head = "disconnect"})
+                            CurrentTask = nil
+                            TurtleID = nil
+                            GUI.drawTaskStatus()
+                            GUI.drawTurtleStatus()
+                            return true
+                        end
+                    }
+                    turtleMenu:init()
+                end
+                local function listen()
+                    repeat until Comms.getStatus()
+                    return true
+                end
+                parallel.waitForAny(navMenu, listen)
+            end,
+            function() --Inventory
+                if not Interface then
                     GUI.drawConsole([["No interface inventory registered. Input the peripheral name of this computer's
                     interface inventory, or toggle on its connected modem"]], true)
-                Inv.updateInterface()
+                    Inv.updateInterface()
+                end
+                Inv.invMenu:init()
+            end,
+            function() --  Quit
+                Console.clear()
+                GUI.drawConsole("Goodbye.")
+                os.sleep(1)
+                os.reboot()
             end
-            Inv.invMenu:init()
-        end,
-        function() --  Quit
-            Console.clear()
-            GUI.drawConsole("Goodbye.")
-            os.sleep(1)
-            os.reboot()
+        }
+
+    --Make sure modem is placed on computer--
+    Comms.checkModem()
+
+    --locate server--
+    ServerCoords = vector.new(GPS.locate())
+
+    --navigate main menu as long as computer is on and catch errors--
+    local ok, err = pcall(mainMenu.init, mainMenu)
+    if not ok then
+        if TurtleID then
+            Comms.sendStatus("disconnect")
         end
-    }
-
---Make sure modem is placed on computer--
-Comms.checkModem()
-
---locate server--
-ServerCoords = vector.new(GPS.locate())
-
---navigate main menu as long as computer is on and catch errors--
-local ok, err = pcall(mainMenu.init, mainMenu)
-if not ok then
-    if TurtleID then
-        Comms.sendStatus("disconnect")
-    end
         error(err, 1) --check if level is good
-end
+    end
 end,
 function() --catch "terminate" events and cleanup before basically doing what normal termination does
-os.pullEvent = os.pullEventRaw
-repeat until os.pullEvent("terminate")
+    os.pullEvent = os.pullEventRaw
+    repeat until os.pullEvent("terminate")
 
-if TurtleID then Comms.sendCmd({head = "disconnect"}) end
+    if TurtleID then Comms.sendCmd({head = "disconnect"}) end
 
-local x, y = term.getCursorPos()
-term.clearLine()
-term.setCursorPos(1, y)
-term.setTextColour(colours.red)
-term.write("Terminated")
+    local x, y = term.getCursorPos()
+    term.clearLine()
+    term.setCursorPos(1, y)
+    term.setTextColour(colours.red)
+    term.write("Terminated")
 end
 )
