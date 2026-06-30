@@ -10,15 +10,26 @@ local faces = {
 }
 
 local function updateInterface()
+    parallel.waitForAny(
+        function()
     local ans = io.read()
     while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory") and not Lt.tableContainsValue(faces, ans))  do
         GUI.drawConsole("No inventory by that name on any wired network. Please input the interface inventory's name", true)
         ans = io.read()
     end
     Interface = peripheral.wrap(ans)
+        end,
+        function()
+            local address = ""
+            repeat  _, address = os.pullEvent("peripheral")
+            until peripheral.hasType(address, "inventory") and not Lt.tableContainsValue(faces, address)
+            Interface = peripheral.wrap(address)
+            term.setCursorBlink(false)
+        end
+    )
 end
 
-local function updateInvs()
+local function updateInvs() -- try using modem.getNamesRemote()
     Invs = {peripheral.find("inventory")}
     for pos, inv in pairs(Invs) do
         if peripheral.getName(inv) == peripheral.getName(Interface) then table.remove(Invs, pos)
@@ -126,6 +137,7 @@ local function flushInterface()
 end
 
 local invMenu = Menu:new()
+    invMenu.title = "Inventory"
     invMenu.vMargins = 1
     invMenu.options = {"Retrieve Items", "Stock Items", "Change Interface", "Quit"}
     invMenu.actions = {
