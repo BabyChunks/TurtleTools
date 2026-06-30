@@ -31,6 +31,7 @@
     - get rid of turtlestatus as server will control multiple turtles with multiple status
 [ ] Add a setting containing the filepath value, automatically added at setup, so filepath can be changed via update or manually by user
 [ ] Settings shouldn't reset on update
+[ ] Settings should be contained in the computer settings
 [ ] Standardize communication and graphics calls intra and inter machines
 [ ] Add "level 0" to error calls that are meant to be caught, so messages look more functional
 [ ] Ideally Comms.sendStatus and sendCmd would take variable args and parsing would go to getStatus and getCmd
