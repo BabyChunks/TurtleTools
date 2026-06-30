@@ -43,13 +43,6 @@ local function tableContainsKey(t, element)
     return nil
 end
 
-local function getKeyForValue(t, value)
-  for k, v in pairs(t) do
-    if v == value then return k end
-  end
-  return nil
-end
-
 local function tablesEqual(...)
   local tables = {...}
   if #tables < 2 then error("Need at least 2 tables to compare") end
@@ -98,8 +91,7 @@ local function argparse(str, keys)
   local args = {}
 
   for arg in string.gmatch(str, "[^,%s]+") do
-    arg = tonumber(arg) or arg
-    table.insert(parsed, arg)
+    table.insert(parsed, tonumber(arg) or arg)
   end
 
   if #parsed == 0 then
@@ -129,7 +121,6 @@ return {
   tableKeys = tableKeys,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
-  getKeyForValue = getKeyForValue,
   tablesEqual = tablesEqual,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,
