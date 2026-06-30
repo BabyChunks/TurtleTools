@@ -12,12 +12,12 @@ local faces = {
 local function updateInterface()
     parallel.waitForAny(
         function()
-    local ans = io.read()
-    while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory") and not Lt.tableContainsValue(faces, ans))  do
-        GUI.drawConsole("No inventory by that name on any wired network. Please input the interface inventory's name", true)
-        ans = io.read()
-    end
-    Interface = peripheral.wrap(ans)
+            local ans = io.read()
+            while not (peripheral.isPresent(ans) and peripheral.hasType(ans, "inventory") and not Lt.tableContainsValue(faces, ans))  do
+                GUI.drawConsole("No inventory by that name on any wired network. Please input the interface inventory's name", true)
+                ans = io.read()
+            end
+            Interface = peripheral.wrap(ans)
         end,
         function()
             local address = ""
