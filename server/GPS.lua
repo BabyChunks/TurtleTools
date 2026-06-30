@@ -4,14 +4,15 @@
 (where '*' is any whitespace characters or commas) and return single coords in order 
 str: str , emptyOK: bool -> num, num, num ]]--
 local function handleCoordsInput(str, emptyOK)
-    local incomplete, err = true, false
+    local incomplete = true
     local coords = {}
 
     while incomplete do
         if emptyOK and str == "" then return str end
-        
-        err, coords = pcall(Lt.argparse, str)
-        if err then
+
+        local ok, err = pcall(Lt.argparse, str)
+        if ok then
+            coords = err
             incomplete = false
             for _, coord in pairs(coords) do
                 if type(coord) ~= "number" then
@@ -27,7 +28,7 @@ local function handleCoordsInput(str, emptyOK)
                 incomplete = true
             end
         else
-            GUI.drawConsole(coords, true)
+            GUI.drawConsole(err, true)
             str = io.read()
         end
     end

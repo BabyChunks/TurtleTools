@@ -98,8 +98,7 @@ local function argparse(str, keys)
   local args = {}
 
   for arg in string.gmatch(str, "[^,%s]+") do
-    arg = tonumber(arg) or arg
-    table.insert(parsed, arg)
+    table.insert(parsed, tonumber(arg) or arg)
   end
 
   if #parsed == 0 then

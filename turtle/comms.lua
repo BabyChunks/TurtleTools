@@ -74,12 +74,9 @@ local function checkModem()
         elseif peripheral.getName(modem) == "right" then
             turtle.equipRight()
             turtle.equipLeft()
-            rednet.open("left")
-            return
-        else
-            rednet.open("left")
-            return
         end
+        rednet.open("left")
+        return
     end
 end
 

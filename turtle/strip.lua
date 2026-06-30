@@ -86,9 +86,7 @@ local function strip(args)
         end
 
         for cycle = cycleStart, cycleStop, step do
-            --print("cycle = "..cycle) _ = io.read()
             for t = tunnelStart, tunnelStop, step do
-                --print("t = "..t) _ = io.read()
                 local factors = {
                     x = (t % 2) * (abs.x - 1),
                     y = (i * layer + pattern.yOffset[t]),
@@ -98,12 +96,6 @@ local function strip(args)
                     origin.x + signs.x * factors.x,
                     origin.y + signs.y * factors.y,
                     origin.z + signs.z * factors.z)
-
-                -- print("factors: ") 
-                -- print("x = ("..t.." % 2) * ("..abs.x.." - 1) = "..factors.x)
-                -- print("y = ("..i.." * "..layer.." + "..pattern.yOffset[t]..") = "..factors.y)
-                -- print("z = ("..pattern.ln.." * "..cycle.." + ".. pattern.zOffset[t]..") = "..factors.z) _ = io.read()
-                -- print("v: "..v.x..", "..v.y..", "..v.z) _ = io.read()
 
                 --QuarryCompletion = ((layer / nLayer) * 0.9 + ((cycleStart + (step * cycle)) / nCycle) * 0.09)
                 QuarryCompletion = (delta:mul(Coords:sub(origin):dot(delta) / delta:length() ^ 2):length()) / delta:length()

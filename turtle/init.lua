@@ -2,8 +2,7 @@
 "-u" flag to update libs through wget program, pulling from raw github files. ]]
 
 parallel.waitForAny(
-function()
-
+function() --Main script for software; will run as long as computer is on
 local filePath = "/ChunksWare/"
 term.clear()
 
@@ -39,6 +38,9 @@ for _, v in pairs(arg) do
     end
 end
 
+    -- Loading settings --
+    St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
+
 -- Define globals --
 -- Comms --
 ServerID = nil
@@ -68,12 +70,11 @@ for _, line in ipairs(initScreen) do
 end
 os.sleep(2)
 term.clear()
-term.setCursorPos(1,1)
+    term.setCursorPos(1, 1)
 term.redirect(Console)
 
 print("Loading environment...")
 Lt = require(filePath.."luatools")
-St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
 GUI = require(filePath.."GUI")
 Comms = require(filePath.."comms")
 GPS = require(filePath.."GPS")
@@ -162,7 +163,7 @@ local mainMenu = Menu:new()
             Comms.sendStatus("task")
         end,
         function() --Move
-            GUI.drawConsole("Input destination coordinates [xyz]", true)
+                GUI.drawConsole("Input destination coordinates:", true)
             GPS.goThere(vector.new(GPS.handleCoordsInput(io.read())))
         end,
         function() --Courier
@@ -193,11 +194,8 @@ if not ok then
     end
     error(err)
 end
-
 end,
-
-function()
-
+function() --catch "terminate" events and cleanup before basically doing what normal termination does
 os.pullEvent = os.pullEventRaw
 repeat until os.pullEvent("terminate")
 
@@ -208,6 +206,5 @@ term.clearLine()
 term.setCursorPos(1, y)
 term.setTextColour(colours.red)
 term.write("Terminated")
-
 end
 )

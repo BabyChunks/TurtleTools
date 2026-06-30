@@ -115,7 +115,7 @@ function Menu.draw(self)
 
     --handle menus longer than console screen, move upper and lower boundary according to previous state and current selection
     self.uBound = math.min(self.selected, self.uBound)
-    self.uBound = math.max(self.selected - height + (self.vMargins *2 + 1), self.uBound)
+    self.uBound = math.max(self.selected - height + (self.vMargins * 2 + 1), self.uBound)
 
     local lBound = self.uBound + height - (self.vMargins * 2 + 1)
 

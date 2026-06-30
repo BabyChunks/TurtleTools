@@ -160,7 +160,6 @@ local function setHeading(turn)
         end
 
         Heading = cardinals[i]
-        --print("Heading: "..Heading) _ = io.read()
     end
 end
 
@@ -174,7 +173,6 @@ local function setCoords(move)
         ["-z"] = function() Coords.z = Coords.z - move end
     }
     orientationMatrix[Heading]()
-    --print("Coords: "..Coords.x..", "..Coords.y..", "..Coords.z) _ = io.read()
 end
 
 -- Move the turtle forward and check for obstacles, update coords
@@ -234,7 +232,7 @@ local function down()
     Coords.y = Coords.y - 1
 end
 
--- Recursive function to get around essential or undestructible blocks
+-- Recursive function to get around essential or indestructible blocks
 local function circumvent()
     if not pcall(forward) then
         turnRight()
@@ -294,29 +292,25 @@ local function dig(blocks, strip)
             if Heading == "x" then
                 fwAxisCoord = Coords.x
                 swAxisCoord = Coords.z
-                repeat
-                    circumvent()
+                repeat circumvent()
                 until swAxisCoord == Coords.z and fwAxisCoord < Coords.x
                 step = step + (Coords.x - fwAxisCoord) - 1
             elseif Heading == "-x" then
                 fwAxisCoord = Coords.x
                 swAxisCoord = Coords.z
-                repeat
-                    circumvent()
+                repeat circumvent()
                 until swAxisCoord == Coords.z and fwAxisCoord > Coords.x
                 step = step + (fwAxisCoord - Coords.x) - 1
             elseif Heading == "z" then
                 fwAxisCoord = Coords.z
                 swAxisCoord = Coords.x
-                repeat
-                    circumvent()
+                repeat circumvent()
                 until swAxisCoord == Coords.x and fwAxisCoord < Coords.z
                 step = step + (Coords.z - fwAxisCoord) - 1
             elseif Heading == "-z" then
                 fwAxisCoord = Coords.z
                 swAxisCoord = Coords.x
-                repeat
-                    circumvent()
+                repeat circumvent()
                 until swAxisCoord == Coords.x and fwAxisCoord > Coords.z
                 step = step + (fwAxisCoord - Coords.z) - 1
             end

@@ -3,8 +3,8 @@
 
 parallel.waitForAny(
 function() --Main script for software; will run as long as computer is on
-
 local filePath = "/ChunksWare/"
+    term.clear()
 
     for _, v in pairs(arg) do
     -- update sequence if flag -u is specified
@@ -59,7 +59,7 @@ Invs = {}
 Items = {}
 
 term.clear()
-term.setCursorPos(1,1)
+    term.setCursorPos(1, 1)
 term.redirect(Console)
 
 print("Loading environment...")
@@ -77,9 +77,9 @@ GUI.drawTaskStatus()
 -- Initiailze main menu --
 local mainMenu = Menu:new()
     mainMenu.vMargins = 1
-    mainMenu.options = {"Control Turtle", "Inventory", "Quit"}
+        mainMenu.options = {"Turtle Control", "Inventory", "Quit"}
     mainMenu.actions = {
-        function() --Control Turtle
+            function() --Turtle Control
             GUI.drawConsole("Pinging nearby turtles...")
             if Comms.pingTurtles() then return end
             local function navMenu()
@@ -97,13 +97,10 @@ local mainMenu = Menu:new()
                         GUI.drawConsole("Input quarry boundaries:", true)
                         table.insert(cmd.body, {GPS.handleCoordsInput(io.read(), true)})
                         Comms.sendCmd(cmd)
-                        -- while true do
-                        --     if Comms.getStatus() then break end
-                        -- end
                         repeat until Comms.getStatus()
                     end,
                     function() --Move
-                    GUI.drawConsole("Input destination coordinates [xyz]", true)
+                        GUI.drawConsole("Input destination coordinates:", true)
                     Comms.sendCmd({head = "move", body = {{GPS.handleCoordsInput(io.read())}}})
                     end,
                     function() --Courier
@@ -154,10 +151,8 @@ if not ok then
     end
     error(err)
 end
-
 end,
 function() --catch "terminate" events and cleanup before basically doing what normal termination does
-
 os.pullEvent = os.pullEventRaw
 repeat until os.pullEvent("terminate")
 
@@ -168,6 +163,5 @@ term.clearLine()
 term.setCursorPos(1, y)
 term.setTextColour(colours.red)
 term.write("Terminated")
-
 end
 )
