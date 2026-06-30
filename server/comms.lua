@@ -27,10 +27,9 @@ local function pingTurtles()
         -- if no turtle pinged back, prompt for retry
         while true do
             GUI.drawConsole("Ping request timed out. Send a new ping?(y/n)", true)
-            local ans = io.read()
-            if ans == "n" or ans == "N" then
-                return true
-            elseif ans == "y" or ans == "Y" then
+            local ans = string.lower(io.read())
+            if ans == "n" then return true
+            elseif ans == "y" then
                 pingTurtles()
                 break
             end
