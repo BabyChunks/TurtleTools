@@ -1,0 +1,1 @@
+shell.execute("alias", "chunks", "/ChunksWare/init.lua")
