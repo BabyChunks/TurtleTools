@@ -81,7 +81,7 @@ GPS = require(filePath.."GPS")
 Strip = require(filePath.."strip")
 
 -- Initialize entire screen
-GUI.drawCorpBanner()
+    GUI.drawBanner()
 GUI.drawServerStatus()
 GUI.drawTaskStatus()
 

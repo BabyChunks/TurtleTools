@@ -70,7 +70,7 @@ Comms = require(filePath.."comms")
 Inv = require(filePath.."inv")
 
 -- Initialize entire screen
-GUI.drawCorpBanner()
+    GUI.drawBanner()
 GUI.drawTurtleStatus()
 GUI.drawTaskStatus()
 
@@ -84,6 +84,7 @@ local mainMenu = Menu:new()
             if Comms.pingTurtles() then return end
             local function navMenu()
                 local turtleMenu = Menu:new()
+                    turtleMenu.title = "Turtle Control"
                 turtleMenu.vMargins = 1
                 turtleMenu.options = {"Mine", "Move", "Courier", "Disconnect"}
                 turtleMenu.actions = {

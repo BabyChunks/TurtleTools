@@ -86,7 +86,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
 end
 
 --Update banner
-local function drawCorpBanner()
+local function drawBanner()
     local logo = "CHUNKSWARE TECH"
     local filler1 = ("/"):rep(TermWidth / 2 - string.len(logo) / 2)
     local filler2 = ("#"):rep(TermWidth)
@@ -114,7 +114,7 @@ function Menu.draw(self)
 
     --handle menus longer than screen, move upper and lower boundary according to previous state and current selection
     self.uBound = math.min(self.selected, self.uBound)
-    self.uBound = math.max(self.selected - height + (self.vMargins *2 + 1), self.uBound)
+    self.uBound = math.max(self.selected - height + (self.vMargins * 2 + 1), self.uBound)
 
     local lBound = self.uBound + height - (self.vMargins * 2 + 1)
 
@@ -149,6 +149,7 @@ end
 
 -- Call to start menu navigation and update, exit if receives true
 function Menu.init(self)
+    drawBanner(self.title)
     repeat until self.nav(self)
 end
 
@@ -208,7 +209,7 @@ end
 
 return {
     drawText = drawText,
-    drawCorpBanner = drawCorpBanner,
+    drawBanner = drawBanner,
     drawServerStatus = drawServerStatus,
     drawTaskStatus = drawTaskStatus,
     drawConsole = drawConsole,

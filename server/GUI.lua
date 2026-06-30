@@ -87,19 +87,20 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
 end
 
 --update banner
-local function drawCorpBanner()
-    local logo = "CHUNKSWARE TECH"
-    local filler1 = ("/"):rep(TermWidth / 2 - string.len(logo) / 2)
+local function drawBanner(title)
+    title = title or "CHUNKSWARE TECH"
+    local filler1 = ("/"):rep(TermWidth / 2 - string.len(title) / 2)
     local filler2 = ("#"):rep(TermWidth)
 
     CorpBanner.clear()
     drawText(filler2, CorpBanner, {1, 1}, true, colours.yellow)
-    drawText(filler1..logo..filler1, CorpBanner, "left", true, colours.yellow)
+    drawText(filler1..title..filler1, CorpBanner, "left", true, colours.yellow)
     drawText(filler2, CorpBanner, "left", nil, colours.yellow)
 end
 
 --[[ Menu class object with basic methods for updating and navigating.  ]]
 Menu = {
+    title = nil,
     vMargins = 0,
     monitor = Console,
     uBound = 1,
@@ -150,6 +151,7 @@ end
 
 -- Call to start menu navigation and update, exit if receives true
 function Menu.init(self)
+    drawBanner(self.title)
     repeat until self.nav(self)
 end
 
@@ -209,7 +211,7 @@ end
 
 return {
     drawText = drawText,
-    drawCorpBanner = drawCorpBanner,
+    drawBanner = drawBanner,
     drawTurtleStatus = drawTurtleStatus,
     drawTaskStatus = drawTaskStatus,
     drawConsole = drawConsole,
