@@ -1,4 +1,3 @@
-[x] make drawText wrap text when too long
 [x] make functions return ints, not vectors to declutter functions calls when sending messages
     - turtle/GPS/handleCoordsInput
     - turtle/GPS/locate
@@ -13,19 +12,29 @@
 [x] print calls in turtle comms should be changed to use the magnificent GUI module!
 [x] put parallel functions where time is important e.g. ping timeout
 [x] make turtle pathfinds around inventory blocks and CC blocks
-[~] automatically disconnect turtle if main script errors (prob with a multishell)
-[ ] Implement inventory sorting and retrieval
-[ ] Add more mining patterns such as stairs, tunnel, quarry
-[ ] Make a "control hub" option on server to control multiple turtles (maybe able to receive calls from other servers to 'rent' a turtle?)
-[ ] Add a setting containing the filepath value, automatically added at setup, so filepath can be changed via update or manually by user
-[ ] Settings shouldn't reset on update
-[ ] Add a "string.lower()" to some read() calls to cut down on logic tests
-[ ] Standardize communication and graphics calls intra and inter machines
+[x] automatically disconnect turtle if main script errors (prob with a multishell)
+[x] Add a "string.lower()" to some read() calls to cut down on logic tests
+[x] Make it so toggling a modem connected to an inventory updates Interface
+[ ] make drawText wrap text when too long
+[ ] Make banner spell out the menu title (can be part of menu initialization)
+[ ] Make custom push and pull for inventory management
+[ ] Implement checks for Interface integrity
+[ ] Implement sets to inventory managements
+[ ] Relocate all things concerning controlling turtles in a new lib named control.lua
 [ ] Add a description panel to menu drawing
 [ ] Add "courier" option to turtle and controlling server
 [ ] Change the menu drawing so options can be multiline without messing up the cursor
 [ ] make a settings menu on turtle and server side
+[ ] Implement inventory sorting and retrieval
+[ ] Add more mining patterns such as stairs, tunnel, quarry
+[ ] Make a "control hub" option on server to control multiple turtles
+    - get rid of turtlestatus as server will control multiple turtles with multiple status
+[ ] Add a setting containing the filepath value, automatically added at setup, so filepath can be changed via update or manually by user
+[ ] Settings shouldn't reset on update
+[ ] Standardize communication and graphics calls intra and inter machines
 [ ] Add "level 0" to error calls that are meant to be caught, so messages look more functional
 [ ] Ideally Comms.sendStatus and sendCmd would take variable args and parsing would go to getStatus and getCmd
-[ ] Change Strip so the first block counts as a tunnel.
+[ ] Change Strip so the first tunnel is part of every pattern, instead of an incidental first step
 [ ] Implement cc.expect for error catching
+[ ] Make mineVein check for a specific list of blocks instead of generic "ore" tag
+[ ] Put horizontal margins and possible columns to menu objects
