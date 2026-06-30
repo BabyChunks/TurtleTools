@@ -125,7 +125,8 @@ local mainMenu = Menu:new()
         end,
         function() --Inventory
             if not Interface then
-                GUI.drawConsole("No interface inventory registered. Input the peripheral name of this computer's interface inventory", true)
+                    GUI.drawConsole([["No interface inventory registered. Input the peripheral name of this computer's
+                    interface inventory, or toggle on its connected modem"]], true)
                 Inv.updateInterface()
             end
             Inv.invMenu:init()
@@ -150,7 +151,7 @@ if not ok then
     if TurtleID then
         Comms.sendStatus("disconnect")
     end
-    error(err)
+        error(err, 1) --check if level is good
 end
 end,
 function() --catch "terminate" events and cleanup before basically doing what normal termination does
