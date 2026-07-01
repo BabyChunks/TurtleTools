@@ -137,7 +137,7 @@ local function flushInterface()
 end
 
 local invMenu = Menu:new()
-    invMenu.title = "Inventory"
+    invMenu.title = "INVENTORY"
     invMenu.vMargins = 1
     invMenu.options = {"Retrieve Items", "Stock Items", "Change Interface", "Quit"}
     invMenu.actions = {

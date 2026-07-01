@@ -70,7 +70,7 @@ function() --Main script for software; will run as long as computer is on
     Inv = require(filePath.."inv")
 
     -- Initialize entire screen
-    GUI.drawBanner()
+    --GUI.drawBanner()
     GUI.drawTurtleStatus()
     GUI.drawTaskStatus()
 
@@ -84,7 +84,7 @@ function() --Main script for software; will run as long as computer is on
                 if Comms.pingTurtles() then return end
                 local function navMenu()
                     local turtleMenu = Menu:new()
-                    turtleMenu.title = "Turtle Control"
+                    turtleMenu.title = "TURTLE CONTROL"
                     turtleMenu.vMargins = 1
                     turtleMenu.options = {"Mine", "Move", "Courier", "Disconnect"}
                     turtleMenu.actions = {

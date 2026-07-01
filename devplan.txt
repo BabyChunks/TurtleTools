@@ -1,8 +1,4 @@
 [x] make functions return ints, not vectors to declutter functions calls when sending messages
-    - turtle/GPS/handleCoordsInput
-    - turtle/GPS/locate
-    - server/GPS/handleCoordsInput
-    - server/GPS/locate
 [x] send recall point or "y" to turtle for first mining arg
 [x] de-index caller args for turtle init
 [x] change all occurences of getHeading() for setHeading()
@@ -15,8 +11,8 @@
 [x] automatically disconnect turtle if main script errors (prob with a multishell)
 [x] Add a "string.lower()" to some read() calls to cut down on logic tests
 [x] Make it so toggling a modem connected to an inventory updates Interface
+[x] Make banner spell out the menu title (can be part of menu initialization)
 [ ] make drawText wrap text when too long
-[ ] Make banner spell out the menu title (can be part of menu initialization)
 [ ] Make custom push and pull for inventory management
 [ ] Implement checks for Interface integrity
 [ ] Implement sets to inventory managements

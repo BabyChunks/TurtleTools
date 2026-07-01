@@ -33,9 +33,8 @@ end
 or alignment of text, if it should end with a new line and colours
 text : str, monitor : Term, pos : str/table, nL : bool, txtColour : num, bkgColour : num ]]
 local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
-
     --set default parameters
-    monitor = monitor or term.native()
+    monitor = monitor or term.current()
     txtColour = txtColour or colours.white
     bkgColour = bkgColour or colours.black
 
@@ -45,7 +44,8 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
 
     --wrap text according to window width
     lines = {getLines(text, monitor)}
-    for n, line in ipairs(lines) do
+    for n, line in pairs(lines) do
+        
         -- set cursor postion according to position specified or alignment; stay in place by default
         if type(pos) == "string" then
             if pos == "left" then
@@ -63,6 +63,7 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
             end
         elseif type(pos) == "table" then
             if #pos ~= 2 then error("pos should take two arguments-> {x, y}") end
+            x, y = pos[1], pos[2]
             monitor.setCursorPos(pos[1], pos[2])
             monitor.clearLine()
         else
@@ -86,19 +87,20 @@ local function drawText(text, monitor, pos, nL, txtColour, bkgColour)
 end
 
 --Update banner
-local function drawBanner()
-    local logo = "CHUNKSWARE TECH"
-    local filler1 = ("/"):rep(TermWidth / 2 - string.len(logo) / 2)
+local function drawBanner(title)
+    title = title or "CHUNKSWARE TECH"
+    local filler1 = ("/"):rep(TermWidth / 2 - string.len(title) / 2)
     local filler2 = ("#"):rep(TermWidth)
 
     CorpBanner.clear()
     drawText(filler2, CorpBanner, {1, 1}, true, colours.green)
-    drawText(filler1..logo..filler1, CorpBanner, "left", true, colours.green)
+    drawText(filler1..title..filler1, CorpBanner, "left", true, colours.green)
     drawText(filler2, CorpBanner, "left", nil, colours.green)
 end
 
 --[[ Menu class object with basic methods for updating and navigating.  ]]
 Menu = {
+    title = nil,
     vMargins = 0,
     monitor = Console,
     uBound = 1,
@@ -109,6 +111,7 @@ Menu = {
 
 -- Update menu screen with selected option highlighted and bounded options
 function Menu.draw(self)
+    drawBanner(self.title)
     self.monitor.clear()
     local _, height = self.monitor.getSize()
 
@@ -141,7 +144,7 @@ function Menu.nav(self)
         if self.selected > #self.options then self.selected = 1 end
     elseif key == keys.enter then
         self.monitor.clear()
-        self.monitor.setCursorPos(1,1)
+        self.monitor.setCursorPos(1, 1)
         local action = self.actions[self.selected]
         return action()
     end
@@ -149,7 +152,6 @@ end
 
 -- Call to start menu navigation and update, exit if receives true
 function Menu.init(self)
-    drawBanner(self.title)
     repeat until self.nav(self)
 end
 
