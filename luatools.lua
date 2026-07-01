@@ -10,11 +10,11 @@ local function stringBreakUp(s, n)
 end
 
 local function tableKeys(t)
-  local l = {}
+  local keys = {}
   for k, _ in pairs(t) do
-    table.insert(l, k)
+    table.insert(keys, k)
   end
-  return l
+  return keys
 end
 
 local function tableShallowCopy(t)
@@ -41,13 +41,6 @@ local function tableContainsKey(t, element)
         end
     end
     return nil
-end
-
-local function getKeyForValue(t, value)
-  for k, v in pairs(t) do
-    if v == value then return k end
-  end
-  return nil
 end
 
 local function tablesEqual(...)
@@ -128,7 +121,6 @@ return {
   tableKeys = tableKeys,
   tableContainsValue = tableContainsValue,
   tableContainsKey = tableContainsKey,
-  getKeyForValue = getKeyForValue,
   tablesEqual = tablesEqual,
   tablesOverlap = tablesOverlap,
   tableSum = tableSum,

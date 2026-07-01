@@ -1,42 +1,43 @@
 --[[ Main script for server. Libs are loaded at this level. when called, can specify
 -- "-u" flag to update libs through wget program, pulling from raw github files. ]]
 
+for _, v in pairs(arg) do
+    -- update sequence if flag -u is specified
+    if v == "-u" then
+        print("Updating files...")
+        local files = {
+            "GUI.lua",
+            "GPS.lua",
+            "comms.lua",
+            "inv.lua",
+            "init.lua"
+        }
+        local filePath = "/ChunksWare/"
+        local gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/"
+        local gitBranch = "server/"
+
+        local function updateFiles(fromPath, toPath, overwrite)
+            overwrite = overwrite or true
+            if overwrite and fs.exists(toPath) then fs.delete(toPath) end
+            if not fs.exist(toPath) then shell.execute("wget", fromPath, toPath) end
+        end
+
+        updateFiles(gitPath..gitBranch.."settings.txt", filePath.."settings.txt", false)
+        updateFiles(gitPath.."luatools.lua", filePath.."luatools.lua")
+        updateFiles(gitPath.."alias.lua", "/startup/alias.lua")
+
+        for _, file in pairs(files) do
+            updateFiles(gitPath..gitBranch..file, filePath..file)
+        end
+
+        print("Done!")
+        os.sleep(0.8)
+        term.clear()
+    end
+end
+
 parallel.waitForAny(
 function() --Main script for software; will run as long as computer is on
-    local filePath = "/ChunksWare/"
-    term.clear()
-
-    for _, v in pairs(arg) do
-        -- update sequence if flag -u is specified
-        if v == "-u" then
-            print("Updating files...")
-            local files = {
-                "luatools.lua",
-                "GUI.lua",
-                "GPS.lua",
-                "comms.lua",
-                "inv.lua",
-                "init.lua"
-            }
-            local gitPath = "https://raw.githubusercontent.com/BabyChunks/CC-ChunksWare/refs/heads/main/server/"
-
-            if not fs.exists(filePath.."settings.txt") then
-                table.insert(files, "settings.txt")
-            end
-
-            for _, file in pairs(files) do
-                if fs.exists(filePath..file) then fs.delete(filePath..file) end
-                shell.execute("wget", gitPath..file, filePath..file)
-            end
-
-            if fs.exists("/startup/alias.lua") then fs.delete("/startup/alias.lua") end
-            shell.execute("wget", gitPath.."alias.lua", "/startup/alias.lua")
-
-            print("Done!")
-            os.sleep(0.8)
-            term.clear()
-        end
-    end
 
     -- Loading settings --
     St = textutils.unserialize(fs.open(filePath.."settings.txt", "r").readAll())
